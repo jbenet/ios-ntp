@@ -13,6 +13,7 @@
 @interface NetworkClock : NSObject {
 
     NSTimeInterval          timeIntervalSinceDeviceTime;
+    NSDate *                timeLastSynchronized;
 
     NSMutableArray *        timeAssociations;
 

@@ -22,30 +22,38 @@
     if (nil == [super init]) return nil;
     
     timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
-    timeIntervalSinceDeviceTime = 0.0;
+    timeLastSynchronized = [[NSDate dateWithTimeIntervalSince1970:0.0] retain];
     
     return self;
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Scan the associations and get the best time offset, then return adjusted time                    ┃
+  ┃ Return the device clock time adjusted for the offset to network-derived UTC.  If we have not     ┃
+  ┃ synchronized for five minutes, get a new offset by scanning the associations.                    ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
-    short       usefulCount = 0;
-    timeIntervalSinceDeviceTime = 0.0;
+    if ([timeLastSynchronized timeIntervalSinceNow] < -90.0) {
+        [timeLastSynchronized release];
 
-    for (NetAssociation * timeAssociation in timeAssociations) {
-        if (timeAssociation.useful) {
-            usefulCount++;
-            timeIntervalSinceDeviceTime += timeAssociation.offset;
+        short       usefulCount = 0;
+        timeIntervalSinceDeviceTime = 0.0;
+        
+        for (NetAssociation * timeAssociation in timeAssociations) {
+            if (timeAssociation.useful) {
+                usefulCount++;
+                timeIntervalSinceDeviceTime += timeAssociation.offset;
+            }
         }
-    }
-    
-    if (usefulCount == 0)
-        NSLog(@"no useful associations");
-    else {
-        timeIntervalSinceDeviceTime /= usefulCount;
-    }
+        
+        if (usefulCount == 0)
+            NSLog(@"no useful associations");
+        else {
+            NSLog(@"%i useful associations", usefulCount);
+            timeIntervalSinceDeviceTime /= usefulCount;
+        }
+        
+        timeLastSynchronized = [[NSDate date] retain];
+    }    
 
     return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime];
 }

@@ -23,8 +23,8 @@
     [window makeKeyAndVisible];
 
     NSTimer * repeatingTimer = [[NSTimer alloc] 
-                                initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:1.0]
-                                        interval:30.0
+                                initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]
+                                        interval:10.0
                                           target:self 
                                         selector:@selector(repeatingMethod:)
                                         userInfo:nil 
@@ -37,8 +37,8 @@
 }
 
 - (void) repeatingMethod:(NSTimer*) theTimer {
-    NSLog(@"clock: %@", [NSDate date]);
-    NSLog(@"timer: %@", [[NetworkClock sharedNetworkClock] networkTime]);
+    NSLog(@"sys clock: %@", [NSDate date]);
+    NSLog(@"net clock: %@", [[NetworkClock sharedNetworkClock] networkTime]);
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
