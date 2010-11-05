@@ -1,0 +1,336 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		86618F2A126BB6430046A2B8 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 86618F29126BB6430046A2B8 /* NetworkClock.m */; };
+		86619013126C07300046A2B8 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = 86619012126C07300046A2B8 /* ntp.hosts */; };
+		8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661906E126C0CD70046A2B8 /* UIKit.framework */; };
+		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
+		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
+		86619086126C0D120046A2B8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619085126C0D120046A2B8 /* CFNetwork.framework */; };
+		86C39F1A126A1FA100A9DCD1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 86C39F18126A1FA100A9DCD1 /* InfoPlist.strings */; };
+		86C39F1C126A1FA100A9DCD1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C39F1B126A1FA100A9DCD1 /* main.m */; };
+		86C39F1F126A1FA100A9DCD1 /* ntpAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C39F1E126A1FA100A9DCD1 /* ntpAAppDelegate.m */; };
+		86C39F22126A1FA100A9DCD1 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86C39F20126A1FA100A9DCD1 /* MainWindow.xib */; };
+		86C39F25126A1FA100A9DCD1 /* ntpAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C39F24126A1FA100A9DCD1 /* ntpAViewController.m */; };
+		86C39F28126A1FA100A9DCD1 /* ntpAViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86C39F26126A1FA100A9DCD1 /* ntpAViewController.xib */; };
+		86C39F35126A202700A9DCD1 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */; };
+		86E4C97B128242B800841647 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E4C97A128242B800841647 /* NetAssociation.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		86618F28126BB6430046A2B8 /* NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkClock.h; sourceTree = "<group>"; };
+		86618F29126BB6430046A2B8 /* NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkClock.m; sourceTree = "<group>"; };
+		86618F4A126BC85D0046A2B8 /* SynthesizeSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SynthesizeSingleton.h; path = ../SynthesizeSingleton.h; sourceTree = SOURCE_ROOT; };
+		86619012126C07300046A2B8 /* ntp.hosts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ntp.hosts; sourceTree = "<group>"; };
+		8661906E126C0CD70046A2B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		86619085126C0D120046A2B8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		86C39F0D126A1FA100A9DCD1 /* ntpA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ntpA.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		86C39F16126A1FA100A9DCD1 /* ntpA-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ntpA-Info.plist"; sourceTree = "<group>"; };
+		86C39F17126A1FA100A9DCD1 /* ntpA_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ntpA_Prefix.pch; sourceTree = "<group>"; };
+		86C39F19126A1FA100A9DCD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		86C39F1B126A1FA100A9DCD1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		86C39F1D126A1FA100A9DCD1 /* ntpAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ntpAAppDelegate.h; sourceTree = "<group>"; };
+		86C39F1E126A1FA100A9DCD1 /* ntpAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ntpAAppDelegate.m; sourceTree = "<group>"; };
+		86C39F21126A1FA100A9DCD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		86C39F23126A1FA100A9DCD1 /* ntpAViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ntpAViewController.h; sourceTree = "<group>"; };
+		86C39F24126A1FA100A9DCD1 /* ntpAViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ntpAViewController.m; sourceTree = "<group>"; };
+		86C39F27126A1FA100A9DCD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ntpAViewController.xib; sourceTree = "<group>"; };
+		86C39F33126A202700A9DCD1 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncUdpSocket.h; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/AsyncUdpSocket.h"; sourceTree = "<absolute>"; };
+		86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncUdpSocket.m; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/AsyncUdpSocket.m"; sourceTree = "<absolute>"; };
+		86E4C979128242B800841647 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
+		86E4C97A128242B800841647 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		86C39F0A126A1FA100A9DCD1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */,
+				8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */,
+				86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */,
+				86619086126C0D120046A2B8 /* CFNetwork.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		86C39EFE126A1FA000A9DCD1 = {
+			isa = PBXGroup;
+			children = (
+				86C39F05126A1FA000A9DCD1 /* Classes */,
+				86C39F06126A1FA100A9DCD1 /* Other Sources */,
+				86C39F07126A1FA100A9DCD1 /* Resources */,
+				86FFAD7B126AD22300F5B70C /* Resources-iPad */,
+				86C39F08126A1FA100A9DCD1 /* Frameworks */,
+				86C39F0E126A1FA100A9DCD1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		86C39F05126A1FA000A9DCD1 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				86C39F1D126A1FA100A9DCD1 /* ntpAAppDelegate.h */,
+				86C39F1E126A1FA100A9DCD1 /* ntpAAppDelegate.m */,
+				86C39F23126A1FA100A9DCD1 /* ntpAViewController.h */,
+				86C39F24126A1FA100A9DCD1 /* ntpAViewController.m */,
+				86C39F33126A202700A9DCD1 /* AsyncUdpSocket.h */,
+				86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */,
+				86618F28126BB6430046A2B8 /* NetworkClock.h */,
+				86618F29126BB6430046A2B8 /* NetworkClock.m */,
+				86E4C979128242B800841647 /* NetAssociation.h */,
+				86E4C97A128242B800841647 /* NetAssociation.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		86C39F06126A1FA100A9DCD1 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				86C39F17126A1FA100A9DCD1 /* ntpA_Prefix.pch */,
+				86618F4A126BC85D0046A2B8 /* SynthesizeSingleton.h */,
+				86C39F1B126A1FA100A9DCD1 /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		86C39F07126A1FA100A9DCD1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				86619012126C07300046A2B8 /* ntp.hosts */,
+				86C39F16126A1FA100A9DCD1 /* ntpA-Info.plist */,
+				86C39F18126A1FA100A9DCD1 /* InfoPlist.strings */,
+				86C39F20126A1FA100A9DCD1 /* MainWindow.xib */,
+				86C39F26126A1FA100A9DCD1 /* ntpAViewController.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		86C39F08126A1FA100A9DCD1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8661906E126C0CD70046A2B8 /* UIKit.framework */,
+				8661907A126C0CEC0046A2B8 /* Foundation.framework */,
+				86619081126C0CFD0046A2B8 /* CoreGraphics.framework */,
+				86619085126C0D120046A2B8 /* CFNetwork.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		86C39F0E126A1FA100A9DCD1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				86C39F0D126A1FA100A9DCD1 /* ntpA.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		86FFAD7B126AD22300F5B70C /* Resources-iPad */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Resources-iPad";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		86C39F0C126A1FA100A9DCD1 /* ntpA */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 86C39F2B126A1FA100A9DCD1 /* Build configuration list for PBXNativeTarget "ntpA" */;
+			buildPhases = (
+				86C39F09126A1FA100A9DCD1 /* Sources */,
+				86C39F0A126A1FA100A9DCD1 /* Frameworks */,
+				86C39F0B126A1FA100A9DCD1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ntpA;
+			productName = ntpA;
+			productReference = 86C39F0D126A1FA100A9DCD1 /* ntpA.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		86C39F00126A1FA000A9DCD1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Ramsay Consulting";
+			};
+			buildConfigurationList = 86C39F03126A1FA000A9DCD1 /* Build configuration list for PBXProject "ntpA" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 86C39EFE126A1FA000A9DCD1;
+			productRefGroup = 86C39F0E126A1FA100A9DCD1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				86C39F0C126A1FA100A9DCD1 /* ntpA */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		86C39F0B126A1FA100A9DCD1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				86C39F1A126A1FA100A9DCD1 /* InfoPlist.strings in Resources */,
+				86C39F22126A1FA100A9DCD1 /* MainWindow.xib in Resources */,
+				86C39F28126A1FA100A9DCD1 /* ntpAViewController.xib in Resources */,
+				86619013126C07300046A2B8 /* ntp.hosts in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		86C39F09126A1FA100A9DCD1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				86C39F1C126A1FA100A9DCD1 /* main.m in Sources */,
+				86C39F1F126A1FA100A9DCD1 /* ntpAAppDelegate.m in Sources */,
+				86C39F25126A1FA100A9DCD1 /* ntpAViewController.m in Sources */,
+				86C39F35126A202700A9DCD1 /* AsyncUdpSocket.m in Sources */,
+				86618F2A126BB6430046A2B8 /* NetworkClock.m in Sources */,
+				86E4C97B128242B800841647 /* NetAssociation.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		86C39F18126A1FA100A9DCD1 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				86C39F19126A1FA100A9DCD1 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		86C39F20126A1FA100A9DCD1 /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				86C39F21126A1FA100A9DCD1 /* en */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+		86C39F26126A1FA100A9DCD1 /* ntpAViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				86C39F27126A1FA100A9DCD1 /* en */,
+			);
+			name = ntpAViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		86C39F29126A1FA100A9DCD1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				PREBINDING = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		86C39F2A126A1FA100A9DCD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PREBINDING = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		86C39F2C126A1FA100A9DCD1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ntpA_Prefix.pch;
+				INFOPLIST_FILE = "ntpA-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		86C39F2D126A1FA100A9DCD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ntpA_Prefix.pch;
+				INFOPLIST_FILE = "ntpA-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		86C39F03126A1FA000A9DCD1 /* Build configuration list for PBXProject "ntpA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				86C39F29126A1FA100A9DCD1 /* Debug */,
+				86C39F2A126A1FA100A9DCD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		86C39F2B126A1FA100A9DCD1 /* Build configuration list for PBXNativeTarget "ntpA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				86C39F2C126A1FA100A9DCD1 /* Debug */,
+				86C39F2D126A1FA100A9DCD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 86C39F00126A1FA000A9DCD1 /* Project object */;
+}
