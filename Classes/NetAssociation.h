@@ -59,6 +59,8 @@ struct ntpShortTime {
     
     int                     li, vn, mode, stratum, poll, prec, refid;
     
+//  double                  offset1, offset2, offset3, offset4, offset5, offset6, offset7, offset8;
+    
 }
 
 @property (readonly) BOOL               trusty;             // is this clock trustworthy

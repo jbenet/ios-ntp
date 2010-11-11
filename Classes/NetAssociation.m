@@ -18,6 +18,8 @@
 - (NSString *) prettyPrintPacket;
 - (NSString *) prettyPrintTimers;
 
+- (NSDate *) dateFromNTP:(struct ntpTimestamp *) networkTime;
+
 @end
 
 #pragma mark -
@@ -35,7 +37,7 @@
 - (id) init {
     if ((self = [super init]) == nil) return nil;
     
-    timeBetweenQueries = 20.0;                  // initial (fastest) frequency of requests
+    timeBetweenQueries = 60.0;                  // initial frequency of requests
     trusty = FALSE;                             // don't trust this clock to start with ...
     offset = 0.0;                               // start with clock on time (no offset)
     socket = [[AsyncUdpSocket alloc] initIPv4];
@@ -88,6 +90,10 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
     return ntpDiffSeconds(&NTP_1970, networkTime);
 }
 
+- (NSDate *) dateFromNTP:(struct ntpTimestamp *) networkTime {
+    return [NSDate dateWithTimeIntervalSince1970:timeIntervalFromNetworkTime(&ntpServerBaseTime)];
+}
+
 #pragma mark N E T W O R K • T R A N S A C T I O N S
 
 - (NSData *) createPacket {
@@ -122,22 +128,16 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
 
 #pragma mark N e t w o r k • C a l l b a c k s
 
-- (void) onUdpSocket:(AsyncUdpSocket *)sock 
-  didSendDataWithTag:(long)tag {
-//  NSLog(@"Send data : [%@] SUCCESS", server); 
+- (void) onUdpSocket:(AsyncUdpSocket *)sock didSendDataWithTag:(long)tag {
 }
 
-- (void) onUdpSocket:(AsyncUdpSocket *)sock 
-didNotSendDataWithTag:(long)tag 
+- (void) onUdpSocket:(AsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag 
           dueToError:(NSError *)error {
     NSLog(@"Send data FAILURE: [%@] %@", server, [error localizedDescription]); 
 }
 
-- (BOOL) onUdpSocket:(AsyncUdpSocket *)sender 
-      didReceiveData:(NSData *)data 
-             withTag:(long)tag 
-            fromHost:(NSString *)host 
-                port:(UInt16)port {
+- (BOOL) onUdpSocket:(AsyncUdpSocket *)sender didReceiveData:(NSData *)data 
+             withTag:(long)tag fromHost:(NSString *)host port:(UInt16)port {
         
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  grab the packet arrival time as fast as possible, before computations below ...                 │
@@ -171,22 +171,27 @@ didNotSendDataWithTag:(long)tag
 	ntpServerSendTime.fullSeconds = ntohl(hostData[10]);
 	ntpServerSendTime.partSeconds = ntohl(hostData[11]);
     
-//  NSLog(@"prettyPrintPacket: %@", [self prettyPrintPacket]);
-
-    el_time=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);       //       .. (T4-T1)
-    st_time=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);       //       .. (T3-T2)
-    skew1 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);       //       .. (T2-T1)
-    skew2 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);       //       .. (T3-T4)
+    el_time=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);     // .. (T4-T1)
+    st_time=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);     // .. (T3-T2)
+    skew1 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);     // .. (T2-T1)
+    skew2 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);     // .. (T3-T4)
     offset = (skew1+skew2)/2.0;
 
-//  NSLog(@"prettyPrintTimers: %@", [self prettyPrintTimers]);
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+    offset8 = offset7; offset7 = offset6; offset6 = offset5; offset5 = offset4;
+    offset4 = offset3; offset3 = offset2; offset2 = offset1; offset1 = offset;
 
-//  NSLog(@"Read data SUCCESS: [%@] clock offset: %8.3fs±%5.3fmS)", server, offset, dispersion);
-    
-    NSLog(@"Server set time: %@", 
-          [NSDate dateWithTimeIntervalSince1970:timeIntervalFromNetworkTime(&ntpServerBaseTime)]);
+    NSLog(@"Read data SUCCESS: [%@] clock offset: %8.3fs±%5.3fmS (%5.3f,%5.3f,%5.3f))", 
+          server, offset, dispersion, 
+          (offset-offset2)*1000.0, (offset-offset3)*1000.0, (offset-offset4)*1000.0);
 
-    trusty = (dispersion > 0.1 && dispersion < 50.0);
+    NSLog(@"Read data SUCCESS: [%@] (%i : %3.1fs))", server, stratum,
+          - [[self dateFromNTP:&ntpServerBaseTime] timeIntervalSinceNow]);
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+
+    trusty = (dispersion > 0.1 && dispersion < 50.0) && 
+             (-[[self dateFromNTP:&ntpServerBaseTime] timeIntervalSinceNow] < 6.0 * 3600.0) &&
+             (stratum > 0) && (mode == 4);
     
     return YES;
 }
