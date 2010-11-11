@@ -67,8 +67,8 @@
 		86C39EFE126A1FA000A9DCD1 = {
 			isa = PBXGroup;
 			children = (
-				86C39F05126A1FA000A9DCD1 /* Classes */,
 				86C39F06126A1FA100A9DCD1 /* Other Sources */,
+				86C39F05126A1FA000A9DCD1 /* Classes */,
 				86C39F07126A1FA100A9DCD1 /* Resources */,
 				86FFAD7B126AD22300F5B70C /* Resources-iPad */,
 				86C39F08126A1FA100A9DCD1 /* Frameworks */,

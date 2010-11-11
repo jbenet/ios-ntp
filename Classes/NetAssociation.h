@@ -43,8 +43,10 @@ struct ntpShortTime {
 };
 
 @interface NetAssociation : NSObject {
-    
+        
     NSTimer *               repeatingTimer;                 // fires off an ntp request ...
+    NSTimeInterval          timeBetweenQueries;
+    AsyncUdpSocket *        socket;
     
     struct ntpTimestamp     ntpClientSendTime, 
                             ntpServerRecvTime, 
@@ -59,8 +61,7 @@ struct ntpShortTime {
     
 }
 
-@property (readonly) BOOL               useful;             // is this clock trustworthy
-@property (retain) AsyncUdpSocket *     socket;
+@property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (retain) NSString *           server;             // ip address "xx.xx.xx.xx"
 @property (readonly) double             offset;             // offset from device time (secs)
 
@@ -70,9 +71,39 @@ struct ntpShortTime {
 @end
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃   1                   2                   3                                                      ┃
+  ┃   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |LI | VN  |Mode |    Stratum    |     Poll      |   Precision   |                               ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |                          Root  Delay                          |                               ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |                       Root  Dispersion                        |                               ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |                     Reference Identifier                      |                               ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |                                                               |                               ┃
+  ┃  |                    Reference Timestamp (64)                   |                               ┃
+  ┃  |                                                               |                               ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |                                                               |                               ┃
+  ┃  |                    Originate Timestamp (64)                   |                               ┃
+  ┃  |                                                               |                               ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |                                                               |                               ┃
+  ┃  |                     Receive Timestamp (64)                    |                               ┃
+  ┃  |                                                               |                               ┃
+  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
+  ┃  |                                                               |                               ┃
+  ┃  |                     Transmit Timestamp (64)                   |                               ┃
+  ┃  |                                                               |                               ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ conversions of 'NTP Timestamp Format' fractional part to/from microseconds ...                   ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 #define uSec2Frac(x)    ( 4294*(x) + ( (1981*(x))>>11 ) )
 #define Frac2uSec(x)    ( ((x) >> 12) - 759 * ( ( ((x) >> 10) + 32768 ) >> 16 ) )
 
-#define JAN_1970        0x83aa7e80      /* 2208988800 1970 - 1900 in seconds */
+#define JAN_1970        0x83aa7e80      /* 1970 - 1900 in seconds 2,208,988,800 | First day UNIX  */
+// 1 Jan 1972 : 2,272,060,800 | First day UTC

@@ -13,7 +13,7 @@
 
 @interface NetAssociation (PrivateMethods)
 
-- (void) repeatingMethod:(NSTimer*)theTimer;
+- (void) queryTimeServer:(NSTimer*) timer;
 
 - (NSString *) prettyPrintPacket;
 - (NSString *) prettyPrintTimers;
@@ -23,39 +23,39 @@
 #pragma mark -
 #pragma mark N E T W O R K • A S S O C I A T I O N
 
-#define REPEAT_TIMELOOP (120.0)                 // repeat every 5 minutes ...
-
 @implementation NetAssociation
 
-@synthesize useful, socket, server, offset;
+@synthesize trusty, server, offset;
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Initialize the association with a blank socket and prepare the first request for time to happen  ┃
-  ┃ between 5 and 30 seconds from now ..                                                             ┃
+  ┃ Initialize the association with a blank socket and prepare the first time transaction to happen  ┃
+  ┃ between 1 and 10 seconds from now .. random timing avoids the burst of network traffic expected  ┃
+  ┃ if all the associations fired at the same time ...                                               ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (id) init {
     if ((self = [super init]) == nil) return nil;
-        
-    NSDate *    randomStart = [NSDate dateWithTimeIntervalSinceNow:(5.0 + (random()%2500)/100.0)];
+    
+    timeBetweenQueries = 20.0;                  // initial (fastest) frequency of requests
+    trusty = FALSE;                             // don't trust this clock to start with ...
+    offset = 0.0;                               // start with clock on time (no offset)
+    socket = [[AsyncUdpSocket alloc] initIPv4];
+    [socket setDelegate:self];
+
+    NSDate *    randomStart = [NSDate dateWithTimeIntervalSinceNow:(1.0 + random()%900/90.0)];
     
     repeatingTimer = [[NSTimer alloc] initWithFireDate:randomStart
-                                              interval:REPEAT_TIMELOOP
+                                              interval:timeBetweenQueries
                                                 target:self 
-                                              selector:@selector(repeatingMethod:)
+                                              selector:@selector(queryTimeServer:)
                                               userInfo:nil 
                                                repeats:YES];
-    
-    useful = FALSE;
-    offset = 0.0;                               // start with clock on time (no offset)
-    self.socket = [[AsyncUdpSocket alloc] initIPv4];
-    [self.socket setDelegate:self];
     
     return self;
 }
 
 - (void) start {
     NSLog(@"association start: [%@]", server);
-
+    
     [[NSRunLoop currentRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
     [repeatingTimer release];
 }
@@ -65,7 +65,7 @@
     repeatingTimer = nil;
 }
 
-#pragma mark N E T W O R K • T R A N S A C T I O N S
+#pragma mark T i m e • C o n v e r t e r s
 
 static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 	int                 a;
@@ -81,6 +81,14 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     
 	return a + b / 4294967296.0;
 }
+
+static struct ntpTimestamp NTP_1970 = {0x83aa7e80, 0};
+
+NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
+    return ntpDiffSeconds(&NTP_1970, networkTime);
+}
+
+#pragma mark N E T W O R K • T R A N S A C T I O N S
 
 - (NSData *) createPacket {
 	uint32_t        wireData[12];
@@ -99,7 +107,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     return [NSData dataWithBytes:wireData length:48];
 }
 
-- (void) repeatingMethod:(NSTimer*) theTimer {
+- (void) queryTimeServer:(NSTimer *) timer {
     [socket receiveWithTimeout:3.0 tag:0];
     
     if ([socket sendData:[self createPacket] toHost:server port:123L withTimeout:1.0 tag:0]) {
@@ -108,6 +116,8 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     else {
         NSLog(@"Immediate FAILURE: [%@]", server);
     }
+    
+    [timer setFireDate:[NSDate dateWithTimeIntervalSinceNow:timeBetweenQueries]];
 }
 
 #pragma mark N e t w o r k • C a l l b a c k s
@@ -172,8 +182,11 @@ didNotSendDataWithTag:(long)tag
 //  NSLog(@"prettyPrintTimers: %@", [self prettyPrintTimers]);
 
 //  NSLog(@"Read data SUCCESS: [%@] clock offset: %8.3fs±%5.3fmS)", server, offset, dispersion);
+    
+    NSLog(@"Server set time: %@", 
+          [NSDate dateWithTimeIntervalSince1970:timeIntervalFromNetworkTime(&ntpServerBaseTime)]);
 
-    useful = (dispersion > 0.1 && dispersion < 50.0);
+    trusty = (dispersion > 0.1 && dispersion < 50.0);
     
     return YES;
 }

@@ -39,7 +39,7 @@
         timeIntervalSinceDeviceTime = 0.0;
         
         for (NetAssociation * timeAssociation in timeAssociations) {
-            if (timeAssociation.useful) {
+            if (timeAssociation.trusty) {
                 usefulCount++;
                 timeIntervalSinceDeviceTime += timeAssociation.offset;
             }
