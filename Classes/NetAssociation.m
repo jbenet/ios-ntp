@@ -230,7 +230,7 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
 
 - (void) onUdpSocket:(AsyncUdpSocket *)sock didNotReceiveDataWithTag:(long)tag 
           dueToError:(NSError *)error {
-    NSLog(@"Read data FAILURE: [%@] %@", server, [error localizedDescription]);
+//  NSLog(@"Read data FAILURE: [%@] %@", server, [error localizedDescription]);
 }
 
 - (void) onUdpSocketDidClose:(AsyncUdpSocket *) sock  {
@@ -247,24 +247,23 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
                                 "   protocol mode: %3d\n"
                                 "         stratum: %3d\n"
                                 "   poll interval: %3d\n"
-                                "   precision exp: %3d\n\n",
-     li, vn, mode, stratum, poll, prec];
+                                "   precision exp: %3d\n\n", li, vn, mode, stratum, poll, prec];
     
     [prettyString appendFormat:@"      root delay: %7.3f (mS)\n"
                                 "      dispersion: %7.3f (mS)\n"
-                                "    reference ID: %3u.%u.%u.%u\n\n",
-     root_delay, dispersion, refid>>24&0xff, refid>>16&0xff, refid>>8&0xff, refid&0xff];
+                                "    reference ID: %3u.%u.%u.%u\n\n", root_delay, dispersion, 
+                                        refid>>24&0xff, refid>>16&0xff, refid>>8&0xff, refid&0xff];
     
     [prettyString appendFormat:@"  clock last set: %u.%.6u\n",   
-     ntpServerBaseTime.fullSeconds, Frac2uSec(ntpServerBaseTime.partSeconds)];
+                        ntpServerBaseTime.fullSeconds, Frac2uSec(ntpServerBaseTime.partSeconds)];
     [prettyString appendFormat:@"client send time: %u.%.6u\n",
-     ntpClientSendTime.fullSeconds, Frac2uSec(ntpClientSendTime.partSeconds)];
+                        ntpClientSendTime.fullSeconds, Frac2uSec(ntpClientSendTime.partSeconds)];
     [prettyString appendFormat:@"server recv time: %u.%.6u\n",   
-     ntpServerRecvTime.fullSeconds, Frac2uSec(ntpServerRecvTime.partSeconds)];
+                        ntpServerRecvTime.fullSeconds, Frac2uSec(ntpServerRecvTime.partSeconds)];
     [prettyString appendFormat:@"server send time: %u.%.6u\n",   
-     ntpServerSendTime.fullSeconds, Frac2uSec(ntpServerSendTime.partSeconds)];
+                        ntpServerSendTime.fullSeconds, Frac2uSec(ntpServerSendTime.partSeconds)];
     [prettyString appendFormat:@"client recv time: %u.%.6u\n\n",   
-     ntpClientRecvTime.fullSeconds, Frac2uSec(ntpClientRecvTime.partSeconds)];
+                        ntpClientRecvTime.fullSeconds, Frac2uSec(ntpClientRecvTime.partSeconds)];
     
     return prettyString;
 }
@@ -283,6 +282,6 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
 }
 
 - (NSString *) description {
-    return [NSString stringWithFormat:@"[%@] %5.3f mS", server, offset];
+    return [NSString stringWithFormat:@"[%@] %3.1f±%3.1fmS", server, offset *1000.0, dispersion];
 }
 @end

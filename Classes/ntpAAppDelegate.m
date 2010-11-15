@@ -15,21 +15,21 @@
 @synthesize viewController;
 
 - (BOOL) application:(UIApplication *) app didFinishLaunchingWithOptions:(NSDictionary *) options {
-    
+
     [[NetworkClock sharedNetworkClock] createAssociations];   // gather up the ntp servers ...
-    
+
     [window addSubview:viewController.view];
     [window makeKeyAndVisible];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  Create a timer that will fire in ten seconds and then every ten seconds thereafter to ask the   │
   │ network clock what time it is.                                                                   │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    NSTimer * repeatingTimer = [[NSTimer alloc] 
+    NSTimer * repeatingTimer = [[NSTimer alloc]
                                 initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]
                                         interval:10.0
-                                          target:self 
+                                          target:self
                                         selector:@selector(repeatingMethod:)
-                                        userInfo:nil 
+                                        userInfo:nil
                                          repeats:YES];
 
     [[NSRunLoop currentRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
@@ -44,7 +44,7 @@
 
     sysClockLabel.text = [NSString stringWithFormat:@"%@", systemTime];
     netClockLabel.text = [NSString stringWithFormat:@"%@", networkTime];
-    differenceLabel.text = [NSString stringWithFormat:@"%f", 
+    differenceLabel.text = [NSString stringWithFormat:@"%3.1f",
                             [systemTime timeIntervalSinceDate:networkTime]];
 }
 

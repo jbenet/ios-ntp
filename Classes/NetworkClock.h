@@ -18,11 +18,15 @@
 
     NSMutableArray *        timeAssociations;
 
+    NSSortDescriptor *      dispersionSortDescriptor;
+    NSArray *               sortDescriptors;
+    
 }
 
 + (NetworkClock *) sharedNetworkClock;
 
 - (void) createAssociations;
+- (void) reportAssociations;
 - (void) finishAssociations;
 
 - (NSDate *) networkTime;

@@ -32,6 +32,9 @@
 - (id) init {
     if (nil == [super init]) return nil;
 
+    dispersionSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES];
+    sortDescriptors = [[NSArray arrayWithObject:dispersionSortDescriptor] retain];
+
     timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
 
     offsetAverageTimer = [NSTimer scheduledTimerWithTimeInterval:30.0
@@ -43,14 +46,17 @@
 }
 
 - (void) offsetAverage:(NSTimer *) timer {
+    NSArray *           sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
+    
     short       usefulCount = 0;
     timeIntervalSinceDeviceTime = 0.0;
 
-    for (NetAssociation * timeAssociation in timeAssociations) {
+    for (NetAssociation * timeAssociation in sortedArray) {
         if (timeAssociation.trusty) {
             usefulCount++;
             timeIntervalSinceDeviceTime += timeAssociation.offset;
         }
+        if (usefulCount == 8) break;                // use 8 best dispersions
     }
 
     if (usefulCount > 0) {
@@ -151,6 +157,10 @@
     [hostAddresses release];
 }
 
+- (void) reportAssociations {
+    
+}
+
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Stop all the individual ntp clients ..                                                           ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
@@ -180,7 +190,7 @@
 - (void)associationFail:(NSNotification *)notification {
     if ([timeAssociations count] > 8) {
         NetAssociation *    association = [notification object];
-        NSLog(@"*** association failed: %@", association);
+        NSLog(@"*** association failed: %@ (%i left)", association, [timeAssociations count]);
         [association finish];
         [timeAssociations removeObject:association];
     }
