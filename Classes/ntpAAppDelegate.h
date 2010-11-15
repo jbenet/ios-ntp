@@ -12,9 +12,13 @@
 
 @interface ntpAAppDelegate : NSObject <UIApplicationDelegate> {
     
-//  UIWindow *              window;
-//  ntpAViewController *    viewController;
-
+    NSDate *                        systemTime;
+    NSDate *                        networkTime;
+    
+    IBOutlet UILabel *              sysClockLabel;
+    IBOutlet UILabel *              netClockLabel;
+    IBOutlet UILabel *              differenceLabel;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *           window;

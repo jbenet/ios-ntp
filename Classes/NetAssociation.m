@@ -13,12 +13,14 @@
 
 @interface NetAssociation (PrivateMethods)
 
-- (void) queryTimeServer:(NSTimer*) timer;
+- (void) queryTimeServer:(NSTimer *) timer;
 
 - (NSString *) prettyPrintPacket;
 - (NSString *) prettyPrintTimers;
 
 - (NSDate *) dateFromNTP:(struct ntpTimestamp *) networkTime;
+
+- (void) evaluatePacket;
 
 @end
 
@@ -37,15 +39,17 @@
 - (id) init {
     if ((self = [super init]) == nil) return nil;
     
-    timeBetweenQueries = 60.0;                  // initial frequency of requests
+    timeBetweenQueries = 20.0;                  // initial frequency of requests
     trusty = FALSE;                             // don't trust this clock to start with ...
     offset = 0.0;                               // start with clock on time (no offset)
     socket = [[AsyncUdpSocket alloc] initIPv4];
     [socket setDelegate:self];
 
-    NSDate *    randomStart = [NSDate dateWithTimeIntervalSinceNow:(1.0 + random()%900/90.0)];
+    fifoQueue = [[NSMutableArray arrayWithCapacity:8] retain];
+    answerCount = trustyCount = 0;
     
-    repeatingTimer = [[NSTimer alloc] initWithFireDate:randomStart
+    repeatingTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:
+                                                                            (1.0 + random()%900/90.0)]
                                               interval:timeBetweenQueries
                                                 target:self 
                                               selector:@selector(queryTimeServer:)
@@ -55,14 +59,14 @@
     return self;
 }
 
-- (void) start {
+- (void) enable {
     NSLog(@"association start: [%@]", server);
     
     [[NSRunLoop currentRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
     [repeatingTimer release];
 }
 
-- (void) stop {
+- (void) finish {
     [repeatingTimer invalidate];
     repeatingTimer = nil;
 }
@@ -94,7 +98,7 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
     return [NSDate dateWithTimeIntervalSince1970:timeIntervalFromNetworkTime(&ntpServerBaseTime)];
 }
 
-#pragma mark N E T W O R K • T R A N S A C T I O N S
+#pragma mark N e t w o r k • T r a n s a c t i o n s
 
 - (NSData *) createPacket {
 	uint32_t        wireData[12];
@@ -113,10 +117,57 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
     return [NSData dataWithBytes:wireData length:48];
 }
 
-- (void) queryTimeServer:(NSTimer *) timer {
-    [socket receiveWithTimeout:3.0 tag:0];
+- (void) evaluatePacket {
+    trusty = (dispersion > 0.1 && dispersion < 50.0) && 
+             (-[[self dateFromNTP:&ntpServerBaseTime] timeIntervalSinceNow] < 6.0 * 3600.0) &&
+             (stratum > 0) && (mode == 4);
     
-    if ([socket sendData:[self createPacket] toHost:server port:123L withTimeout:1.0 tag:0]) {
+    if (trusty) {
+        trustyCount++;
+        
+        el_time=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);     // .. (T4-T1)
+        st_time=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);     // .. (T3-T2)
+        skew1 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);     // .. (T2-T1)
+        skew2 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);     // .. (T3-T4)
+        
+        if ([fifoQueue count] == 8) {
+            [fifoQueue removeObjectAtIndex:0];
+        }
+        [fifoQueue addObject:[NSNumber numberWithDouble:(skew1+skew2)/2.0]];
+        
+        offset = [[fifoQueue valueForKeyPath:@"@avg.doubleValue"] doubleValue];
+    //  [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-good" object:self];
+    }
+    
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ look at the collection of association's offsets and make some determination of their worth       │
+  │   .. if we have four or more times and they average zero, we're not getting replies              │
+  │   .. if we're not 'trusty' for more than half the queries, the server is wonky                   │
+  │         tell anyone who cares that we're out of the game ...                                     │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+    if (answerCount > 4 && fabs(offset) < 1.e-6 || (trustyCount > 0 && answerCount/trustyCount > 1))
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-fail" object:self];
+    
+/*────────────────────────────────────────────────────────────────────────────────────────────────────
+    NSLog(@"Read data SUCCESS: [%@] clock offset: %5.3fs±%5.3fmS (%5.3f,%5.3f,%5.3f))", 
+            server, offset, dispersion, 
+            (offset-offset2)*1000.0, (offset-offset3)*1000.0, (offset-offset4)*1000.0);
+     
+    NSLog(@"Read data SUCCESS: [%@] (%i : %3.1fs))", server, stratum,
+        - [[self dateFromNTP:&ntpServerBaseTime] timeIntervalSinceNow]);
+     
+    NSLog(@"Read data SUCCESS: [%@] clock offset: %5.3fs±%5.3fmS", server, offset, dispersion);
+    
+    NSLog(@"Read data SUCCESS: [%@] - %@ - offset: %5.3fs±%5.3fmS (%i - %i/%i)", 
+          server, trusty ? @"GOOD" : @"FAIL", offset, dispersion, 
+          [fifoQueue count], answerCount, trustyCount);
+  └───────────────────────────────────────────────────────────────────────────────────────────────────*/
+}
+
+- (void) queryTimeServer:(NSTimer *) timer {
+    [socket receiveWithTimeout:2.0 tag:0];
+    
+    if ([socket sendData:[self createPacket] toHost:server port:123L withTimeout:2.0 tag:0]) {
 
     }
     else {
@@ -171,37 +222,18 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
 	ntpServerSendTime.fullSeconds = ntohl(hostData[10]);
 	ntpServerSendTime.partSeconds = ntohl(hostData[11]);
     
-    el_time=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);     // .. (T4-T1)
-    st_time=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);     // .. (T3-T2)
-    skew1 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);     // .. (T2-T1)
-    skew2 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);     // .. (T3-T4)
-    offset = (skew1+skew2)/2.0;
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-    offset8 = offset7; offset7 = offset6; offset6 = offset5; offset5 = offset4;
-    offset4 = offset3; offset3 = offset2; offset2 = offset1; offset1 = offset;
-
-    NSLog(@"Read data SUCCESS: [%@] clock offset: %8.3fs±%5.3fmS (%5.3f,%5.3f,%5.3f))", 
-          server, offset, dispersion, 
-          (offset-offset2)*1000.0, (offset-offset3)*1000.0, (offset-offset4)*1000.0);
-
-    NSLog(@"Read data SUCCESS: [%@] (%i : %3.1fs))", server, stratum,
-          - [[self dateFromNTP:&ntpServerBaseTime] timeIntervalSinceNow]);
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-
-    trusty = (dispersion > 0.1 && dispersion < 50.0) && 
-             (-[[self dateFromNTP:&ntpServerBaseTime] timeIntervalSinceNow] < 6.0 * 3600.0) &&
-             (stratum > 0) && (mode == 4);
+    answerCount++;
+    [self evaluatePacket];
     
     return YES;
 }
 
 - (void) onUdpSocket:(AsyncUdpSocket *)sock didNotReceiveDataWithTag:(long)tag 
           dueToError:(NSError *)error {
-    NSLog(@"Read data FAILURE: [%@] %@", server, [error localizedDescription]); 
+    NSLog(@"Read data FAILURE: [%@] %@", server, [error localizedDescription]);
 }
 
-- (void) onUdpSocketDidClose:(AsyncUdpSocket *)sock  {
+- (void) onUdpSocketDidClose:(AsyncUdpSocket *) sock  {
     NSLog(@"Socket closed : [%@]", server); 
 }
 
@@ -241,13 +273,16 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
     NSMutableString *   prettyString = [NSMutableString stringWithFormat:@"prettyPrintTimers\n\n"];
 
     [prettyString appendFormat:@"time server addr: [%@]\n"
-                                " round trip time: %8.3f (mS)\n"
-                                "     server time: %8.3f (mS)\n"
-                                "    network time: %8.3f (mS)\n"
-                                "    clock offset: %8.3f (mS)\n\n", 
+                                " round trip time: %5.3f (mS)\n"
+                                "     server time: %5.3f (mS)\n"
+                                "    network time: %5.3f (mS)\n"
+                                "    clock offset: %5.3f (mS)\n\n", 
           server, el_time * 1000.0, st_time * 1000.0, (el_time-st_time) * 1000.0, offset * 1000.0];
     
     return prettyString;
 }
 
+- (NSString *) description {
+    return [NSString stringWithFormat:@"[%@] %5.3f mS", server, offset];
+}
 @end

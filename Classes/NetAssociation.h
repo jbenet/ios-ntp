@@ -59,16 +59,17 @@ struct ntpShortTime {
     
     int                     li, vn, mode, stratum, poll, prec, refid;
     
-//  double                  offset1, offset2, offset3, offset4, offset5, offset6, offset7, offset8;
-    
+    NSMutableArray *        fifoQueue;
+    NSUInteger              answerCount, trustyCount;
+
 }
 
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (retain) NSString *           server;             // ip address "xx.xx.xx.xx"
 @property (readonly) double             offset;             // offset from device time (secs)
 
-- (void) start;
-- (void) stop;
+- (void) enable;
+- (void) finish;
 
 @end
 

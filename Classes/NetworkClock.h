@@ -12,8 +12,9 @@
 
 @interface NetworkClock : NSObject {
 
+    NSTimer *               offsetAverageTimer;
+
     NSTimeInterval          timeIntervalSinceDeviceTime;
-    NSDate *                timeLastSynchronized;
 
     NSMutableArray *        timeAssociations;
 
@@ -21,8 +22,8 @@
 
 + (NetworkClock *) sharedNetworkClock;
 
-- (void) loadAssociations;
-- (void) stopAssociations;
+- (void) createAssociations;
+- (void) finishAssociations;
 
 - (NSDate *) networkTime;
 

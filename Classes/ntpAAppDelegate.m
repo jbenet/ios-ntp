@@ -1,10 +1,9 @@
-//
-//  ntpAAppDelegate.m
-//  ntpA
-//
-//  Created by Gavin Eadie on 10/16/10.
-//  Copyright (c) 2010 Ramsay Consulting. All rights reserved.
-//
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ ntpAAppDelegate.m                                                                                ║
+  ║                                                                                                  ║
+  ║ Created by Gavin Eadie on Nov16/10                                                               ║
+  ║ Copyright © 2010 Ramsay Consulting. All rights reserved.                                         ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "ntpAAppDelegate.h"
 #import "ntpAViewController.h"
@@ -15,13 +14,16 @@
 @synthesize window;
 @synthesize viewController;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL) application:(UIApplication *) app didFinishLaunchingWithOptions:(NSDictionary *) options {
     
-    [[NetworkClock sharedNetworkClock] loadAssociations];
+    [[NetworkClock sharedNetworkClock] createAssociations];   // gather up the ntp servers ...
     
     [window addSubview:viewController.view];
     [window makeKeyAndVisible];
-
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  Create a timer that will fire in ten seconds and then every ten seconds thereafter to ask the   │
+  │ network clock what time it is.                                                                   │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     NSTimer * repeatingTimer = [[NSTimer alloc] 
                                 initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]
                                         interval:10.0
@@ -36,14 +38,19 @@
     return YES;
 }
 
-- (void) repeatingMethod:(NSTimer*) theTimer {
-    NSLog(@"sys clock: %@", [NSDate date]);
-    NSLog(@"net clock: %@", [[NetworkClock sharedNetworkClock] networkTime]);
+- (void) repeatingMethod:(NSTimer *) theTimer {
+    systemTime = [NSDate date];
+    networkTime = [[NetworkClock sharedNetworkClock] networkTime];
+
+    sysClockLabel.text = [NSString stringWithFormat:@"%@", systemTime];
+    netClockLabel.text = [NSString stringWithFormat:@"%@", networkTime];
+    differenceLabel.text = [NSString stringWithFormat:@"%f", 
+                            [systemTime timeIntervalSinceDate:networkTime]];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 
-    [[NetworkClock sharedNetworkClock] stopAssociations];
+    [[NetworkClock sharedNetworkClock] finishAssociations];   // be nice and let all the servers go ...
 }
 
 - (void)dealloc {
