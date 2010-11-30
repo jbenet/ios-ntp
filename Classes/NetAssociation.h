@@ -44,9 +44,10 @@ struct ntpShortTime {
 
 @interface NetAssociation : NSObject {
         
-    NSTimer *               repeatingTimer;                 // fires off an ntp request ...
-    NSTimeInterval          timeBetweenQueries;
     AsyncUdpSocket *        socket;
+
+    NSTimer *               repeatingTimer;                 // fires off an ntp request ...
+    NSTimeInterval          pollingInterval;
     
     struct ntpTimestamp     ntpClientSendTime, 
                             ntpServerRecvTime, 

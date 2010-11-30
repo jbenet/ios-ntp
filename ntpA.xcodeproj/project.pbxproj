@@ -43,8 +43,8 @@
 		86C39F1D126A1FA100A9DCD1 /* ntpAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ntpAAppDelegate.h; sourceTree = "<group>"; };
 		86C39F1E126A1FA100A9DCD1 /* ntpAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ntpAAppDelegate.m; sourceTree = "<group>"; };
 		86C39F21126A1FA100A9DCD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		86C39F33126A202700A9DCD1 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncUdpSocket.h; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/AsyncUdpSocket.h"; sourceTree = "<absolute>"; };
-		86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncUdpSocket.m; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/AsyncUdpSocket.m"; sourceTree = "<absolute>"; };
+		86C39F33126A202700A9DCD1 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncUdpSocket.h; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/RunLoop/AsyncUdpSocket.h"; sourceTree = "<absolute>"; };
+		86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncUdpSocket.m; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/RunLoop/AsyncUdpSocket.m"; sourceTree = "<absolute>"; };
 		86E4C979128242B800841647 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
 		86E4C97A128242B800841647 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */

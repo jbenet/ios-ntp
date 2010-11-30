@@ -9,11 +9,12 @@
 
 @interface NetworkClock (PrivateMethods)
 
-- (void) offsetAverage:(NSTimer *) timer;
+- (void) offsetAverage;
 
 - (NSString *) hostAddress:(struct sockaddr_in *) sockAddr;
 
-- (void) associationFail:(NSNotification *) notification;
+- (void) associationTrue:(NSNotification *) notification;
+- (void) associationFake:(NSNotification *) notification;
 
 @end
 
@@ -36,20 +37,25 @@
     sortDescriptors = [[NSArray arrayWithObject:dispersionSortDescriptor] retain];
 
     timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
-
-    offsetAverageTimer = [NSTimer scheduledTimerWithTimeInterval:30.0
-                                                          target:self
-                                                        selector:@selector(offsetAverage:)
-                                                        userInfo:nil
-                                                         repeats:YES];
+#ifdef THREADING_DOESNT_WORK_SO_DONT_TRY_IT
+    [[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
+                                                  initWithTarget:self
+                                                        selector:@selector(createAssociations)
+                                                          object:nil];
+#else
+    [self createAssociations];                  // this delays here, would be good to thread this ..
+#endif
     return self;
 }
 
-- (void) offsetAverage:(NSTimer *) timer {
-    NSArray *           sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
-    
-    short       usefulCount = 0;
+- (void) offsetAverage {
     timeIntervalSinceDeviceTime = 0.0;
+
+    short       assocsTotal = [timeAssociations count];
+    if (assocsTotal == 0) return;
+
+    NSArray *   sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
+    short       usefulCount = 0;
 
     for (NetAssociation * timeAssociation in sortedArray) {
         if (timeAssociation.trusty) {
@@ -112,7 +118,7 @@
         }
 
         if (!CFHostStartInfoResolution (ntpHostName, kCFHostAddresses, &nameError)) {
-            NSLog(@"CFHostStartInfoResolution error %d", nameError.error);
+            NSLog(@"CFHostStartInfoResolution error %li", nameError.error);
             CFRelease(ntpHostName);
             continue;                                           // couldn't start resolution ...
         }
@@ -142,7 +148,11 @@
   │  get ready to catch any notifications from associations ...                                      │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(associationFail:)
+                                             selector:@selector(associationTrue:)
+                                                 name:@"assoc-good" object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(associationFake:)
                                                  name:@"assoc-fail" object:nil];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  ... now start an 'association' (network clock object) for each address.                         │
@@ -158,7 +168,7 @@
 }
 
 - (void) reportAssociations {
-    
+
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -187,10 +197,22 @@
 	return [NSString stringWithCString:addrBuf encoding:NSASCIIStringEncoding];
 }
 
-- (void)associationFail:(NSNotification *)notification {
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ associationTrue -- notification from a 'truechimer' association of a trusty offset               ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) associationTrue:(NSNotification *) notification {
+    NetAssociation *    association = [notification object];
+    NSLog(@"*** true association: %@ (%i left)", association, [timeAssociations count]);
+    [self offsetAverage];
+}
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ associationFail -- notification from an association that became a 'falseticker'                  ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) associationFake:(NSNotification *) notification {
     if ([timeAssociations count] > 8) {
         NetAssociation *    association = [notification object];
-        NSLog(@"*** association failed: %@ (%i left)", association, [timeAssociations count]);
+        NSLog(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
         [association finish];
         [timeAssociations removeObject:association];
     }

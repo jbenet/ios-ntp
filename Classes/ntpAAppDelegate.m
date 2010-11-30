@@ -16,7 +16,7 @@
 
 - (BOOL) application:(UIApplication *) app didFinishLaunchingWithOptions:(NSDictionary *) options {
 
-    [[NetworkClock sharedNetworkClock] createAssociations];   // gather up the ntp servers ...
+    [NetworkClock sharedNetworkClock];                      // gather up the ntp servers ...
 
     [window addSubview:viewController.view];
     [window makeKeyAndVisible];
@@ -25,12 +25,9 @@
   │ network clock what time it is.                                                                   │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     NSTimer * repeatingTimer = [[NSTimer alloc]
-                                initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]
-                                        interval:10.0
-                                          target:self
-                                        selector:@selector(repeatingMethod:)
-                                        userInfo:nil
-                                         repeats:YES];
+                                initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:1.0]
+                                        interval:1.0 target:self selector:@selector(repeatingMethod:)
+                                        userInfo:nil repeats:YES];
 
     [[NSRunLoop currentRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
     [repeatingTimer release];
@@ -44,7 +41,7 @@
 
     sysClockLabel.text = [NSString stringWithFormat:@"%@", systemTime];
     netClockLabel.text = [NSString stringWithFormat:@"%@", networkTime];
-    differenceLabel.text = [NSString stringWithFormat:@"%3.1f",
+    differenceLabel.text = [NSString stringWithFormat:@"%5.3f",
                             [systemTime timeIntervalSinceDate:networkTime]];
 }
 

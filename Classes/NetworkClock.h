@@ -12,12 +12,12 @@
 
 @interface NetworkClock : NSObject {
 
-    NSTimer *               offsetAverageTimer;
-
     NSTimeInterval          timeIntervalSinceDeviceTime;
 
     NSMutableArray *        timeAssociations;
 
+@private
+    
     NSSortDescriptor *      dispersionSortDescriptor;
     NSArray *               sortDescriptors;
     
