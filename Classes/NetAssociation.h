@@ -44,7 +44,7 @@ struct ntpShortTime {
 
 @interface NetAssociation : NSObject {
         
-    AsyncUdpSocket *        socket;
+    AsyncUdpSocket *        socket;                         // NetAssociation UDP Socket
 
     NSTimer *               repeatingTimer;                 // fires off an ntp request ...
     NSTimeInterval          pollingInterval;
@@ -65,8 +65,9 @@ struct ntpShortTime {
 
 }
 
-@property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (retain) NSString *           server;             // ip address "xx.xx.xx.xx"
+
+@property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
 - (void) enable;

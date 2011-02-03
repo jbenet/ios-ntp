@@ -8,41 +8,29 @@
 #import "NetAssociation.h"
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ This object manages the communication and time calculations for one server association. This     ┃
-  ┃ quote from the RFC gives the feeling for how this works but not the detail.                      ┃
+  ┃ This object manages the communication and time calculations for one server association.          ┃
   ┃                                                                                                  ┃
-  ┃ from RFC5905:                                                                                    ┃
+  ┃ Multiple servers are used in a process in which each client/server pair (association) works to   ┃
+  ┃ obtain its own best version of the time.  The client sends small UDP packets to each server      ┃
+  ┃ which overwrites certain fields in the packet and returns it immediately.  As each NTP message   ┃
+  ┃ is received, the offset theta between the peer clock and the system clock is computed along      ┃
+  ┃ with the associated statistics delta, epsilon, and psi.                                          ┃
   ┃                                                                                                  ┃
-  ┃     "These processes operate on a common data structure, called an association [...]  A client   ┃
-  ┃      sends packets to one or more servers and then processes returned packets when they are      ┃
-  ┃      received.  The server interchanges source and destination addresses and ports, overwrites   ┃
-  ┃      certain fields in the packet and returns it immediately.  As each NTP message is received,  ┃
-  ┃      the offset theta between the peer clock and the system clock is computed along with the     ┃
-  ┃      associated statistics delta, epsilon, and psi.                                              ┃
-  ┃                                                                                                  ┃
-  ┃     "The system process includes the selection, cluster, and combine algorithms that mitigate    ┃
-  ┃      among the various servers and reference clocks to determine the most accurate and reliable  ┃
-  ┃      candidates to synchronize the system clock.  The selection algorithm uses Byzantine fault   ┃
-  ┃      detection principles to discard the presumably incorrect candidates called "falsetickers"   ┃
-  ┃      from the incident population, leaving only good candidates called "truechimers".  A         ┃
-  ┃      truechimer is a clock that maintains timekeeping accuracy to a previously published and     ┃
-  ┃      trusted standard, while a falseticker is a clock that shows misleading or inconsistent      ┃
-  ┃      time.  The cluster algorithm uses statistical principles to find the most accurate set of   ┃
-  ┃      truechimers. The combine algorithm computes the final clock offset by statistically         ┃
-  ┃      averaging the surviving truechimers.                                                        ┃
-  ┃                                                                                                  ┃
+  ┃ Each association does its own best effort at obtaining an accurate time and reports these times  ┃
+  ┃ and their estimated accuracy to a system process that selects, clusters, and combines the        ┃
+  ┃ various servers and reference clocks to determine the most accurate and reliable candidates to   ┃
+  ┃ provide a best time.                                                                             ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
 @interface NetAssociation (PrivateMethods)
 
-- (void) queryTimeServer:(NSTimer *) timer;
+- (void) queryTimeServer:(NSTimer *) timer;     // query the association's server (fired by timer)
+
+- (NSDate *) dateFromNTP:(struct ntpTimestamp *) networkTime;
+- (void) evaluatePacket;
 
 - (NSString *) prettyPrintPacket;
 - (NSString *) prettyPrintTimers;
-
-- (NSDate *) dateFromNTP:(struct ntpTimestamp *) networkTime;
-
-- (void) evaluatePacket;
 
 @end
 
@@ -54,9 +42,8 @@
 @synthesize trusty, server, offset;
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Initialize the association with a blank socket and prepare the first time transaction to happen  ┃
-  ┃ between 1 and 10 seconds from now .. random timing avoids the burst of network traffic expected  ┃
-  ┃ if all the associations fired at the same time ...                                               ┃
+  ┃ Initialize the association with a blank socket and prepare the time transaction to happen every  ┃
+  ┃ 20 seconds (initial value) ...                                                                   ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (id) init {
     if ((self = [super init]) == nil) return nil;
@@ -70,22 +57,18 @@
     fifoQueue = [[NSMutableArray arrayWithCapacity:8] retain];
     answerCount = trustyCount = 0;
 
-    repeatingTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:
-                                                                            (1.0 + random()%900/90.0)]
-                                              interval:pollingInterval
-                                                target:self
-                                              selector:@selector(queryTimeServer:)
-                                              userInfo:nil
-                                               repeats:YES];
-
+    repeatingTimer = [NSTimer timerWithTimeInterval:pollingInterval
+                                             target:self
+                                           selector:@selector(queryTimeServer:)
+                                           userInfo:nil
+                                            repeats:YES];
     return self;
 }
 
 - (void) enable {
-    NSLog(@"association start: [%@]", server);
+    LogMinDebugging(@"association start: [%@]", server);
 
     [[NSRunLoop mainRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
-    [repeatingTimer release];
 }
 
 - (void) finish {
@@ -175,16 +158,13 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-good" object:self];
 
 /*────────────────────────────────────────────────────────────────────────────────────────────────────
-    NSLog(@"Read data SUCCESS: [%@] clock offset: %5.3fs±%5.3fmS (%5.3f,%5.3f,%5.3f))",
+    LogMinDebugging(@"Read SUCCESS: [%@] clock offset: %5.3fs±%5.3fmS (%5.3f,%5.3f,%5.3f))",
             server, offset, dispersion,
             (offset-offset2)*1000.0, (offset-offset3)*1000.0, (offset-offset4)*1000.0);
-
-    NSLog(@"Read data SUCCESS: [%@] (%i : %3.1fs))", server, stratum,
+    LogMinDebugging(@"Read SUCCESS: [%@] (%i : %3.1fs))", server, stratum,
         - [[self dateFromNTP:&ntpServerBaseTime] timeIntervalSinceNow]);
-
-    NSLog(@"Read data SUCCESS: [%@] clock offset: %5.3fs±%5.3fmS", server, offset, dispersion);
-
-    NSLog(@"Read data SUCCESS: [%@] - %@ - offset: %5.3fs±%5.3fmS (%i - %i/%i)",
+    LogMinDebugging(@"Read SUCCESS: [%@] clock offset: %5.3fs±%5.3fmS", server, offset, dispersion);
+    LogMinDebugging(@"Read SUCCESS: [%@] - %@ - offset: %5.3fs±%5.3fmS (%i - %i/%i)",
           server, trusty ? @"GOOD" : @"FAIL", offset, dispersion,
           [fifoQueue count], answerCount, trustyCount);
   └───────────────────────────────────────────────────────────────────────────────────────────────────*/
@@ -257,7 +237,7 @@ NSTimeInterval timeIntervalFromNetworkTime(struct ntpTimestamp * networkTime) {
 }
 
 - (void) onUdpSocketDidClose:(AsyncUdpSocket *) sock  {
-    NSLog(@"Socket closed : [%@]", server);
+    LogMinDebugging(@"Socket closed : [%@]", server);
 }
 
 #pragma mark P r e t t y P r i n t e r s

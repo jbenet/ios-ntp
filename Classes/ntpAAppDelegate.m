@@ -42,7 +42,7 @@
     sysClockLabel.text = [NSString stringWithFormat:@"%@", systemTime];
     netClockLabel.text = [NSString stringWithFormat:@"%@", networkTime];
     differenceLabel.text = [NSString stringWithFormat:@"%5.3f",
-                            [systemTime timeIntervalSinceDate:networkTime]];
+                            [networkTime timeIntervalSinceDate:systemTime]];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

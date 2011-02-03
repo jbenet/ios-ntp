@@ -25,17 +25,19 @@
   ┃ NetworkClock is initialized and then its method <createAssociations> is called to gather all the ┃
   ┃ time server candidates and start each one querying for its offset between the system clock and   ┃
   ┃ network time.  Then, every 30 seconds, all the valid server offsets are averaged to a value that ┃
-  ┃ is used to modify the system clock value.                                                        ┃
+  ┃ is taken as the most accurate time.                                                              ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
 @implementation NetworkClock
 
 - (id) init {
     if (nil == [super init]) return nil;
-
+/*box
+    Prepare a sort-descriptor to sort associations based on their dispersion, and then create an
+    array of empty associations to use ...
+ */
     dispersionSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES];
     sortDescriptors = [[NSArray arrayWithObject:dispersionSortDescriptor] retain];
-
     timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
 #ifdef THREADING_DOESNT_WORK_SO_DONT_TRY_IT
     [[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
@@ -91,13 +93,12 @@
                                                            contentsAtPath:filePath]
                                                  encoding:NSUTF8StringEncoding];
 
-    NSArray *   ntpDomains = [[fileData stringByReplacingOccurrencesOfString:@"\r"
-                                                                  withString:@""]
-                              componentsSeparatedByString:@"\n"];
+    NSArray *   ntpDomains = [fileData componentsSeparatedByCharactersInSet:
+                                                                [NSCharacterSet newlineCharacterSet]];
     [fileData release];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  for each NTP service domain name in the 'ntp.hosts' file ...                                    │
+  │  for each NTP service domain name in the 'ntp.hosts' file : "0.pool.ntp.org" etc ...             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     NSMutableSet *          hostAddresses = [[NSMutableSet setWithCapacity:48] retain];
 
@@ -109,16 +110,16 @@
         CFStreamError       nameError;
         Boolean             nameFound;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... resolve the IP address of the named host ("0.pool.ntp.org" --> [123.45.67.89], ...)         │
+  │  ... resolve the IP address of the named host : "0.pool.ntp.org" --> [123.45.67.89], ...         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         CFHostRef ntpHostName = CFHostCreateWithName (kCFAllocatorDefault, (CFStringRef)ntpDomainName);
         if (ntpHostName == nil) {
-            NSLog(@"CFHostCreateWithName ntpHost <nil>");
+            LogInProduction(@"CFHostCreateWithName ntpHost <nil>");
             continue;                                           // couldn't create 'host object' ...
         }
 
         if (!CFHostStartInfoResolution (ntpHostName, kCFHostAddresses, &nameError)) {
-            NSLog(@"CFHostStartInfoResolution error %li", nameError.error);
+            LogInProduction(@"CFHostStartInfoResolution error %li", nameError.error);
             CFRelease(ntpHostName);
             continue;                                           // couldn't start resolution ...
         }
@@ -126,14 +127,15 @@
         CFArrayRef ntpHostAddrs = CFHostGetAddressing (ntpHostName, &nameFound);
 
         if (!nameFound) {
-            NSLog(@"CFHostGetAddressing: NOT resolved");
+            LogInProduction(@"CFHostGetAddressing: NOT resolved");
             CFRelease(ntpHostName);
             continue;                                           // resolution failed ...
         }
 
         if (ntpHostAddrs == nil) {
+            LogInProduction(@"CFHostGetAddressing: no addresses resolved");
             CFRelease(ntpHostName);
-            continue;                                           // NO addresses were resolved
+            continue;                                           // NO addresses were resolved ...
         }
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  for each (sockaddr structure wrapped by a CFDataRef/NSData *) associated with the hostname,     │
@@ -158,7 +160,7 @@
   │  ... now start an 'association' (network clock object) for each address.                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     for (NSString * server in hostAddresses) {
-        NetAssociation *    timeAssociation = [[NetAssociation alloc] init];
+        NetAssociation *    timeAssociation = [[[NetAssociation alloc] init] autorelease];
         timeAssociation.server = server;
 
         [timeAssociations addObject:timeAssociation];
@@ -201,8 +203,8 @@
   ┃ associationTrue -- notification from a 'truechimer' association of a trusty offset               ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) associationTrue:(NSNotification *) notification {
-    NetAssociation *    association = [notification object];
-    NSLog(@"*** true association: %@ (%i left)", association, [timeAssociations count]);
+    LogMinDebugging(@"*** true association: %@ (%i left)", 
+                    [notification object], [timeAssociations count]);
     [self offsetAverage];
 }
 
@@ -212,7 +214,7 @@
 - (void) associationFake:(NSNotification *) notification {
     if ([timeAssociations count] > 8) {
         NetAssociation *    association = [notification object];
-        NSLog(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
+        LogMinDebugging(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
         [association finish];
         [timeAssociations removeObject:association];
     }
