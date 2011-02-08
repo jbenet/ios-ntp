@@ -16,29 +16,35 @@
 - (void) associationTrue:(NSNotification *) notification;
 - (void) associationFake:(NSNotification *) notification;
 
+- (void) applicationBack:(NSNotification *) notification;
+- (void) applicationFore:(NSNotification *) notification;
+
 @end
 
 #pragma mark -
-#pragma mark N E T W O R K • C L O C K
+#pragma mark                        N E T W O R K • C L O C K
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ NetworkClock is initialized and then its method <createAssociations> is called to gather all the ┃
-  ┃ time server candidates and start each one querying for its offset between the system clock and   ┃
-  ┃ network time.  Then, every 30 seconds, all the valid server offsets are averaged to a value that ┃
-  ┃ is taken as the most accurate time.                                                              ┃
+  ┃ NetworkClock is a singleton class which will provide the best estimate of the difference in time ┃
+  ┃ between the device's system clock and the time returned by a collection of time servers.         ┃
+  ┃                                                                                                  ┃
+  ┃ The method <networkTime> returns an NSDate with the network time.                                ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
 @implementation NetworkClock
 
 - (id) init {
     if (nil == [super init]) return nil;
-/*box
-    Prepare a sort-descriptor to sort associations based on their dispersion, and then create an
-    array of empty associations to use ...
- */
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
+  │ array of empty associations to use ...                                                           │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     dispersionSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES];
     sortDescriptors = [[NSArray arrayWithObject:dispersionSortDescriptor] retain];
     timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 #ifdef THREADING_DOESNT_WORK_SO_DONT_TRY_IT
     [[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
                                                   initWithTarget:self
@@ -47,9 +53,22 @@
 #else
     [self createAssociations];                  // this delays here, would be good to thread this ..
 #endif
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ prepare to catch our application entering and leaving the background ..                          │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBack:)
+												 name:UIApplicationDidEnterBackgroundNotification
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationFore:)
+												 name:UIApplicationWillEnterForegroundNotification
+											   object:nil];
     return self;
 }
 
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) offsetAverage {
     timeIntervalSinceDeviceTime = 0.0;
 
@@ -70,6 +89,14 @@
     if (usefulCount > 0) {
         timeIntervalSinceDeviceTime /= usefulCount;
     }
+//###ADDITION?
+	if (usefulCount ==8)
+	{
+		//stop it for now
+		//
+//		[self finishAssociations];
+	}
+//###
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -78,9 +105,12 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
     return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime];
+
+    //[[NSNotificationCenter defaultCenter] postNotificationName:@"net-time" object:self];
+
 }
 
-#pragma mark I n t e r n a l  •  M e t h o d s
+#pragma mark                        I n t e r n a l  •  M e t h o d s
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Read the "ntp.hosts" file from the resources and derive all the IP addresses they refer to,      ┃
@@ -149,19 +179,16 @@
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  get ready to catch any notifications from associations ...                                      │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(associationTrue:)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationTrue:)
                                                  name:@"assoc-good" object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(associationFake:)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationFake:)
                                                  name:@"assoc-fail" object:nil];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  ... now start an 'association' (network clock object) for each address.                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     for (NSString * server in hostAddresses) {
-        NetAssociation *    timeAssociation = [[[NetAssociation alloc] init] autorelease];
-        timeAssociation.server = server;
+        NetAssociation *    timeAssociation = [[[NetAssociation alloc] init:server] autorelease];
 
         [timeAssociations addObject:timeAssociation];
         [timeAssociation enable];                               // starts are randomized internally
@@ -199,11 +226,13 @@
 	return [NSString stringWithCString:addrBuf encoding:NSASCIIStringEncoding];
 }
 
+#pragma mark                        N o t i f i c a t i o n • T r a p s
+
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ associationTrue -- notification from a 'truechimer' association of a trusty offset               ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) associationTrue:(NSNotification *) notification {
-    LogMinDebugging(@"*** true association: %@ (%i left)", 
+    NTP_Logging(@"*** true association: %@ (%i left)",
                     [notification object], [timeAssociations count]);
     [self offsetAverage];
 }
@@ -214,17 +243,79 @@
 - (void) associationFake:(NSNotification *) notification {
     if ([timeAssociations count] > 8) {
         NetAssociation *    association = [notification object];
-        LogMinDebugging(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
+        NTP_Logging(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
         [association finish];
         [timeAssociations removeObject:association];
     }
 }
 
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ applicationBack -- catch the notification when the application goes into the background          ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) applicationBack:(NSNotification *) notification {
+    NTP_Logging(@"*** application -> Background");
+//  [self finishAssociations];
+}
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ applicationFore -- catch the notification when the application comes out of the background       ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) applicationFore:(NSNotification *) notification {
+    NTP_Logging(@"*** application -> Foreground");
+//  [self enableAssociations];
+}
+
 #import "SynthesizeSingleton.h"
 
 #pragma mark -
-#pragma mark S I N G L E T O N • B E H A V I O U R
+#pragma mark                        S I N G L E T O N • B E H A V I O U R
 
 SYNTHESIZE_SINGLETON_FOR_CLASS(NetworkClock);
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ the SYNTHESIZE_SINGLETON_FOR_CLASS macro expands thus:                                           ┃
+  ┃──────────────────────────────────────────────────────────────────────────────────────────────────┃
+  ┃                                                                                                  ┃
+  ┃         static Singleton *sharedSingleton = ((void*)0);                                          ┃
+  ┃                                                                                                  ┃
+  ┃         + (Singleton *)sharedSingleton {                                                         ┃
+  ┃             @synchronized(self) {                                                                ┃
+  ┃                 if (sharedSingleton == ((void*)0)) {                                             ┃
+  ┃                     sharedSingleton = [[self alloc] init];                                       ┃
+  ┃                 }                                                                                ┃
+  ┃             }                                                                                    ┃
+  ┃             return sharedSingleton;                                                              ┃
+  ┃         }                                                                                        ┃
+  ┃                                                                                                  ┃
+  ┃         + (id)allocWithZone:(NSZone *)zone {                                                     ┃
+  ┃             @synchronized(self) {                                                                ┃
+  ┃                 if (sharedSingleton == ((void*)0)) {                                             ┃
+  ┃                     sharedSingleton = [super allocWithZone:zone];                                ┃
+  ┃                     return sharedSingleton;                                                      ┃
+  ┃                 }                                                                                ┃
+  ┃             }                                                                                    ┃
+  ┃             return ((void*)0);                                                                   ┃
+  ┃         }                                                                                        ┃
+  ┃                                                                                                  ┃
+  ┃         - (id)copyWithZone:(NSZone *)zone {                                                      ┃
+  ┃             return self;                                                                         ┃
+  ┃         }                                                                                        ┃
+  ┃                                                                                                  ┃
+  ┃         - (id)retain {                                                                           ┃
+  ┃             return self;                                                                         ┃
+  ┃         }                                                                                        ┃
+  ┃                                                                                                  ┃
+  ┃         - (NSUInteger)retainCount {                                                              ┃
+  ┃             return (2147483647L *2UL +1UL);                                                      ┃
+  ┃         }                                                                                        ┃
+  ┃                                                                                                  ┃
+  ┃         - (void)release {                                                                        ┃
+  ┃         }                                                                                        ┃
+  ┃                                                                                                  ┃
+  ┃         - (id)autorelease {                                                                      ┃
+  ┃             return self;                                                                         ┃
+  ┃         };                                                                                       ┃
+  ┃                                                                                                  ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
 @end

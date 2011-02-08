@@ -10,45 +10,52 @@
 #import "AsyncUdpSocket.h"
 #include <sys/time.h>
 
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃   1                   2                   3                                                      ┃
-  ┃   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                           Seconds                             |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                  Seconds Fraction (0-padded)                  | <-- 4294967296 = 1 second     ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃                                                                                                  ┃
-  ┃                       NTP Timestamp Format                                                       ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  NTP Timestamp Structure                                                                         │
+  │                                                                                                  │
+  │   1                   2                   3                                                      │
+  │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  │  |                           Seconds                             |                               │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  │  |                  Seconds Fraction (0-padded)                  | <-- 4294967296 = 1 second     │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 struct ntpTimestamp {
 	uint32_t    fullSeconds;
 	uint32_t    partSeconds;
 };
 
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃   0                   1                   2                   3                                  ┃
-  ┃   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |          Seconds              |           Fraction            | <-- 65536 = 1 second          ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃                                                                                                  ┃
-  ┃                           NTP Short Format                                                       ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  NTP Short Format Structure                                                                      │
+  │                                                                                                  │
+  │   0                   1                   2                   3                                  │
+  │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  │  |          Seconds              |           Fraction            | <-- 65536 = 1 second          │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 struct ntpShortTime {
 	uint16_t    fullSeconds;
 	uint16_t    partSeconds;
 };
 
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ NetAssociation represents one time server.  When it is created, it sends the first time query,   │
+  │ evaluates the quality of the reply, and keeps the queries running till the server goes 'bad'     │
+  │ or its creator kills it ...                                                                      │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 @interface NetAssociation : NSObject {
         
     AsyncUdpSocket *        socket;                         // NetAssociation UDP Socket
+    NSString *              server;                         // server name "123.45.67.89"
 
     NSTimer *               repeatingTimer;                 // fires off an ntp request ...
-    NSTimeInterval          pollingInterval;
+    int                     pollingIntervalIndex;           // index into polling interval table
     
+    NSMutableArray *        fifoQueue;
+    NSUInteger              answerCount, trustyCount;
+
     struct ntpTimestamp     ntpClientSendTime, 
                             ntpServerRecvTime, 
                             ntpServerSendTime, 
@@ -60,49 +67,16 @@ struct ntpShortTime {
     
     int                     li, vn, mode, stratum, poll, prec, refid;
     
-    NSMutableArray *        fifoQueue;
-    NSUInteger              answerCount, trustyCount;
-
 }
-
-@property (retain) NSString *           server;             // ip address "xx.xx.xx.xx"
 
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
+- (id) init:(NSString *) serverName;
 - (void) enable;
 - (void) finish;
 
 @end
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃   1                   2                   3                                                      ┃
-  ┃   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |LI | VN  |Mode |    Stratum    |     Poll      |   Precision   |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                          Root  Delay                          |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                       Root  Dispersion                        |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                     Reference Identifier                      |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                                                               |                               ┃
-  ┃  |                    Reference Timestamp (64)                   |                               ┃
-  ┃  |                                                               |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                                                               |                               ┃
-  ┃  |                    Originate Timestamp (64)                   |                               ┃
-  ┃  |                                                               |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                                                               |                               ┃
-  ┃  |                     Receive Timestamp (64)                    |                               ┃
-  ┃  |                                                               |                               ┃
-  ┃  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               ┃
-  ┃  |                                                               |                               ┃
-  ┃  |                     Transmit Timestamp (64)                   |                               ┃
-  ┃  |                                                               |                               ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ conversions of 'NTP Timestamp Format' fractional part to/from microseconds ...                   ┃
@@ -111,4 +85,4 @@ struct ntpShortTime {
 #define Frac2uSec(x)    ( ((x) >> 12) - 759 * ( ( ((x) >> 10) + 32768 ) >> 16 ) )
 
 #define JAN_1970        0x83aa7e80      /* 1970 - 1900 in seconds 2,208,988,800 | First day UNIX  */
-// 1 Jan 1972 : 2,272,060,800 | First day UTC
+                                                  // 1 Jan 1972 : 2,272,060,800 | First day UTC
