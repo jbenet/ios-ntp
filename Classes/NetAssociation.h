@@ -52,10 +52,7 @@ struct ntpShortTime {
 
     NSTimer *               repeatingTimer;                 // fires off an ntp request ...
     int                     pollingIntervalIndex;           // index into polling interval table
-    
-    NSMutableArray *        fifoQueue;
-    NSUInteger              answerCount, trustyCount;
-
+        
     struct ntpTimestamp     ntpClientSendTime, 
                             ntpServerRecvTime, 
                             ntpServerSendTime, 
@@ -66,6 +63,9 @@ struct ntpShortTime {
                             el_time, st_time, skew1, skew2; // seconds
     
     int                     li, vn, mode, stratum, poll, prec, refid;
+    
+    double                  fifoQueue[8];
+    short                   fifoIndex;
     
 }
 

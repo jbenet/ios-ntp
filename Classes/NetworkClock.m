@@ -238,14 +238,16 @@
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ associationFail -- notification from an association that became a 'falseticker'                  ┃
+  ┃ associationFake -- notification from an association that became a 'falseticker'                  ┃
+  ┃ .. if we already have 8 associations in play, drop this one.                                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) associationFake:(NSNotification *) notification {
     if ([timeAssociations count] > 8) {
         NetAssociation *    association = [notification object];
         NTP_Logging(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
-        [association finish];
         [timeAssociations removeObject:association];
+        [association finish];
+        association = nil;
     }
 }
 
@@ -253,7 +255,7 @@
   ┃ applicationBack -- catch the notification when the application goes into the background          ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) applicationBack:(NSNotification *) notification {
-    NTP_Logging(@"*** application -> Background");
+    LogInProduction(@"*** application -> Background");
 //  [self finishAssociations];
 }
 
@@ -261,7 +263,7 @@
   ┃ applicationFore -- catch the notification when the application comes out of the background       ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) applicationFore:(NSNotification *) notification {
-    NTP_Logging(@"*** application -> Foreground");
+    LogInProduction(@"*** application -> Foreground");
 //  [self enableAssociations];
 }
 

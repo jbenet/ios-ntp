@@ -9,7 +9,7 @@
 
 static double pollIntervals[18] = {
       16.0,    16.0,    16.0,    16.0,    16.0,     35.0,
-      72.0,   150.0,   256.0,   512.0,  1024.0,   2048.0,
+      72.0,   127.0,   258.0,   511.0,  1024.0,   2048.0,
     4096.0,  8192.0, 16384.0, 32768.0, 65536.0, 131072.0
 };
 
@@ -64,7 +64,6 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     pollingIntervalIndex = 4;
     trusty = FALSE;                                         // don't trust this clock to start with ...
     offset = 0.0;                                           // start with clock on time (no offset)
-    answerCount = trustyCount = 0;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -76,7 +75,8 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ the server we push it into the fifo.  We sample the contents of the fifo for quality and, if it  │
   │ meets our standards we use the contents of the fifo to obtain a weighted average of the times.   │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    fifoQueue = [[NSMutableArray arrayWithCapacity:8] retain];
+    for (short i = 0; i < 8; i++) fifoQueue[i] = 1E10;      // set fifo to all empty
+    fifoIndex = 0;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Finally, initialize the repeating timer that queries the server, set it's trigger time to the    │
   │ infinite future, and put it on the run loop .. nothing will happen (yet)                         │
@@ -176,6 +176,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 }
 
 - (void) evaluatePacket {
+    double          packetOffset = 0.0;                     // initial untrustworthy offset
 //  NTP_Logging(@"%@", [self prettyPrintPacket]);
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ determine the quality of this particular time ..                                                 │
@@ -183,54 +184,78 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ .. stratum > 0 AND                                                                               │
   │ .. the mode is 4 (packet came from server) AND                                                   │
   │ .. the server clock was set less than 1 hour ago                                                 │
-  │ the packet is trustworthy.                                                                       │
+  │ the packet is trustworthy -- compute and store offset in 8-slot fifo ...                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    trusty = (dispersion > 0.1 && dispersion < 50.0) && (stratum > 0) && (mode == 4) &&
-             (-[[self dateFromNetworkTime:&ntpServerBaseTime] timeIntervalSinceNow] < 3600.0);
-
-    if (trusty) {
-        trustyCount++;
-
+    if ((dispersion > 0.1 && dispersion < 50.0) && (stratum > 0) && (mode == 4) &&
+        (-[[self dateFromNetworkTime:&ntpServerBaseTime] timeIntervalSinceNow] < 3600.0)) {
         el_time=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);     // .. (T4-T1)
         st_time=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);     // .. (T3-T2)
         skew1 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);     // .. (T2-T1)
         skew2 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);     // .. (T3-T4)
-
-        if ([fifoQueue count] == 8) {
-            [fifoQueue removeObjectAtIndex:0];
-        }
-        [fifoQueue addObject:[NSNumber numberWithDouble:(skew1+skew2)/2.0]];
-
-        offset = [[fifoQueue valueForKeyPath:@"@avg.doubleValue"] doubleValue];
+        packetOffset = (skew1+skew2)/2.0;                   // calulate trustworthy offset
     }
 
-//  NTP_Logging(@"evaluatePacket: [%@] - %@ - offset±dispersion: %5.3fs±%5.3fmS (%i - %i/%i)",
-//              server, trusty ? @"GOOD" : @"FAIL", offset, dispersion,
-//              [fifoQueue count], answerCount, trustyCount);
+    fifoQueue[fifoIndex % 8] = packetOffset;                // store offset
+    fifoIndex++;                                            // rotate index
 
+    NTP_Logging(@"[%@] index=%i {%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f}", server,
+                fifoIndex % 8, fifoQueue[0], fifoQueue[1], fifoQueue[2], fifoQueue[3], 
+                               fifoQueue[4], fifoQueue[5], fifoQueue[6], fifoQueue[7]);
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ look at the collection of association's offsets and make some determination of their worth       │
-  │   .. if we have four or more average zero offsets, we're not getting replies                     │
-  │   .. if we're not 'trusty' for more than half the queries, the server is wonky                   │
-  │         tell anyone who cares that we're out of the game ...                                     │
+  │ look at the (up to eight) offsets in the fifo and and count 'good', 'fail' and 'not used yet'    │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    if (answerCount > 3 && fabs(offset) < 1.e-6 || (trustyCount > 0 && answerCount/trustyCount > 1))
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-fail" object:self];
-    else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-good" object:self];
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ if the association is behaving well, we can increase its polling interval ...                    │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        pollingIntervalIndex = 7 - stratum;
-        if ([repeatingTimer timeInterval] != pollIntervals[pollingIntervalIndex]) {
-//          NTP_Logging(@"[%@] poll interval adusted: %3.1f >> %3.1f", server,
-//                      [repeatingTimer timeInterval], pollIntervals[pollingIntervalIndex]);
-            [repeatingTimer invalidate];
-            repeatingTimer = nil;
-            repeatingTimer = [NSTimer scheduledTimerWithTimeInterval:pollIntervals[pollingIntervalIndex]
-                                                     target:self selector:@selector(queryTimeServer:)
-                                                   userInfo:nil repeats:YES];
+    short           good = 0, fail = 0, none = 0;
+    offset = 0.0;
+    for (short i = 0; i < 8; i++) {
+        if (fifoQueue[i] > 1E9) {                           // fifo slot is unused
+            none++;
+            continue;
         }
+        if (fabs(fifoQueue[i]) < 1E-6) {                    // server can't be trusted
+            fail++;
+        }
+        else {
+            good++;
+            offset += fifoQueue[i];
+        }
+    }
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │   .. if we have at least one 'good' server response or four or more 'fail' responses, we'll      │
+  │      inform our management accordingly.  If we have less than four 'fails' we won't make any     │
+  │      note of that ... we won't condemn a server until we get four 'fail' packets.                │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+    if (good > 0 || fail > 3) {
+        offset = offset / good;
+        
+        NTP_Logging(@"[%@] index=%i {good: %i; fail: %i; none: %i} offset=%3.1f", server,
+                    fifoIndex, good, fail, none, offset * 1000.0);
+        
+        if (good+none < 5) {                                // four or more 'fails'
+            trusty = FALSE;  
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-fail" object:self];
+        }
+        else {                                              // ...
+            trusty = TRUE;  
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-good" object:self];
+        }
+    }
+    
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │   .. if the association is providing times which don't vary much, we could increase its polling  │
+  │      interval.  In practice, once things settle down, the standard deviation on any time server  │
+  │      seems to fall in the 70-120mS range (plenty close for our work).  We usually pick up a few  │
+  │      stratum=1 servers, it would be a Good Thing to not hammer those so hard ...                 │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+    if (stratum == 1) pollingIntervalIndex = 6;
+    if (stratum == 2) pollingIntervalIndex = 5;
+    if ([repeatingTimer timeInterval] != pollIntervals[pollingIntervalIndex]) {
+        NTP_Logging(@"[%@] poll interval adusted: %3.1f >> %3.1f", server,
+                    [repeatingTimer timeInterval], pollIntervals[pollingIntervalIndex]);
+        [repeatingTimer invalidate];
+        repeatingTimer = nil;
+        repeatingTimer = [NSTimer scheduledTimerWithTimeInterval:pollIntervals[pollingIntervalIndex]
+                                                          target:self selector:@selector(queryTimeServer:)
+                                                        userInfo:nil repeats:YES];
     }
 }
 
@@ -284,7 +309,6 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     ntpServerSendTime.fullSeconds = ntohl(hostData[10]);
     ntpServerSendTime.partSeconds = ntohl(hostData[11]);
 
-    answerCount++;
     [self evaluatePacket];
 
     return YES;
