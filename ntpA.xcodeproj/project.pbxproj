@@ -7,46 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8605D9A31290E9110036287D /* ntpAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605D9A21290E9110036287D /* ntpAViewController.m */; };
-		8605D9BA1290E9600036287D /* ntpAViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8605D9B81290E9600036287D /* ntpAViewController.xib */; };
-		86618F2A126BB6430046A2B8 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 86618F29126BB6430046A2B8 /* NetworkClock.m */; };
-		86619013126C07300046A2B8 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = 86619012126C07300046A2B8 /* ntp.hosts */; };
 		8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661906E126C0CD70046A2B8 /* UIKit.framework */; };
 		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
 		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
 		86619086126C0D120046A2B8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619085126C0D120046A2B8 /* CFNetwork.framework */; };
-		86C39F1A126A1FA100A9DCD1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 86C39F18126A1FA100A9DCD1 /* InfoPlist.strings */; };
-		86C39F1C126A1FA100A9DCD1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C39F1B126A1FA100A9DCD1 /* main.m */; };
-		86C39F1F126A1FA100A9DCD1 /* ntpAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C39F1E126A1FA100A9DCD1 /* ntpAAppDelegate.m */; };
-		86C39F22126A1FA100A9DCD1 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86C39F20126A1FA100A9DCD1 /* MainWindow.xib */; };
-		86C39F35126A202700A9DCD1 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */; };
-		86E4C97B128242B800841647 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E4C97A128242B800841647 /* NetAssociation.m */; };
+		D91E95E313D9AF8C004E4194 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
+		D91E95E413D9AF8C004E4194 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
+		D91E95E513D9AF8C004E4194 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DE13D9AF8C004E4194 /* main.m */; };
+		D91E95E613D9AF8C004E4194 /* ntpAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95E013D9AF8C004E4194 /* ntpAAppDelegate.m */; };
+		D91E95E713D9AF8C004E4194 /* ntpAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95E213D9AF8C004E4194 /* ntpAViewController.m */; };
+		D91E95F713D9B029004E4194 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = D91E95EF13D9B018004E4194 /* ntp.hosts */; };
+		D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D91E95F913D9B063004E4194 /* InfoPlist.strings */; };
+		D91E960013D9B063004E4194 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FB13D9B063004E4194 /* MainWindow.xib */; };
+		D91E960113D9B063004E4194 /* ntpAViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FD13D9B063004E4194 /* ntpAViewController.xib */; };
+		D91E960413D9B192004E4194 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E960313D9B192004E4194 /* AsyncUdpSocket.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8605D9A11290E9110036287D /* ntpAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpAViewController.h; sourceTree = "<group>"; };
-		8605D9A21290E9110036287D /* ntpAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpAViewController.m; sourceTree = "<group>"; };
-		8605D9B91290E9600036287D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ntpAViewController.xib; sourceTree = "<group>"; };
-		86618F28126BB6430046A2B8 /* NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkClock.h; sourceTree = "<group>"; };
-		86618F29126BB6430046A2B8 /* NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkClock.m; sourceTree = "<group>"; };
-		86618F4A126BC85D0046A2B8 /* SynthesizeSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SynthesizeSingleton.h; path = ../SynthesizeSingleton.h; sourceTree = SOURCE_ROOT; };
-		86619012126C07300046A2B8 /* ntp.hosts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ntp.hosts; sourceTree = "<group>"; };
 		8661906E126C0CD70046A2B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		86619085126C0D120046A2B8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		86C39F0D126A1FA100A9DCD1 /* ntpA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ntpA.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		86C39F16126A1FA100A9DCD1 /* ntpA-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ntpA-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		86C39F17126A1FA100A9DCD1 /* ntpA_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ntpA_Prefix.pch; sourceTree = "<group>"; };
-		86C39F19126A1FA100A9DCD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		86C39F1B126A1FA100A9DCD1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		86C39F1D126A1FA100A9DCD1 /* ntpAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ntpAAppDelegate.h; sourceTree = "<group>"; };
-		86C39F1E126A1FA100A9DCD1 /* ntpAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ntpAAppDelegate.m; sourceTree = "<group>"; };
-		86C39F21126A1FA100A9DCD1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		86C39F33126A202700A9DCD1 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncUdpSocket.h; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/RunLoop/AsyncUdpSocket.h"; sourceTree = "<absolute>"; };
-		86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncUdpSocket.m; path = "/Users/gavin/Development/iOS/cocoaasyncsocket-read-only/RunLoop/AsyncUdpSocket.m"; sourceTree = "<absolute>"; };
-		86E4C979128242B800841647 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
-		86E4C97A128242B800841647 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
+		D91E95D713D9AF8C004E4194 /* SynthesizeSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynthesizeSingleton.h; sourceTree = "<group>"; };
+		D91E95D913D9AF8C004E4194 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
+		D91E95DA13D9AF8C004E4194 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
+		D91E95DB13D9AF8C004E4194 /* NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkClock.h; sourceTree = "<group>"; };
+		D91E95DC13D9AF8C004E4194 /* NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkClock.m; sourceTree = "<group>"; };
+		D91E95DE13D9AF8C004E4194 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D91E95DF13D9AF8C004E4194 /* ntpAAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpAAppDelegate.h; sourceTree = "<group>"; };
+		D91E95E013D9AF8C004E4194 /* ntpAAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpAAppDelegate.m; sourceTree = "<group>"; };
+		D91E95E113D9AF8C004E4194 /* ntpAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpAViewController.h; sourceTree = "<group>"; };
+		D91E95E213D9AF8C004E4194 /* ntpAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpAViewController.m; sourceTree = "<group>"; };
+		D91E95EF13D9B018004E4194 /* ntp.hosts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ntp.hosts; sourceTree = "<group>"; };
+		D91E95F013D9B018004E4194 /* ntpA-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ntpA-Info.plist"; sourceTree = "<group>"; };
+		D91E95F113D9B018004E4194 /* ntpA_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpA_Prefix.pch; sourceTree = "<group>"; };
+		D91E95FA13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		D91E95FC13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = MainWindow.xib; sourceTree = "<group>"; };
+		D91E95FE13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ntpAViewController.xib; sourceTree = "<group>"; };
+		D91E960213D9B192004E4194 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncUdpSocket.h; sourceTree = "<group>"; };
+		D91E960313D9B192004E4194 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncUdpSocket.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,55 +67,16 @@
 		86C39EFE126A1FA000A9DCD1 = {
 			isa = PBXGroup;
 			children = (
-				86C39F06126A1FA100A9DCD1 /* Other Sources */,
-				86C39F05126A1FA000A9DCD1 /* Classes */,
-				86C39F07126A1FA100A9DCD1 /* Resources */,
-				86FFAD7B126AD22300F5B70C /* Resources-iPad */,
-				86C39F08126A1FA100A9DCD1 /* Frameworks */,
-				86C39F0E126A1FA100A9DCD1 /* Products */,
+				D91E95D613D9AF8C004E4194 /* lib */,
+				D91E95D813D9AF8C004E4194 /* src */,
+				D91E95DD13D9AF8C004E4194 /* test */,
+				D91E95E813D9B018004E4194 /* resources */,
+				86C39F08126A1FA100A9DCD1 /* frameworks */,
+				86C39F0E126A1FA100A9DCD1 /* products */,
 			);
 			sourceTree = "<group>";
 		};
-		86C39F05126A1FA000A9DCD1 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				86C39F1D126A1FA100A9DCD1 /* ntpAAppDelegate.h */,
-				86C39F1E126A1FA100A9DCD1 /* ntpAAppDelegate.m */,
-				8605D9A11290E9110036287D /* ntpAViewController.h */,
-				8605D9A21290E9110036287D /* ntpAViewController.m */,
-				86C39F33126A202700A9DCD1 /* AsyncUdpSocket.h */,
-				86C39F34126A202700A9DCD1 /* AsyncUdpSocket.m */,
-				86618F28126BB6430046A2B8 /* NetworkClock.h */,
-				86618F29126BB6430046A2B8 /* NetworkClock.m */,
-				86E4C979128242B800841647 /* NetAssociation.h */,
-				86E4C97A128242B800841647 /* NetAssociation.m */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
-		86C39F06126A1FA100A9DCD1 /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				86C39F17126A1FA100A9DCD1 /* ntpA_Prefix.pch */,
-				86618F4A126BC85D0046A2B8 /* SynthesizeSingleton.h */,
-				86C39F1B126A1FA100A9DCD1 /* main.m */,
-			);
-			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		86C39F07126A1FA100A9DCD1 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				86619012126C07300046A2B8 /* ntp.hosts */,
-				86C39F16126A1FA100A9DCD1 /* ntpA-Info.plist */,
-				86C39F18126A1FA100A9DCD1 /* InfoPlist.strings */,
-				86C39F20126A1FA100A9DCD1 /* MainWindow.xib */,
-				8605D9B81290E9600036287D /* ntpAViewController.xib */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
-		86C39F08126A1FA100A9DCD1 /* Frameworks */ = {
+		86C39F08126A1FA100A9DCD1 /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				8661906E126C0CD70046A2B8 /* UIKit.framework */,
@@ -123,22 +84,69 @@
 				86619081126C0CFD0046A2B8 /* CoreGraphics.framework */,
 				86619085126C0D120046A2B8 /* CFNetwork.framework */,
 			);
-			name = Frameworks;
+			name = frameworks;
 			sourceTree = "<group>";
 		};
-		86C39F0E126A1FA100A9DCD1 /* Products */ = {
+		86C39F0E126A1FA100A9DCD1 /* products */ = {
 			isa = PBXGroup;
 			children = (
 				86C39F0D126A1FA100A9DCD1 /* ntpA.app */,
 			);
-			name = Products;
+			name = products;
 			sourceTree = "<group>";
 		};
-		86FFAD7B126AD22300F5B70C /* Resources-iPad */ = {
+		D91E95D613D9AF8C004E4194 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				D91E960213D9B192004E4194 /* AsyncUdpSocket.h */,
+				D91E960313D9B192004E4194 /* AsyncUdpSocket.m */,
+				D91E95D713D9AF8C004E4194 /* SynthesizeSingleton.h */,
 			);
-			name = "Resources-iPad";
+			path = lib;
+			sourceTree = "<group>";
+		};
+		D91E95D813D9AF8C004E4194 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				D91E95D913D9AF8C004E4194 /* NetAssociation.h */,
+				D91E95DA13D9AF8C004E4194 /* NetAssociation.m */,
+				D91E95DB13D9AF8C004E4194 /* NetworkClock.h */,
+				D91E95DC13D9AF8C004E4194 /* NetworkClock.m */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		D91E95DD13D9AF8C004E4194 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				D91E95DE13D9AF8C004E4194 /* main.m */,
+				D91E95DF13D9AF8C004E4194 /* ntpAAppDelegate.h */,
+				D91E95E013D9AF8C004E4194 /* ntpAAppDelegate.m */,
+				D91E95E113D9AF8C004E4194 /* ntpAViewController.h */,
+				D91E95E213D9AF8C004E4194 /* ntpAViewController.m */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+		D91E95E813D9B018004E4194 /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				D91E95F813D9B063004E4194 /* en.lproj */,
+				D91E95EF13D9B018004E4194 /* ntp.hosts */,
+				D91E95F013D9B018004E4194 /* ntpA-Info.plist */,
+				D91E95F113D9B018004E4194 /* ntpA_Prefix.pch */,
+			);
+			path = resources;
+			sourceTree = "<group>";
+		};
+		D91E95F813D9B063004E4194 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				D91E95F913D9B063004E4194 /* InfoPlist.strings */,
+				D91E95FB13D9B063004E4194 /* MainWindow.xib */,
+				D91E95FD13D9B063004E4194 /* ntpAViewController.xib */,
+			);
+			path = en.lproj;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,7 +185,7 @@
 				en,
 			);
 			mainGroup = 86C39EFE126A1FA000A9DCD1;
-			productRefGroup = 86C39F0E126A1FA100A9DCD1 /* Products */;
+			productRefGroup = 86C39F0E126A1FA100A9DCD1 /* products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -191,10 +199,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86C39F1A126A1FA100A9DCD1 /* InfoPlist.strings in Resources */,
-				86C39F22126A1FA100A9DCD1 /* MainWindow.xib in Resources */,
-				86619013126C07300046A2B8 /* ntp.hosts in Resources */,
-				8605D9BA1290E9600036287D /* ntpAViewController.xib in Resources */,
+				D91E95F713D9B029004E4194 /* ntp.hosts in Resources */,
+				D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */,
+				D91E960013D9B063004E4194 /* MainWindow.xib in Resources */,
+				D91E960113D9B063004E4194 /* ntpAViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,40 +213,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86C39F1C126A1FA100A9DCD1 /* main.m in Sources */,
-				86C39F1F126A1FA100A9DCD1 /* ntpAAppDelegate.m in Sources */,
-				86C39F35126A202700A9DCD1 /* AsyncUdpSocket.m in Sources */,
-				86618F2A126BB6430046A2B8 /* NetworkClock.m in Sources */,
-				86E4C97B128242B800841647 /* NetAssociation.m in Sources */,
-				8605D9A31290E9110036287D /* ntpAViewController.m in Sources */,
+				D91E95E313D9AF8C004E4194 /* NetAssociation.m in Sources */,
+				D91E95E413D9AF8C004E4194 /* NetworkClock.m in Sources */,
+				D91E95E513D9AF8C004E4194 /* main.m in Sources */,
+				D91E95E613D9AF8C004E4194 /* ntpAAppDelegate.m in Sources */,
+				D91E95E713D9AF8C004E4194 /* ntpAViewController.m in Sources */,
+				D91E960413D9B192004E4194 /* AsyncUdpSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		8605D9B81290E9600036287D /* ntpAViewController.xib */ = {
+		D91E95F913D9B063004E4194 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				8605D9B91290E9600036287D /* en */,
-			);
-			name = ntpAViewController.xib;
-			sourceTree = "<group>";
-		};
-		86C39F18126A1FA100A9DCD1 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				86C39F19126A1FA100A9DCD1 /* en */,
+				D91E95FA13D9B063004E4194 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		86C39F20126A1FA100A9DCD1 /* MainWindow.xib */ = {
+		D91E95FB13D9B063004E4194 /* MainWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				86C39F21126A1FA100A9DCD1 /* en */,
+				D91E95FC13D9B063004E4194 /* en */,
 			);
 			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+		D91E95FD13D9B063004E4194 /* ntpAViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D91E95FE13D9B063004E4194 /* en */,
+			);
+			name = ntpAViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -284,10 +292,10 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = ntpA_Prefix.pch;
+				GCC_PREFIX_HEADER = resources/ntpA_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = IOS_NTP_LOGGING;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "ntpA-Info.plist";
+				INFOPLIST_FILE = "resources/ntpA-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -301,9 +309,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = ntpA_Prefix.pch;
+				GCC_PREFIX_HEADER = resources/ntpA_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "ntpA-Info.plist";
+				INFOPLIST_FILE = "resources/ntpA-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
