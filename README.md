@@ -36,15 +36,39 @@ will merge any upstream changes.
 
 [Artistic License/GPL](http://dev.perl.org/licenses/)
 
-This is the work of Gavin Eadie
+Created by Gavin Eadie on Oct17/10
+Copyright 2010 Ramsay Consulting. All rights reserved.
 
 ### Usage
 
-To add to your project, download [ios-ntp.tar.gz](https://raw.github.com/jbenet/ios-ntp/master/release/ios-ntp.tar.gz),
-and add `ios-ntp.framework` to your project. Then, simply call:
+Download [ios-ntp.tar.gz](https://raw.github.com/jbenet/ios-ntp/master/release/ios-ntp.tar.gz),
+and add `ios-ntp.framework` to your project. Make sure the file `ntp.hosts` is
+added to the project. I should show within the ios-ntp.framework/Headers
+directory.*
+
+This project depends on CocoaAsyncSocket, so you may need to
+[get it](http://code.google.com/p/cocoaasyncsocket/). ios-ntp only needs
+`AyncUdpSocket`.
+
+Edit ntp.hosts to add or remove any NTP servers. Make sure it is OK to use them.
+
+Then, simply call:
 
     [NSDate networkDate];
 
 As soon as you call it, the NTP process will begin. If you wish to start it at
 boot time, so that the time is well synchronized by the time you actually want
 to use it, just call it in your AppDelegate's didFinishLaunching function.
+
+
+* Note: The ntp.hosts is currently inside Headers to both bundle it with the
+framework AND coax Xcode to automatically add it, as it does not add the
+Resources directory of frameworks.
+
+### Building
+
+To build the static framework, build the `ios-ntp` target from the xcode
+project. Make sure you build BOTH the `iPhone Simulator` and `iOS Device`
+architectures.
+
+
