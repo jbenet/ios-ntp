@@ -7,7 +7,7 @@
 
 #import "ntpAAppDelegate.h"
 #import "ntpAViewController.h"
-#import "NetworkClock.h"
+#import "ios-ntp.h"
 
 @implementation ntpAAppDelegate
 
@@ -37,7 +37,7 @@
 
 - (void) repeatingMethod:(NSTimer *) theTimer {
     systemTime = [NSDate date];
-    networkTime = [[NetworkClock sharedNetworkClock] networkTime];
+    networkTime = [NSDate networkDate];
 
     sysClockLabel.text = [NSString stringWithFormat:@"%@", systemTime];
     netClockLabel.text = [NSString stringWithFormat:@"%@", networkTime];

@@ -27,6 +27,9 @@
 		D9B2BA3013D9B5A800C9385A /* NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95DB13D9AF8C004E4194 /* NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9B2BA3113D9B5AB00C9385A /* SynthesizeSingleton.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95D713D9AF8C004E4194 /* SynthesizeSingleton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D9B2BA3313D9B6CF00C9385A /* ios-ntp.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9B2BA4213D9C06100C9385A /* NSDate+NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9B2BA4313D9C06100C9385A /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
+		D9B2BA4413D9C06100C9385A /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +62,8 @@
 		D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ios-ntp.h"; sourceTree = "<group>"; };
 		D9B2BA3E13D9B95100C9385A /* ios-ntp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "ios-ntp.framework"; path = "release/ios-ntp.framework"; sourceTree = "<group>"; };
 		D9B2BA3F13D9B95100C9385A /* ios-ntp.tar.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; name = "ios-ntp.tar.gz"; path = "release/ios-ntp.tar.gz"; sourceTree = "<group>"; };
+		D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NetworkClock.h"; sourceTree = "<group>"; };
+		D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NetworkClock.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +135,8 @@
 		D91E95D813D9AF8C004E4194 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */,
+				D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */,
 				D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */,
 				D91E95D913D9AF8C004E4194 /* NetAssociation.h */,
 				D91E95DA13D9AF8C004E4194 /* NetAssociation.m */,
@@ -185,6 +192,7 @@
 				D9B2BA3113D9B5AB00C9385A /* SynthesizeSingleton.h in Headers */,
 				D9B2BA3013D9B5A800C9385A /* NetworkClock.h in Headers */,
 				D9B2BA2F13D9B5A500C9385A /* NetAssociation.h in Headers */,
+				D9B2BA4213D9C06100C9385A /* NSDate+NetworkClock.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +323,7 @@
 				D91E95E613D9AF8C004E4194 /* ntpAAppDelegate.m in Sources */,
 				D91E95E713D9AF8C004E4194 /* ntpAViewController.m in Sources */,
 				D91E960413D9B192004E4194 /* AsyncUdpSocket.m in Sources */,
+				D9B2BA4313D9C06100C9385A /* NSDate+NetworkClock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +333,7 @@
 			files = (
 				D9B2BA2E13D9B5A200C9385A /* NetworkClock.m in Sources */,
 				D9B2BA2D13D9B59F00C9385A /* NetAssociation.m in Sources */,
+				D9B2BA4413D9C06100C9385A /* NSDate+NetworkClock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
