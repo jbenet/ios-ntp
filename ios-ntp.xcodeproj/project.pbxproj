@@ -456,7 +456,7 @@
 				GCC_PREFIX_HEADER = "resources/ios-ntp-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = "";
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = "resources/ios-ntp-Info.plist";
 				INFOPLIST_OUTPUT_FORMAT = xml;
@@ -493,7 +493,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "resources/ios-ntp-Prefix.pch";
-				GCC_VERSION = 4.2;
+				GCC_VERSION = "";
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = "resources/ios-ntp-Info.plist";
 				INFOPLIST_OUTPUT_FORMAT = xml;
