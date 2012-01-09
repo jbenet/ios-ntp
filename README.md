@@ -3,8 +3,7 @@
 An application testbed and a network time protocol client for iOS. This is a
 work in progress.
 
-Created by Gavin Eadie on Oct17/10
-Copyright 2010 Ramsay Consulting. All rights reserved.
+Created by Gavin Eadie on Oct 17, 2010
 
 ### About
 
@@ -34,10 +33,8 @@ will merge any upstream changes.
 
 ### License
 
-[Artistic License/GPL](http://dev.perl.org/licenses/)
-
-Created by Gavin Eadie on Oct17/10
-Copyright 2010 Ramsay Consulting. All rights reserved.
+The [MIT](http://www.opensource.org/licenses/mit-license.php) License
+Copyright (c) 2012, Ramsay Consulting
 
 ### Usage
 
