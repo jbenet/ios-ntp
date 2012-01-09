@@ -90,12 +90,12 @@
         timeIntervalSinceDeviceTime /= usefulCount;
     }
 //###ADDITION?
-	if (usefulCount ==8)
-	{
-		//stop it for now
-		//
-//		[self finishAssociations];
-	}
+  if (usefulCount ==8)
+  {
+    //stop it for now
+    //
+//    [self finishAssociations];
+  }
 //###
 }
 
@@ -216,14 +216,14 @@
   ┃ ... obtain IP address, "xx.xx.xx.xx", from the sockaddr structure ...                            ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSString *) hostAddress:(struct sockaddr_in *) sockAddr {
-	char addrBuf[INET_ADDRSTRLEN];
+  char addrBuf[INET_ADDRSTRLEN];
 
-	if (inet_ntop(AF_INET, &sockAddr->sin_addr, addrBuf, sizeof(addrBuf)) == NULL) {
-		[NSException raise:NSInternalInconsistencyException
+  if (inet_ntop(AF_INET, &sockAddr->sin_addr, addrBuf, sizeof(addrBuf)) == NULL) {
+    [NSException raise:NSInternalInconsistencyException
                     format:@"Cannot convert address to string."];
-	}
+  }
 
-	return [NSString stringWithCString:addrBuf encoding:NSASCIIStringEncoding];
+  return [NSString stringWithCString:addrBuf encoding:NSASCIIStringEncoding];
 }
 
 #pragma mark                        N o t i f i c a t i o n • T r a p s
