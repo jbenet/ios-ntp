@@ -34,8 +34,17 @@
 
 @implementation NetworkClock
 
++ (id)sharedNetworkClock {
+    static id sharedNetworkClockInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedNetworkClockInstance = [[self alloc] init];
+    });
+    return sharedNetworkClockInstance;
+}
+
 - (id) init {
-    if (nil == [super init]) return nil;
+    if (!(self = [super init])) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
   │ array of empty associations to use ...                                                           │
@@ -46,14 +55,9 @@
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-#ifdef THREADING_DOESNT_WORK_SO_DONT_TRY_IT
-    [[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
-                                                  initWithTarget:self
-                                                        selector:@selector(createAssociations)
-                                                          object:nil];
-#else
-    [self createAssociations];                  // this delays here, would be good to thread this ..
-#endif
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self createAssociations];                  
+    });
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ prepare to catch our application entering and leaving the background ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -65,6 +69,12 @@
 												 name:UIApplicationWillEnterForegroundNotification
 											   object:nil];
     return self;
+}
+
+- (void)dealloc {
+    [self finishAssociations];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -177,14 +187,7 @@
         }
         CFRelease(ntpHostName);
     }
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  get ready to catch any notifications from associations ...                                      │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationTrue:)
-                                                 name:@"assoc-good" object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationFake:)
-                                                 name:@"assoc-fail" object:nil];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  ... now start an 'association' (network clock object) for each address.                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -192,9 +195,17 @@
         NetAssociation *    timeAssociation = [[[NetAssociation alloc] init:server] autorelease];
 
         [timeAssociations addObject:timeAssociation];
-        [timeAssociation enable];                               // starts are randomized internally
     }
     [hostAddresses release];
+    
+    // Enable associations.
+    [self enableAssociations];
+}
+
+- (void) enableAssociations {
+    [timeAssociations makeObjectsPerformSelector:@selector(enable)];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationTrue:) name:@"assoc-good" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationFake:) name:@"assoc-fail" object:nil];
 }
 
 - (void) reportAssociations {
@@ -205,10 +216,9 @@
   ┃ Stop all the individual ntp clients ..                                                           ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finishAssociations {
-    for (NetAssociation * timeAssociation in timeAssociations) {
-        [timeAssociation finish];
-    }
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [timeAssociations makeObjectsPerformSelector:@selector(finish)];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"assoc-good" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"assoc-fail" object:nil];
 }
 
 #import <arpa/inet.h>
@@ -257,7 +267,7 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) applicationBack:(NSNotification *) notification {
     LogInProduction(@"*** application -> Background");
-//  [self finishAssociations];
+    [self finishAssociations];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -265,21 +275,7 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) applicationFore:(NSNotification *) notification {
     LogInProduction(@"*** application -> Foreground");
-//  [self enableAssociations];
-}
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ sharedNetworkClock - singleton                                                                   ┃
-  ┃                                                                                                  ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-
-+ (id)sharedNetworkClock {
-    static id sharedNetworkClockInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedNetworkClockInstance = [[self alloc] init];
-    });
-    return sharedNetworkClockInstance;
+    [self enableAssociations];
 }
 
 @end

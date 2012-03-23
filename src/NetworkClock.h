@@ -31,6 +31,7 @@
 + (NetworkClock *) sharedNetworkClock;
 
 - (void) createAssociations;
+- (void) enableAssociations;
 - (void) reportAssociations;
 - (void) finishAssociations;
 
