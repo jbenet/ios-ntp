@@ -19,7 +19,7 @@ extern NSString *const AsyncUdpSocketErrorDomain;
 enum AsyncUdpSocketError
 {
 	AsyncUdpSocketCFSocketError = kCFSocketError,	// From CFSocketError enum
-	AsyncUdpSocketNoError = 0,						// Never used
+	AsyncUdpSocketNoError = 0,                      // Never used
 	AsyncUdpSocketBadParameter,                     // Used if given a bad parameter (such as an improper address)
 	AsyncUdpSocketIPv4Unavailable,                  // Used if you bind/connect using IPv6 only
 	AsyncUdpSocketIPv6Unavailable,                  // Used if you bind/connect using IPv4 only (or iPhone)
@@ -63,7 +63,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
 
 /**
  * Creates new instances of AsyncUdpSocket.
-**/
+ **/
 - (id)init;
 - (id)initWithDelegate:(id)delegate;
 - (id)initWithDelegate:(id)delegate userData:(long)userData;
@@ -72,7 +72,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * Creates new instances of AsyncUdpSocket that support only IPv4 or IPv6.
  * The other init methods will support both, unless specifically binded or connected to one protocol.
  * If you know you'll only be using one protocol, these init methods may be a bit more efficient.
-**/
+ **/
 - (id)initIPv4;
 - (id)initIPv6;
 
@@ -87,7 +87,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * Note: Address info may not be available until after the socket has been bind'ed,
  * or until after data has been sent.
-**/
+ **/
 - (NSString *)localHost;
 - (UInt16)localPort;
 
@@ -96,7 +96,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * Note: Since UDP is connectionless by design, connected address info
  * will not be available unless the socket is explicitly connected to a remote host/port
-**/
+ **/
 - (NSString *)connectedHost;
 - (UInt16)connectedPort;
 
@@ -104,20 +104,20 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * Returns whether or not this socket has been connected to a single host.
  * By design, UDP is a connectionless protocol, and connecting is not needed.
  * If connected, the socket will only be able to send/receive data to/from the connected host.
-**/
+ **/
 - (BOOL)isConnected;
 
 /**
  * Returns whether or not this socket has been closed.
  * The only way a socket can be closed is if you explicitly call one of the close methods.
-**/
+ **/
 - (BOOL)isClosed;
 
 /**
  * Returns whether or not this socket supports IPv4.
  * By default this will be true, unless the socket is specifically initialized as IPv6 only,
  * or is binded or connected to an IPv6 address.
-**/
+ **/
 - (BOOL)isIPv4;
 
 /**
@@ -127,7 +127,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * This method will also return false on platforms that do not support IPv6.
  * Note: The iPhone does not currently support IPv6.
-**/
+ **/
 - (BOOL)isIPv6;
 
 /**
@@ -137,7 +137,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * Sending data larger than this may result in an error.
  * This is an advanced topic, and one should understand the wide range of mtu's on networks and the internet.
  * Therefore this method is only for reference and may be of little use in many situations.
-**/
+ **/
 - (unsigned int)maximumTransmissionUnit;
 
 /**
@@ -152,7 +152,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * On success, returns YES.
  * Otherwise returns NO, and sets errPtr. If you don't care about the error, you can pass nil for errPtr.
-**/
+ **/
 - (BOOL)bindToPort:(UInt16)port error:(NSError **)errPtr;
 - (BOOL)bindToAddress:(NSString *)localAddr port:(UInt16)port error:(NSError **)errPtr;
 
@@ -173,7 +173,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * On success, returns YES.
  * Otherwise returns NO, and sets errPtr. If you don't care about the error, you can pass nil for errPtr.
-**/
+ **/
 - (BOOL)connectToHost:(NSString *)host onPort:(UInt16)port error:(NSError **)errPtr;
 - (BOOL)connectToAddress:(NSData *)remoteAddr error:(NSError **)errPtr;
 
@@ -181,7 +181,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * Join multicast group
  *
  * Group should be an IP address (eg @"225.228.0.1")
-**/
+ **/
 - (BOOL)joinMulticastGroup:(NSString *)group error:(NSError **)errPtr;
 - (BOOL)joinMulticastGroup:(NSString *)group withAddress:(NSString *)interface error:(NSError **)errPtr;
 
@@ -193,7 +193,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * delivered to every host on the network.
  * The reason this is generally disabled by default is to prevent
  * accidental broadcast messages from flooding the network.
-**/
+ **/
 - (BOOL)enableBroadcast:(BOOL)flag error:(NSError **)errPtr;
 
 /**
@@ -203,7 +203,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * If data is nil or zero-length, this method does nothing and immediately returns NO.
  * If the socket is not connected, this method does nothing and immediately returns NO.
-**/
+ **/
 - (BOOL)sendData:(NSData *)data withTimeout:(NSTimeInterval)timeout tag:(long)tag;
 
 /**
@@ -214,7 +214,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * If data is nil or zero-length, this method does nothing and immediately returns NO.
  * If the socket is connected, this method does nothing and immediately returns NO.
  * If unable to resolve host to a valid IPv4 or IPv6 address, this method returns NO.
-**/
+ **/
 - (BOOL)sendData:(NSData *)data toHost:(NSString *)host port:(UInt16)port withTimeout:(NSTimeInterval)timeout tag:(long)tag;
 
 /**
@@ -224,7 +224,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * If data is nil or zero-length, this method does nothing and immediately returns NO.
  * If the socket is connected, this method does nothing and immediately returns NO.
-**/
+ **/
 - (BOOL)sendData:(NSData *)data toAddress:(NSData *)remoteAddr withTimeout:(NSTimeInterval)timeout tag:(long)tag;
 
 /**
@@ -232,12 +232,12 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * If the receive succeeds, the onUdpSocket:didReceiveData:fromHost:port:tag delegate method will be called.
  * Otherwise, a timeout will occur, and the onUdpSocket:didNotReceiveDataWithTag: delegate method will be called.
-**/
+ **/
 - (void)receiveWithTimeout:(NSTimeInterval)timeout tag:(long)tag;
 
 /**
  * Closes the socket immediately. Any pending send or receive operations are dropped.
-**/
+ **/
 - (void)close;
 
 /**
@@ -245,7 +245,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * After calling this, the sendData: and receive: methods will do nothing.
  * In other words, you won't be able to add any more send or receive operations to the queue.
  * The socket will close even if there are still pending receive operations.
-**/
+ **/
 - (void)closeAfterSending;
 
 /**
@@ -253,14 +253,14 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * After calling this, the sendData: and receive: methods will do nothing.
  * In other words, you won't be able to add any more send or receive operations to the queue.
  * The socket will close even if there are still pending send operations.
-**/
+ **/
 - (void)closeAfterReceiving;
 
 /**
  * Closes after all pending send and receive operations have completed.
  * After calling this, the sendData: and receive: methods will do nothing.
  * In other words, you won't be able to add any more send or receive operations to the queue.
-**/
+ **/
 - (void)closeAfterSendingAndReceiving;
 
 /**
@@ -276,7 +276,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * If you set the buffer size too small, the sockets API in the OS will silently discard
  * any extra data, and you will not be notified of the error.
-**/
+ **/
 - (UInt32)maxReceiveBufferSize;
 - (void)setMaxReceiveBufferSize:(UInt32)max;
 
@@ -291,7 +291,7 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * 
  * Note: After calling this method, all further method calls to this object should be done from the given runloop.
  * Also, all delegate calls will be sent on the given runloop.
-**/
+ **/
 - (BOOL)moveToRunLoop:(NSRunLoop *)runLoop;
 
 /**
@@ -302,13 +302,13 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * NSModalPanelRunLoopMode or NSEventTrackingRunLoopMode. Or you may simply want to use NSRunLoopCommonModes.
  * 
  * Note: NSRunLoopCommonModes is defined in 10.5. For previous versions one can use kCFRunLoopCommonModes.
-**/
+ **/
 - (BOOL)setRunLoopModes:(NSArray *)runLoopModes;
 
 /**
  * Returns the current run loop modes the AsyncSocket instance is operating in.
  * The default set of run loop modes is NSDefaultRunLoopMode.
-**/
+ **/
 - (NSArray *)runLoopModes;
 
 @end
@@ -322,13 +322,13 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
 
 /**
  * Called when the datagram with the given tag has been sent.
-**/
+ **/
 - (void)onUdpSocket:(AsyncUdpSocket *)sock didSendDataWithTag:(long)tag;
 
 /**
  * Called if an error occurs while trying to send a datagram.
  * This could be due to a timeout, or something more serious such as the data being too large to fit in a sigle packet.
-**/
+ **/
 - (void)onUdpSocket:(AsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error;
 
 /**
@@ -348,19 +348,19 @@ typedef enum AsyncUdpSocketError AsyncUdpSocketError;
  * this delegate method will be invoked, with a tag of 15, just as if the rogue data never appeared.
  * 
  * Under normal circumstances, you simply return YES from this method.
-**/
+ **/
 - (BOOL)onUdpSocket:(AsyncUdpSocket *)sock didReceiveData:(NSData *)data withTag:(long)tag fromHost:(NSString *)host port:(UInt16)port;
 
 /**
  * Called if an error occurs while trying to receive a requested datagram.
  * This is generally due to a timeout, but could potentially be something else if some kind of OS error occurred.
-**/
+ **/
 - (void)onUdpSocket:(AsyncUdpSocket *)sock didNotReceiveDataWithTag:(long)tag dueToError:(NSError *)error;
 
 /**
  * Called when the socket is closed.
  * A socket is only closed if you explicitly call one of the close methods.
-**/
+ **/
 - (void)onUdpSocketDidClose:(AsyncUdpSocket *)sock;
 
 @end
