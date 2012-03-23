@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		199B5743151CBE5100155281 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661906E126C0CD70046A2B8 /* UIKit.framework */; };
 		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
 		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
@@ -20,7 +21,6 @@
 		D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D91E95F913D9B063004E4194 /* InfoPlist.strings */; };
 		D91E960013D9B063004E4194 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FB13D9B063004E4194 /* MainWindow.xib */; };
 		D91E960113D9B063004E4194 /* ntpAViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FD13D9B063004E4194 /* ntpAViewController.xib */; };
-		D91E960413D9B192004E4194 /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E960313D9B192004E4194 /* AsyncUdpSocket.m */; };
 		D9B2BA2D13D9B59F00C9385A /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		D9B2BA2E13D9B5A200C9385A /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
 		D9B2BA2F13D9B5A500C9385A /* NetAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95D913D9AF8C004E4194 /* NetAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,6 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		8661906E126C0CD70046A2B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -53,8 +55,6 @@
 		D91E95FA13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		D91E95FC13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = MainWindow.xib; sourceTree = "<group>"; };
 		D91E95FE13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ntpAViewController.xib; sourceTree = "<group>"; };
-		D91E960213D9B192004E4194 /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncUdpSocket.h; sourceTree = "<group>"; };
-		D91E960313D9B192004E4194 /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncUdpSocket.m; sourceTree = "<group>"; };
 		D9B2BA1F13D9B4BB00C9385A /* ios-ntp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-ntp.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9B2BA2B13D9B50200C9385A /* ios-ntp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-ntp-Info.plist"; sourceTree = "<group>"; };
 		D9B2BA2C13D9B50200C9385A /* ios-ntp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ios-ntp-Prefix.pch"; sourceTree = "<group>"; };
@@ -124,8 +124,8 @@
 		D91E95D613D9AF8C004E4194 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				D91E960213D9B192004E4194 /* AsyncUdpSocket.h */,
-				D91E960313D9B192004E4194 /* AsyncUdpSocket.m */,
+				199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */,
+				199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -322,8 +322,8 @@
 				D91E95E513D9AF8C004E4194 /* main.m in Sources */,
 				D91E95E613D9AF8C004E4194 /* ntpAAppDelegate.m in Sources */,
 				D91E95E713D9AF8C004E4194 /* ntpAViewController.m in Sources */,
-				D91E960413D9B192004E4194 /* AsyncUdpSocket.m in Sources */,
 				D9B2BA4313D9C06100C9385A /* NSDate+NetworkClock.m in Sources */,
+				199B5743151CBE5100155281 /* GCDAsyncUdpSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

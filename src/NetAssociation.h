@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CFNetwork/CFNetwork.h>
-#import "AsyncUdpSocket.h"
+#import "GCDAsyncUdpSocket.h"
 #include <sys/time.h>
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -45,9 +45,9 @@ struct ntpShortTime {
   │ evaluates the quality of the reply, and keeps the queries running till the server goes 'bad'     │
   │ or its creator kills it ...                                                                      │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-@interface NetAssociation : NSObject {
+@interface NetAssociation : NSObject <GCDAsyncUdpSocketDelegate> {
         
-    AsyncUdpSocket *        socket;                         // NetAssociation UDP Socket
+    GCDAsyncUdpSocket *     socket;                         // NetAssociation UDP Socket
     NSString *              server;                         // server name "123.45.67.89"
 
     NSTimer *               repeatingTimer;                 // fires off an ntp request ...
@@ -72,7 +72,7 @@ struct ntpShortTime {
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
-- (id) init:(NSString *) serverName;
+- (id) initWithServerName:(NSString *)serverName queue:(dispatch_queue_t)queue;
 - (void) enable;
 - (void) finish;
 

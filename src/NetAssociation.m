@@ -56,7 +56,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   ┃ Initialize the association with a blank socket and prepare the time transaction to happen every  ┃
   ┃ 20 seconds (initial value) ...                                                                   ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (id) init:(NSString *) serverName {
+- (id) initWithServerName:(NSString *)serverName queue:(dispatch_queue_t)queue {
     if ((self = [super init]) == nil) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Set initial/default values for instance variables ...                                            │
@@ -68,8 +68,8 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     server = [serverName retain];
-    socket = [[AsyncUdpSocket alloc] initIPv4];
-    [socket setDelegate:self];
+    socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:queue ? queue : dispatch_get_main_queue()];
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a first-in/first-out queue for time samples.  As we compute each new time obtained from   │
   │ the server we push it into the fifo.  We sample the contents of the fifo for quality and, if it  │
@@ -93,14 +93,24 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   ┃ Set the receiver and send the time query with 2 second timeout, ...                              ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) queryTimeServer:(NSTimer *) timer {
-    [socket receiveWithTimeout:2.0 tag:0];
     [socket sendData:[self createPacket] toHost:server port:123L withTimeout:2.0 tag:0];
+    
+    NSError* error = nil;
+    if(![socket beginReceiving:&error]) {
+        NTP_Logging(@"Unable to start listening on socket for [%@] due to error [%@]", server, error);
+        return;
+    }
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ This starts the timer firing (sets the fire time randonly within the next five seconds) ...      ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) enable {
+/*    NSError* error = nil;
+    if(![socket beginReceiving:&error]) {
+        NTP_Logging(@"Unable to start listening on socket for [%@] due to error [%@]", server, error);
+        return;
+    }*/
     [repeatingTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:
                                  (double)(5.0 * (float)rand()/(float)RAND_MAX)]];
 
@@ -111,6 +121,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   ┃ This stops the timer firing (sets the fire time to the infinite future) ...                      ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finish {
+    [socket pauseReceiving];
     [repeatingTimer setFireDate:[NSDate distantFuture]];
 
     NTP_Logging(@"stopped: [%@]", server);
@@ -261,9 +272,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 
 #pragma mark                        N e t w o r k • C a l l b a c k s
 
-- (BOOL) onUdpSocket:(AsyncUdpSocket *)sender didReceiveData:(NSData *)data
-             withTag:(long)tag fromHost:(NSString *)host port:(UInt16)port {
-
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext {
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  grab the packet arrival time as fast as possible, before computations below ...                 │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -300,7 +309,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │  if the send time in the packet isn't the same as the remembered send time, ditch it ...         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     if (ntpClientSendTime.fullSeconds != ntohl(hostData[6]) ||
-        ntpClientSendTime.partSeconds != ntohl(hostData[7])) return NO;
+        ntpClientSendTime.partSeconds != ntohl(hostData[7])) return;
 
     ntpServerBaseTime.fullSeconds = ntohl(hostData[4]);
     ntpServerBaseTime.partSeconds = ntohl(hostData[5]);
@@ -310,21 +319,18 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     ntpServerSendTime.partSeconds = ntohl(hostData[11]);
 
     [self evaluatePacket];
-
-    return YES;
 }
 
-- (void) onUdpSocket:(AsyncUdpSocket *)sock didSendDataWithTag:(long)tag {
+- (void) udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError *)error {
+    NTP_Logging(@"Socket failed to connect to [%@] due to error : [%@]", server, error);            
 }
 
-- (void) onUdpSocket:(AsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)err {
+- (void) udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error {
+    NTP_Logging(@"Socket failed to send to [%@] due to error : [%@]", server, error);        
 }
 
-- (void) onUdpSocket:(AsyncUdpSocket *)sock didNotReceiveDataWithTag:(long)tag dueToError:(NSError *)err {
-}
-
-- (void) onUdpSocketDidClose:(AsyncUdpSocket *) sock  {
-    NTP_Logging(@"Socket closed : [%@]", server);
+- (void) udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error {
+    NTP_Logging(@"Socket closed : [%@] error : [%@]", server, error);    
 }
 
 #pragma mark                        T i m e • C o n v e r t e r s

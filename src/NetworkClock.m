@@ -141,63 +141,19 @@
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  for each NTP service domain name in the 'ntp.hosts' file : "0.pool.ntp.org" etc ...             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    NSMutableSet *          hostAddresses = [[NSMutableSet setWithCapacity:48] retain];
-
     for (NSString * ntpDomainName in ntpDomains) {
         if ([ntpDomainName length] == 0 ||
             [ntpDomainName characterAtIndex:0] == ' ' || [ntpDomainName characterAtIndex:0] == '#') {
             continue;
         }
-        CFStreamError       nameError;
-        Boolean             nameFound;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... resolve the IP address of the named host : "0.pool.ntp.org" --> [123.45.67.89], ...         │
+  │  ... start an 'association' (network clock object) for each address.                             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        CFHostRef ntpHostName = CFHostCreateWithName (kCFAllocatorDefault, (CFStringRef)ntpDomainName);
-        if (ntpHostName == nil) {
-            LogInProduction(@"CFHostCreateWithName ntpHost <nil>");
-            continue;                                           // couldn't create 'host object' ...
-        }
-
-        if (!CFHostStartInfoResolution (ntpHostName, kCFHostAddresses, &nameError)) {
-            LogInProduction(@"CFHostStartInfoResolution error %li", nameError.error);
-            CFRelease(ntpHostName);
-            continue;                                           // couldn't start resolution ...
-        }
-
-        CFArrayRef ntpHostAddrs = CFHostGetAddressing (ntpHostName, &nameFound);
-
-        if (!nameFound) {
-            LogInProduction(@"CFHostGetAddressing: NOT resolved");
-            CFRelease(ntpHostName);
-            continue;                                           // resolution failed ...
-        }
-
-        if (ntpHostAddrs == nil) {
-            LogInProduction(@"CFHostGetAddressing: no addresses resolved");
-            CFRelease(ntpHostName);
-            continue;                                           // NO addresses were resolved ...
-        }
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  for each (sockaddr structure wrapped by a CFDataRef/NSData *) associated with the hostname,     │
-  │  drop the IP address string into a Set to remove duplicates.                                     │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        for (NSData * ntpHost in (NSArray *)ntpHostAddrs) {
-            [hostAddresses addObject:[self hostAddress:(struct sockaddr_in *)[ntpHost bytes]]];
-        }
-        CFRelease(ntpHostName);
-    }
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... now start an 'association' (network clock object) for each address.                         │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    for (NSString * server in hostAddresses) {
-        NetAssociation *    timeAssociation = [[[NetAssociation alloc] init:server] autorelease];
-
+        NetAssociation* timeAssociation = [[NetAssociation alloc] initWithServerName:ntpDomainName queue:0];
         [timeAssociations addObject:timeAssociation];
+        [timeAssociation release];
     }
-    [hostAddresses release];
-    
+
     // Enable associations.
     [self enableAssociations];
 }
