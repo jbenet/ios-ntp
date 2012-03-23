@@ -52,12 +52,13 @@
     dispersionSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES];
     sortDescriptors = [[NSArray arrayWithObject:dispersionSortDescriptor] retain];
     timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
+
+    associationDelegateQueue = dispatch_queue_create("org.ios-ntp.delegates", 0);
+    
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self createAssociations];                  
-    });
+    [self createAssociations];                  
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ prepare to catch our application entering and leaving the background ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -73,6 +74,7 @@
 
 - (void)dealloc {
     [self finishAssociations];
+    dispatch_release(associationDelegateQueue);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
@@ -149,7 +151,7 @@
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  ... start an 'association' (network clock object) for each address.                             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        NetAssociation* timeAssociation = [[NetAssociation alloc] initWithServerName:ntpDomainName queue:0];
+        NetAssociation* timeAssociation = [[NetAssociation alloc] initWithServerName:ntpDomainName queue:associationDelegateQueue];
         [timeAssociations addObject:timeAssociation];
         [timeAssociation release];
     }

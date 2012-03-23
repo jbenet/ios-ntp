@@ -26,6 +26,7 @@
     NSSortDescriptor *      dispersionSortDescriptor;
     NSArray *               sortDescriptors;
     
+    dispatch_queue_t        associationDelegateQueue;
 }
 
 + (NetworkClock *) sharedNetworkClock;
