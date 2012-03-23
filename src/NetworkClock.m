@@ -268,57 +268,18 @@
 //  [self enableAssociations];
 }
 
-#import "SynthesizeSingleton.h"
-
-#pragma mark -
-#pragma mark                        S I N G L E T O N • B E H A V I O U R
-
-SYNTHESIZE_SINGLETON_FOR_CLASS(NetworkClock);
-
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ the SYNTHESIZE_SINGLETON_FOR_CLASS macro expands thus:                                           ┃
-  ┃──────────────────────────────────────────────────────────────────────────────────────────────────┃
-  ┃                                                                                                  ┃
-  ┃         static Singleton *sharedSingleton = ((void*)0);                                          ┃
-  ┃                                                                                                  ┃
-  ┃         + (Singleton *)sharedSingleton {                                                         ┃
-  ┃             @synchronized(self) {                                                                ┃
-  ┃                 if (sharedSingleton == ((void*)0)) {                                             ┃
-  ┃                     sharedSingleton = [[self alloc] init];                                       ┃
-  ┃                 }                                                                                ┃
-  ┃             }                                                                                    ┃
-  ┃             return sharedSingleton;                                                              ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         + (id)allocWithZone:(NSZone *)zone {                                                     ┃
-  ┃             @synchronized(self) {                                                                ┃
-  ┃                 if (sharedSingleton == ((void*)0)) {                                             ┃
-  ┃                     sharedSingleton = [super allocWithZone:zone];                                ┃
-  ┃                     return sharedSingleton;                                                      ┃
-  ┃                 }                                                                                ┃
-  ┃             }                                                                                    ┃
-  ┃             return ((void*)0);                                                                   ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (id)copyWithZone:(NSZone *)zone {                                                      ┃
-  ┃             return self;                                                                         ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (id)retain {                                                                           ┃
-  ┃             return self;                                                                         ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (NSUInteger)retainCount {                                                              ┃
-  ┃             return (2147483647L *2UL +1UL);                                                      ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (void)release {                                                                        ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (id)autorelease {                                                                      ┃
-  ┃             return self;                                                                         ┃
-  ┃         };                                                                                       ┃
+  ┃ sharedNetworkClock - singleton                                                                   ┃
   ┃                                                                                                  ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+
++ (id)sharedNetworkClock {
+    static id sharedNetworkClockInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedNetworkClockInstance = [[self alloc] init];
+    });
+    return sharedNetworkClockInstance;
+}
 
 @end
