@@ -104,7 +104,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     [repeatingTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:
                                  (double)(5.0 * (float)rand()/(float)RAND_MAX)]];
 
-    LogInProduction(@"enabled: [%@]", server);
+    NTP_Logging(@"enabled: [%@]", server);
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -113,7 +113,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 - (void) finish {
     [repeatingTimer setFireDate:[NSDate distantFuture]];
 
-    LogInProduction(@"stopped: [%@]", server);
+    NTP_Logging(@"stopped: [%@]", server);
 }
 
 #pragma mark                        N e t w o r k • T r a n s a c t i o n s
@@ -324,7 +324,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 }
 
 - (void) onUdpSocketDidClose:(AsyncUdpSocket *) sock  {
-    LogInProduction(@"Socket closed : [%@]", server);
+    NTP_Logging(@"Socket closed : [%@]", server);
 }
 
 #pragma mark                        T i m e • C o n v e r t e r s
