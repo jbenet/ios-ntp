@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		199B5743151CBE5100155281 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
+		199B575A151CD62900155281 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
+		199B575C151CD62C00155281 /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661906E126C0CD70046A2B8 /* UIKit.framework */; };
 		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
 		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
@@ -190,6 +192,7 @@
 				D9B2BA3013D9B5A800C9385A /* NetworkClock.h in Headers */,
 				D9B2BA2F13D9B5A500C9385A /* NetAssociation.h in Headers */,
 				D9B2BA4213D9C06100C9385A /* NSDate+NetworkClock.h in Headers */,
+				199B575C151CD62C00155281 /* GCDAsyncUdpSocket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +337,7 @@
 				D9B2BA2E13D9B5A200C9385A /* NetworkClock.m in Sources */,
 				D9B2BA2D13D9B59F00C9385A /* NetAssociation.m in Sources */,
 				D9B2BA4413D9C06100C9385A /* NSDate+NetworkClock.m in Sources */,
+				199B575A151CD62900155281 /* GCDAsyncUdpSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

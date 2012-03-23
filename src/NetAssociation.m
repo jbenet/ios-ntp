@@ -81,12 +81,20 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ Finally, initialize the repeating timer that queries the server, set it's trigger time to the    │
   │ infinite future, and put it on the run loop .. nothing will happen (yet)                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    repeatingTimer = [NSTimer timerWithTimeInterval:pollIntervals[pollingIntervalIndex]
+    repeatingTimer = [[NSTimer timerWithTimeInterval:pollIntervals[pollingIntervalIndex]
                                              target:self selector:@selector(queryTimeServer:)
-                                           userInfo:nil repeats:YES];
+                                           userInfo:nil repeats:YES] retain];
     [repeatingTimer setFireDate:[NSDate distantFuture]];
     [[NSRunLoop mainRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
     return self;
+}
+
+- (void)dealloc {
+    [server release];
+    [repeatingTimer invalidate];
+    [repeatingTimer release];
+    [socket release];
+    [super dealloc];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
