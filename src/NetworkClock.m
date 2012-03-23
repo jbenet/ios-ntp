@@ -5,6 +5,7 @@
   ║  Copyright 2010 Ramsay Consulting. All rights reserved.                                          ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
+#import <netinet/in.h>
 #import "NetworkClock.h"
 
 @interface NetworkClock (PrivateMethods)
