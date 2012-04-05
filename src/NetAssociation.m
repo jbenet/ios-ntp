@@ -267,15 +267,19 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     if (stratum == 1) pollingIntervalIndex = 6;
     if (stratum == 2) pollingIntervalIndex = 5;
-    if ([repeatingTimer timeInterval] != pollIntervals[pollingIntervalIndex]) {
-        NTP_Logging(@"[%@] poll interval adusted: %3.1f >> %3.1f", server,
-                    [repeatingTimer timeInterval], pollIntervals[pollingIntervalIndex]);
-        [repeatingTimer invalidate];
-        repeatingTimer = nil;
-        repeatingTimer = [NSTimer scheduledTimerWithTimeInterval:pollIntervals[pollingIntervalIndex]
-                                                          target:self selector:@selector(queryTimeServer:)
-                                                        userInfo:nil repeats:YES];
-    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Reschedule the timer if the time interval differs from that we've selected.
+        if([repeatingTimer timeInterval] != pollIntervals[pollingIntervalIndex]) {
+            NTP_Logging(@"[%@] poll interval adusted: %3.1f >> %3.1f", server,
+                        [repeatingTimer timeInterval], pollIntervals[pollingIntervalIndex]);
+            [repeatingTimer invalidate];
+            [repeatingTimer release];
+            repeatingTimer = [[NSTimer scheduledTimerWithTimeInterval:pollIntervals[pollingIntervalIndex]
+                                                               target:self selector:@selector(queryTimeServer:)
+                                                             userInfo:nil repeats:YES] retain];
+        } 
+    });    
 }
 
 #pragma mark                        N e t w o r k • C a l l b a c k s
