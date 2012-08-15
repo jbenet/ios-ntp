@@ -7,7 +7,7 @@
 
 #import "ntpAAppDelegate.h"
 #import "ntpAViewController.h"
-#import "ios-ntp.h"
+#import <ios-ntp/ios-ntp.h>
 
 @implementation ntpAAppDelegate
 
