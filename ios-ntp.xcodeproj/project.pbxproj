@@ -45,7 +45,7 @@
 		199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		3470C4CB15DB290A009295B2 /* libios-ntp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-ntp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3470C4CD15DB290A009295B2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		3470C4DD15DB2947009295B2 /* ios-ntp Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-ntp Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3470C4DD15DB2947009295B2 /* ntpA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ntpA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3470C4DF15DB2947009295B2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3470C4E215DB2947009295B2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8661906E126C0CD70046A2B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -135,7 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				3470C4CB15DB290A009295B2 /* libios-ntp.a */,
-				3470C4DD15DB2947009295B2 /* ios-ntp Demo.app */,
+				3470C4DD15DB2947009295B2 /* ntpA.app */,
 			);
 			name = products;
 			sourceTree = "<group>";
@@ -248,7 +248,7 @@
 			);
 			name = ntpA;
 			productName = "ios-ntp Demo";
-			productReference = 3470C4DD15DB2947009295B2 /* ios-ntp Demo.app */;
+			productReference = 3470C4DD15DB2947009295B2 /* ntpA.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -369,7 +369,6 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "../../Headers/ios-ntp";
@@ -389,7 +388,6 @@
 				GCC_PREFIX_HEADER = "resources/ios-ntp-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "../../Headers/ios-ntp";
@@ -491,6 +489,7 @@
 				3470C4D815DB290B009295B2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3470C4F015DB2947009295B2 /* Build configuration list for PBXNativeTarget "ntpA" */ = {
 			isa = XCConfigurationList;
@@ -499,6 +498,7 @@
 				3470C4F215DB2947009295B2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		86C39F03126A1FA000A9DCD1 /* Build configuration list for PBXProject "ios-ntp" */ = {
 			isa = XCConfigurationList;
