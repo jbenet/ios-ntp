@@ -2,6 +2,10 @@
 1.pool.ntp.org
 2.pool.ntp.org
 3.pool.ntp.org
+0.uk.pool.ntp.org
+1.uk.pool.ntp.org
+2.uk.pool.ntp.org
+3.uk.pool.ntp.org
 0.US.pool.ntp.org
 1.US.pool.ntp.org
 2.US.pool.ntp.org
@@ -11,4 +15,5 @@ europe.pool.ntp.org
 north-america.pool.ntp.org
 oceania.pool.ntp.org
 south-america.pool.ntp.org
+africa.pool.ntp.org
 time.apple.com
