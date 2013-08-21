@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CFNetwork/CFNetwork.h>
-#import "AsyncUdpSocket.h"
+#import "GCDAsyncUdpSocket.h"
 #import "NetAssociation.h"
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -26,11 +26,13 @@
     NSSortDescriptor *      dispersionSortDescriptor;
     NSArray *               sortDescriptors;
     
+    dispatch_queue_t        associationDelegateQueue;
 }
 
 + (NetworkClock *) sharedNetworkClock;
 
 - (void) createAssociations;
+- (void) enableAssociations;
 - (void) reportAssociations;
 - (void) finishAssociations;
 

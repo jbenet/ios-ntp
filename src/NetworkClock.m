@@ -5,6 +5,7 @@
   ║  Copyright 2010 Ramsay Consulting. All rights reserved.                                          ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
+#import <netinet/in.h>
 #import "NetworkClock.h"
 
 @interface NetworkClock (PrivateMethods)
@@ -33,8 +34,17 @@
 
 @implementation NetworkClock
 
++ (id)sharedNetworkClock {
+    static id sharedNetworkClockInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedNetworkClockInstance = [[self alloc] init];
+    });
+    return sharedNetworkClockInstance;
+}
+
 - (id) init {
-    if (nil == [super init]) return nil;
+    if (!(self = [super init])) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
   │ array of empty associations to use ...                                                           │
@@ -42,17 +52,13 @@
     dispersionSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES];
     sortDescriptors = [[NSArray arrayWithObject:dispersionSortDescriptor] retain];
     timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
+
+    associationDelegateQueue = dispatch_queue_create("org.ios-ntp.delegates", 0);
+    
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-#ifdef THREADING_DOESNT_WORK_SO_DONT_TRY_IT
-    [[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
-                                                  initWithTarget:self
-                                                        selector:@selector(createAssociations)
-                                                          object:nil];
-#else
-    [self createAssociations];                  // this delays here, would be good to thread this ..
-#endif
+    [self createAssociations];                  
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ prepare to catch our application entering and leaving the background ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -64,6 +70,13 @@
 												 name:UIApplicationWillEnterForegroundNotification
 											   object:nil];
     return self;
+}
+
+- (void)dealloc {
+    [self finishAssociations];
+    dispatch_release(associationDelegateQueue);
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -130,70 +143,27 @@
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  for each NTP service domain name in the 'ntp.hosts' file : "0.pool.ntp.org" etc ...             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    NSMutableSet *          hostAddresses = [[NSMutableSet setWithCapacity:48] retain];
-
     for (NSString * ntpDomainName in ntpDomains) {
         if ([ntpDomainName length] == 0 ||
             [ntpDomainName characterAtIndex:0] == ' ' || [ntpDomainName characterAtIndex:0] == '#') {
             continue;
         }
-        CFStreamError       nameError;
-        Boolean             nameFound;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... resolve the IP address of the named host : "0.pool.ntp.org" --> [123.45.67.89], ...         │
+  │  ... start an 'association' (network clock object) for each address.                             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        CFHostRef ntpHostName = CFHostCreateWithName (kCFAllocatorDefault, (CFStringRef)ntpDomainName);
-        if (ntpHostName == nil) {
-            LogInProduction(@"CFHostCreateWithName ntpHost <nil>");
-            continue;                                           // couldn't create 'host object' ...
-        }
-
-        if (!CFHostStartInfoResolution (ntpHostName, kCFHostAddresses, &nameError)) {
-            LogInProduction(@"CFHostStartInfoResolution error %li", nameError.error);
-            CFRelease(ntpHostName);
-            continue;                                           // couldn't start resolution ...
-        }
-
-        CFArrayRef ntpHostAddrs = CFHostGetAddressing (ntpHostName, &nameFound);
-
-        if (!nameFound) {
-            LogInProduction(@"CFHostGetAddressing: NOT resolved");
-            CFRelease(ntpHostName);
-            continue;                                           // resolution failed ...
-        }
-
-        if (ntpHostAddrs == nil) {
-            LogInProduction(@"CFHostGetAddressing: no addresses resolved");
-            CFRelease(ntpHostName);
-            continue;                                           // NO addresses were resolved ...
-        }
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  for each (sockaddr structure wrapped by a CFDataRef/NSData *) associated with the hostname,     │
-  │  drop the IP address string into a Set to remove duplicates.                                     │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        for (NSData * ntpHost in (NSArray *)ntpHostAddrs) {
-            [hostAddresses addObject:[self hostAddress:(struct sockaddr_in *)[ntpHost bytes]]];
-        }
-        CFRelease(ntpHostName);
-    }
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  get ready to catch any notifications from associations ...                                      │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationTrue:)
-                                                 name:@"assoc-good" object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationFake:)
-                                                 name:@"assoc-fail" object:nil];
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... now start an 'association' (network clock object) for each address.                         │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    for (NSString * server in hostAddresses) {
-        NetAssociation *    timeAssociation = [[[NetAssociation alloc] init:server] autorelease];
-
+        NetAssociation* timeAssociation = [[NetAssociation alloc] initWithServerName:ntpDomainName queue:associationDelegateQueue];
         [timeAssociations addObject:timeAssociation];
-        [timeAssociation enable];                               // starts are randomized internally
+        [timeAssociation release];
     }
-    [hostAddresses release];
+
+    // Enable associations.
+    [self enableAssociations];
+}
+
+- (void) enableAssociations {
+    [timeAssociations makeObjectsPerformSelector:@selector(enable)];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationTrue:) name:@"assoc-good" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(associationFake:) name:@"assoc-fail" object:nil];
 }
 
 - (void) reportAssociations {
@@ -204,10 +174,9 @@
   ┃ Stop all the individual ntp clients ..                                                           ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finishAssociations {
-    for (NetAssociation * timeAssociation in timeAssociations) {
-        [timeAssociation finish];
-    }
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [timeAssociations makeObjectsPerformSelector:@selector(finish)];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"assoc-good" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"assoc-fail" object:nil];
 }
 
 #import <arpa/inet.h>
@@ -256,7 +225,7 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) applicationBack:(NSNotification *) notification {
     LogInProduction(@"*** application -> Background");
-//  [self finishAssociations];
+    [self finishAssociations];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -264,60 +233,7 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) applicationFore:(NSNotification *) notification {
     LogInProduction(@"*** application -> Foreground");
-//  [self enableAssociations];
+    [self enableAssociations];
 }
-
-#import "SynthesizeSingleton.h"
-
-#pragma mark -
-#pragma mark                        S I N G L E T O N • B E H A V I O U R
-
-SYNTHESIZE_SINGLETON_FOR_CLASS(NetworkClock);
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ the SYNTHESIZE_SINGLETON_FOR_CLASS macro expands thus:                                           ┃
-  ┃──────────────────────────────────────────────────────────────────────────────────────────────────┃
-  ┃                                                                                                  ┃
-  ┃         static Singleton *sharedSingleton = ((void*)0);                                          ┃
-  ┃                                                                                                  ┃
-  ┃         + (Singleton *)sharedSingleton {                                                         ┃
-  ┃             @synchronized(self) {                                                                ┃
-  ┃                 if (sharedSingleton == ((void*)0)) {                                             ┃
-  ┃                     sharedSingleton = [[self alloc] init];                                       ┃
-  ┃                 }                                                                                ┃
-  ┃             }                                                                                    ┃
-  ┃             return sharedSingleton;                                                              ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         + (id)allocWithZone:(NSZone *)zone {                                                     ┃
-  ┃             @synchronized(self) {                                                                ┃
-  ┃                 if (sharedSingleton == ((void*)0)) {                                             ┃
-  ┃                     sharedSingleton = [super allocWithZone:zone];                                ┃
-  ┃                     return sharedSingleton;                                                      ┃
-  ┃                 }                                                                                ┃
-  ┃             }                                                                                    ┃
-  ┃             return ((void*)0);                                                                   ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (id)copyWithZone:(NSZone *)zone {                                                      ┃
-  ┃             return self;                                                                         ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (id)retain {                                                                           ┃
-  ┃             return self;                                                                         ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (NSUInteger)retainCount {                                                              ┃
-  ┃             return (2147483647L *2UL +1UL);                                                      ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (void)release {                                                                        ┃
-  ┃         }                                                                                        ┃
-  ┃                                                                                                  ┃
-  ┃         - (id)autorelease {                                                                      ┃
-  ┃             return self;                                                                         ┃
-  ┃         };                                                                                       ┃
-  ┃                                                                                                  ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
 @end
