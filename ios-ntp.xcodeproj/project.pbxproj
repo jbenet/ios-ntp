@@ -7,41 +7,51 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		199B5743151CBE5100155281 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
-		199B575A151CD62900155281 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
-		199B575C151CD62C00155281 /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661906E126C0CD70046A2B8 /* UIKit.framework */; };
-		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
-		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
-		86619086126C0D120046A2B8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619085126C0D120046A2B8 /* CFNetwork.framework */; };
-		D91E95E313D9AF8C004E4194 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
-		D91E95E413D9AF8C004E4194 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
-		D91E95E513D9AF8C004E4194 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DE13D9AF8C004E4194 /* main.m */; };
-		D91E95E613D9AF8C004E4194 /* ntpAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95E013D9AF8C004E4194 /* ntpAAppDelegate.m */; };
-		D91E95E713D9AF8C004E4194 /* ntpAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95E213D9AF8C004E4194 /* ntpAViewController.m */; };
-		D91E95F713D9B029004E4194 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = D91E95EF13D9B018004E4194 /* ntp.hosts */; };
-		D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D91E95F913D9B063004E4194 /* InfoPlist.strings */; };
-		D91E960013D9B063004E4194 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FB13D9B063004E4194 /* MainWindow.xib */; };
-		D91E960113D9B063004E4194 /* ntpAViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FD13D9B063004E4194 /* ntpAViewController.xib */; };
-		D9B2BA2D13D9B59F00C9385A /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
-		D9B2BA2E13D9B5A200C9385A /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
-		D9B2BA2F13D9B5A500C9385A /* NetAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95D913D9AF8C004E4194 /* NetAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9B2BA3013D9B5A800C9385A /* NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95DB13D9AF8C004E4194 /* NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9B2BA3313D9B6CF00C9385A /* ios-ntp.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9B2BA4213D9C06100C9385A /* NSDate+NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D9B2BA4313D9C06100C9385A /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
-		D9B2BA4413D9C06100C9385A /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
-		D9B2BA8813D9C8A100C9385A /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = D91E95EF13D9B018004E4194 /* ntp.hosts */; };
+		3470C4CE15DB290A009295B2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3470C4CD15DB290A009295B2 /* Foundation.framework */; };
+		3470C4E015DB2947009295B2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3470C4DF15DB2947009295B2 /* UIKit.framework */; };
+		3470C4E115DB2947009295B2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3470C4CD15DB290A009295B2 /* Foundation.framework */; };
+		3470C4E315DB2947009295B2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3470C4E215DB2947009295B2 /* CoreGraphics.framework */; };
+		3470C4F315DB29D8009295B2 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
+		3470C4F415DB29D8009295B2 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
+		3470C4F515DB29D8009295B2 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
+		3470C4F615DB29D8009295B2 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
+		3470C4F815DB2A0B009295B2 /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3470C4F915DB2A0B009295B2 /* NSDate+NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3470C4FA15DB2A0B009295B2 /* ios-ntp.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3470C4FB15DB2A0B009295B2 /* NetAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95D913D9AF8C004E4194 /* NetAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3470C4FC15DB2A0B009295B2 /* NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95DB13D9AF8C004E4194 /* NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3470C4FF15DB2BBC009295B2 /* libios-ntp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3470C4CB15DB290A009295B2 /* libios-ntp.a */; };
+		3470C50015DB2BD9009295B2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DE13D9AF8C004E4194 /* main.m */; };
+		3470C50115DB2BD9009295B2 /* ntpAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95E013D9AF8C004E4194 /* ntpAAppDelegate.m */; };
+		3470C50215DB2BD9009295B2 /* ntpAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95E213D9AF8C004E4194 /* ntpAViewController.m */; };
+		3470C50315DB2CAF009295B2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FB13D9B063004E4194 /* MainWindow.xib */; };
+		3470C50415DB2CB3009295B2 /* ntpAViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D91E95FD13D9B063004E4194 /* ntpAViewController.xib */; };
+		3470C50515DB2CB9009295B2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D91E95F913D9B063004E4194 /* InfoPlist.strings */; };
+		3470C50615DB2CBE009295B2 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = D91E95EF13D9B018004E4194 /* ntp.hosts */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3470C4FD15DB2BB4009295B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 86C39F00126A1FA000A9DCD1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3470C4CA15DB290A009295B2;
+			remoteInfo = "ios-ntp";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
 		199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		3470C4CB15DB290A009295B2 /* libios-ntp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-ntp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3470C4CD15DB290A009295B2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		3470C4DD15DB2947009295B2 /* ntpA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ntpA.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3470C4DF15DB2947009295B2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3470C4E215DB2947009295B2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8661906E126C0CD70046A2B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		86619085126C0D120046A2B8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		86C39F0D126A1FA100A9DCD1 /* ntpA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ntpA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D91E95D913D9AF8C004E4194 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
 		D91E95DA13D9AF8C004E4194 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
 		D91E95DB13D9AF8C004E4194 /* NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkClock.h; sourceTree = "<group>"; };
@@ -57,38 +67,46 @@
 		D91E95FA13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		D91E95FC13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = MainWindow.xib; sourceTree = "<group>"; };
 		D91E95FE13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = ntpAViewController.xib; sourceTree = "<group>"; };
-		D9B2BA1F13D9B4BB00C9385A /* ios-ntp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-ntp.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9B2BA2B13D9B50200C9385A /* ios-ntp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-ntp-Info.plist"; sourceTree = "<group>"; };
 		D9B2BA2C13D9B50200C9385A /* ios-ntp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ios-ntp-Prefix.pch"; sourceTree = "<group>"; };
 		D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ios-ntp.h"; sourceTree = "<group>"; };
-		D9B2BA3E13D9B95100C9385A /* ios-ntp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "ios-ntp.framework"; path = "release/ios-ntp.framework"; sourceTree = "<group>"; };
-		D9B2BA3F13D9B95100C9385A /* ios-ntp.tar.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; name = "ios-ntp.tar.gz"; path = "release/ios-ntp.tar.gz"; sourceTree = "<group>"; };
 		D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NetworkClock.h"; sourceTree = "<group>"; };
 		D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NetworkClock.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		86C39F0A126A1FA100A9DCD1 /* Frameworks */ = {
+		3470C4C815DB290A009295B2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */,
-				8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */,
-				86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */,
-				86619086126C0D120046A2B8 /* CFNetwork.framework in Frameworks */,
+				3470C4CE15DB290A009295B2 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D9B2BA1A13D9B4BB00C9385A /* Frameworks */ = {
+		3470C4DA15DB2947009295B2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3470C4FF15DB2BBC009295B2 /* libios-ntp.a in Frameworks */,
+				3470C4E015DB2947009295B2 /* UIKit.framework in Frameworks */,
+				3470C4E115DB2947009295B2 /* Foundation.framework in Frameworks */,
+				3470C4E315DB2947009295B2 /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3470C4CC15DB290A009295B2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3470C4CD15DB290A009295B2 /* Foundation.framework */,
+				3470C4DF15DB2947009295B2 /* UIKit.framework */,
+				3470C4E215DB2947009295B2 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		86C39EFE126A1FA000A9DCD1 = {
 			isa = PBXGroup;
 			children = (
@@ -98,6 +116,7 @@
 				D91E95E813D9B018004E4194 /* resources */,
 				86C39F08126A1FA100A9DCD1 /* frameworks */,
 				86C39F0E126A1FA100A9DCD1 /* products */,
+				3470C4CC15DB290A009295B2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -115,10 +134,8 @@
 		86C39F0E126A1FA100A9DCD1 /* products */ = {
 			isa = PBXGroup;
 			children = (
-				86C39F0D126A1FA100A9DCD1 /* ntpA.app */,
-				D9B2BA1F13D9B4BB00C9385A /* ios-ntp.framework */,
-				D9B2BA3E13D9B95100C9385A /* ios-ntp.framework */,
-				D9B2BA3F13D9B95100C9385A /* ios-ntp.tar.gz */,
+				3470C4CB15DB290A009295B2 /* libios-ntp.a */,
+				3470C4DD15DB2947009295B2 /* ntpA.app */,
 			);
 			name = products;
 			sourceTree = "<group>";
@@ -184,48 +201,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		D9B2BA1913D9B4BB00C9385A /* Headers */ = {
+		3470C4F715DB29F1009295B2 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9B2BA3313D9B6CF00C9385A /* ios-ntp.h in Headers */,
-				D9B2BA3013D9B5A800C9385A /* NetworkClock.h in Headers */,
-				D9B2BA2F13D9B5A500C9385A /* NetAssociation.h in Headers */,
-				D9B2BA4213D9C06100C9385A /* NSDate+NetworkClock.h in Headers */,
-				199B575C151CD62C00155281 /* GCDAsyncUdpSocket.h in Headers */,
+				3470C4F815DB2A0B009295B2 /* GCDAsyncUdpSocket.h in Headers */,
+				3470C4F915DB2A0B009295B2 /* NSDate+NetworkClock.h in Headers */,
+				3470C4FA15DB2A0B009295B2 /* ios-ntp.h in Headers */,
+				3470C4FB15DB2A0B009295B2 /* NetAssociation.h in Headers */,
+				3470C4FC15DB2A0B009295B2 /* NetworkClock.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		86C39F0C126A1FA100A9DCD1 /* ntpA */ = {
+		3470C4CA15DB290A009295B2 /* ios-ntp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 86C39F2B126A1FA100A9DCD1 /* Build configuration list for PBXNativeTarget "ntpA" */;
+			buildConfigurationList = 3470C4D615DB290B009295B2 /* Build configuration list for PBXNativeTarget "ios-ntp" */;
 			buildPhases = (
-				86C39F09126A1FA100A9DCD1 /* Sources */,
-				86C39F0A126A1FA100A9DCD1 /* Frameworks */,
-				86C39F0B126A1FA100A9DCD1 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ntpA;
-			productName = ntpA;
-			productReference = 86C39F0D126A1FA100A9DCD1 /* ntpA.app */;
-			productType = "com.apple.product-type.application";
-		};
-		D9B2BA1E13D9B4BB00C9385A /* ios-ntp */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D9B2BA2913D9B4BB00C9385A /* Build configuration list for PBXNativeTarget "ios-ntp" */;
-			buildPhases = (
-				D9B2BA1813D9B4BB00C9385A /* Sources */,
-				D9B2BA1913D9B4BB00C9385A /* Headers */,
-				D9B2BA1A13D9B4BB00C9385A /* Frameworks */,
-				D9B2BA1D13D9B4BB00C9385A /* Resources */,
-				D9B2BA1B13D9B4BB00C9385A /* Run Script */,
-				D9B2BA1C13D9B4BB00C9385A /* ShellScript */,
+				3470C4C715DB290A009295B2 /* Sources */,
+				3470C4C815DB290A009295B2 /* Frameworks */,
+				3470C4F715DB29F1009295B2 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -233,8 +230,26 @@
 			);
 			name = "ios-ntp";
 			productName = "ios-ntp";
-			productReference = D9B2BA1F13D9B4BB00C9385A /* ios-ntp.framework */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 3470C4CB15DB290A009295B2 /* libios-ntp.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		3470C4DC15DB2947009295B2 /* ntpA */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3470C4F015DB2947009295B2 /* Build configuration list for PBXNativeTarget "ntpA" */;
+			buildPhases = (
+				3470C4D915DB2947009295B2 /* Sources */,
+				3470C4DA15DB2947009295B2 /* Frameworks */,
+				3470C4DB15DB2947009295B2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3470C4FE15DB2BB4009295B2 /* PBXTargetDependency */,
+			);
+			name = ntpA;
+			productName = "ios-ntp Demo";
+			productReference = 3470C4DD15DB2947009295B2 /* ntpA.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -257,91 +272,57 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				86C39F0C126A1FA100A9DCD1 /* ntpA */,
-				D9B2BA1E13D9B4BB00C9385A /* ios-ntp */,
+				3470C4CA15DB290A009295B2 /* ios-ntp */,
+				3470C4DC15DB2947009295B2 /* ntpA */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		86C39F0B126A1FA100A9DCD1 /* Resources */ = {
+		3470C4DB15DB2947009295B2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D91E95F713D9B029004E4194 /* ntp.hosts in Resources */,
-				D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */,
-				D91E960013D9B063004E4194 /* MainWindow.xib in Resources */,
-				D91E960113D9B063004E4194 /* ntpAViewController.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D9B2BA1D13D9B4BB00C9385A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D9B2BA8813D9C8A100C9385A /* ntp.hosts in Resources */,
+				3470C50315DB2CAF009295B2 /* MainWindow.xib in Resources */,
+				3470C50415DB2CB3009295B2 /* ntpAViewController.xib in Resources */,
+				3470C50515DB2CB9009295B2 /* InfoPlist.strings in Resources */,
+				3470C50615DB2CBE009295B2 /* ntp.hosts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		D9B2BA1B13D9B4BB00C9385A /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"${ACTION}\" = \"build\" ]\nthen\n\n# Product name should be ${TARGET_NAME}.framework anyway...\nFWK_NAME=\"${WRAPPER_NAME}\"\nFWK_LIB=\"${FWK_NAME}/${TARGET_NAME}\"\n\n# Set the target folders and the final framework product.\nFWK_PATH=\"${SYMROOT}/${CONFIGURATION}-framework\"\nDEV_PATH=\"${SYMROOT}/${CONFIGURATION}-iphoneos\"\nSIM_PATH=\"${SYMROOT}/${CONFIGURATION}-iphonesimulator\"\nFWK_ROOT=\"${FWK_PATH}/${FWK_NAME}\"\n\necho \"framework: building ${FWK_NAME}\"\n\necho \"framework: setting up framework directory structure\"\n\nmkdir -p \"${FWK_ROOT}\"\nrm -rf \"${FWK_ROOT}/\"*\n\nif [ $? -ne 0 ];then\n  echo \"error: failed to delete existing framework. check permissions?\"\n  exit\nfi\n\n# Build the canonical Framework bundle directory structure\nmkdir -p \"${FWK_ROOT}/Versions\"\nmkdir -p \"${FWK_ROOT}/Versions/${FRAMEWORK_VERSION}\"\nmkdir -p \"${FWK_ROOT}/Versions/${FRAMEWORK_VERSION}/Resources\"\nmkdir -p \"${FWK_ROOT}/Versions/${FRAMEWORK_VERSION}/Headers\"\n\nln -s \"${FRAMEWORK_VERSION}\" \"${FWK_ROOT}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${FWK_ROOT}/Headers\"\nln -s \"Versions/Current/Resources\" \"${FWK_ROOT}/Resources\"\nln -s \"Versions/Current/${TARGET_NAME}\" \"${FWK_ROOT}/${TARGET_NAME}\"\n\n\nif [ ! -d \"${DEV_PATH}/${FWK_NAME}/Headers\" ]\nthen\n  echo \"error: Framework target \\\"${TARGET_NAME}\\\" did not copy any headers.\" \\\n   \"Make sure the desired headers are on the 'Copy Headers' Build Phase.\" \\\n   \"Make sure you built the Device target (from which headers are copied).\"\n  exit 1\nfi\n\n# Copy the header files to the final product folder.\necho \"framework: copying headers from ${DEV_PATH}/${FWK_NAME}/Headers\"\nditto \"${DEV_PATH}/${FWK_NAME}/Headers\" \"${FWK_ROOT}/Headers\"\n\n# Copy the the plist to the final product folder.\necho \"framework: copying Info.plist file\"\ncp \"${DEV_PATH}/${FWK_NAME}/Info.plist\" \"${FWK_ROOT}/Resources/Info.plist\"\n\n# Copy the the ntp.hosts to the final product folder.\nif [ ! -f \"${DEV_PATH}/${FWK_NAME}/ntp.hosts\" ]\nthen\n  echo \"error: Framework target \\\"${TARGET_NAME}\\\" cannot copy ntp.hosts file.\" \\\n  \"Make sure it exists and is added to the 'Copy Bunde Resources' phase PRIOR to .\" \\\n  \"the Run Script phases.\"\n  exit 1\nfi\n\necho \"framework: copying ntp.hosts file\"\ncp \"${DEV_PATH}/${FWK_NAME}/ntp.hosts\" \"${FWK_ROOT}/Resources/ntp.hosts\"\n\n# Use the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\necho \"framework: creating universal lib ${FWK_PATH}/${FWK_LIB}\"\nlipo -create \"${DEV_PATH}/${FWK_LIB}\" \"${SIM_PATH}/${FWK_LIB}\" \\\n     -output \"${FWK_ROOT}/Versions/Current/${TARGET_NAME}\"\n\nfi";
-		};
-		D9B2BA1C13D9B4BB00C9385A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]\nthen\n\n# Product name should be ${TARGET_NAME}.framework anyway...\nFWK_NAME=\"${WRAPPER_NAME}\"\nFWK_PATH=\"${SYMROOT}/${CONFIGURATION}-framework\"\nFWK_TARBALL=\"${RELEASE_TARBALL_FILE}\"\n\n\n# Package up\nTARBALL_PATH=`dirname \"${RELEASE_TARBALL_FILE}\"`\nTARBALL_FILENAME=`basename \"${RELEASE_TARBALL_FILE}\"`\necho \"framework: packaging release tarball\"\nmkdir -p \"${TARBALL_PATH}\"\ncp -r \"${FWK_PATH}/${FWK_NAME}\" \"${TARBALL_PATH}/.\"\ncd \"${TARBALL_PATH}\"\ntar -czf \"${TARBALL_FILENAME}\" \"${FWK_NAME}\"\n\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		86C39F09126A1FA100A9DCD1 /* Sources */ = {
+		3470C4C715DB290A009295B2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D91E95E313D9AF8C004E4194 /* NetAssociation.m in Sources */,
-				D91E95E413D9AF8C004E4194 /* NetworkClock.m in Sources */,
-				D91E95E513D9AF8C004E4194 /* main.m in Sources */,
-				D91E95E613D9AF8C004E4194 /* ntpAAppDelegate.m in Sources */,
-				D91E95E713D9AF8C004E4194 /* ntpAViewController.m in Sources */,
-				D9B2BA4313D9C06100C9385A /* NSDate+NetworkClock.m in Sources */,
-				199B5743151CBE5100155281 /* GCDAsyncUdpSocket.m in Sources */,
+				3470C4F315DB29D8009295B2 /* GCDAsyncUdpSocket.m in Sources */,
+				3470C4F415DB29D8009295B2 /* NSDate+NetworkClock.m in Sources */,
+				3470C4F515DB29D8009295B2 /* NetAssociation.m in Sources */,
+				3470C4F615DB29D8009295B2 /* NetworkClock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D9B2BA1813D9B4BB00C9385A /* Sources */ = {
+		3470C4D915DB2947009295B2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D9B2BA2E13D9B5A200C9385A /* NetworkClock.m in Sources */,
-				D9B2BA2D13D9B59F00C9385A /* NetAssociation.m in Sources */,
-				D9B2BA4413D9C06100C9385A /* NSDate+NetworkClock.m in Sources */,
-				199B575A151CD62900155281 /* GCDAsyncUdpSocket.m in Sources */,
+				3470C50015DB2BD9009295B2 /* main.m in Sources */,
+				3470C50115DB2BD9009295B2 /* ntpAAppDelegate.m in Sources */,
+				3470C50215DB2BD9009295B2 /* ntpAViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3470C4FE15DB2BB4009295B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3470C4CA15DB290A009295B2 /* ios-ntp */;
+			targetProxy = 3470C4FD15DB2BB4009295B2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D91E95F913D9B063004E4194 /* InfoPlist.strings */ = {
@@ -371,6 +352,111 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		3470C4D715DB290B009295B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphoneos*]" = (
+					armv6,
+					armv7,
+				);
+				"ARCHS[sdk=iphoneos6.0]" = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/ios_ntp.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "resources/ios-ntp-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "../../Headers/ios-ntp";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		3470C4D815DB290B009295B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphoneos*]" = (
+					armv6,
+					armv7,
+				);
+				"ARCHS[sdk=iphoneos6.0]" = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/ios_ntp.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "resources/ios-ntp-Prefix.pch";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "../../Headers/ios-ntp";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3470C4F115DB2947009295B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = resources/ntpA_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "resources/ntpA-Info.plist";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		3470C4F215DB2947009295B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = resources/ntpA_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "resources/ntpA-Info.plist";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		86C39F29126A1FA100A9DCD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -379,7 +465,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = IOS_NTP_LOGGING;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
@@ -402,141 +488,32 @@
 			};
 			name = Release;
 		};
-		86C39F2C126A1FA100A9DCD1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = resources/ntpA_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = IOS_NTP_LOGGING;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "resources/ntpA-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 1;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		86C39F2D126A1FA100A9DCD1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = resources/ntpA_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "resources/ntpA-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_PRODUCT = YES;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		D9B2BA2713D9B4BB00C9385A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					"$(ARCHS_STANDARD_64_BIT)",
-				);
-				DEAD_CODE_STRIPPING = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "resources/ios-ntp-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = "";
-				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
-				INFOPLIST_FILE = "resources/ios-ntp-Info.plist";
-				INFOPLIST_OUTPUT_FORMAT = xml;
-				INFOPLIST_PREPROCESS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				LINK_WITH_STANDARD_LIBRARIES = NO;
-				MACH_O_TYPE = mh_object;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-all_load",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				RELEASE_TARBALL_FILE = "release/$(TARGET_NAME).tar.gz";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv6 armv7 x86_64 i386";
-				WRAPPER_EXTENSION = framework;
-			};
-			name = Debug;
-		};
-		D9B2BA2813D9B4BB00C9385A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					"$(ARCHS_STANDARD_64_BIT)",
-				);
-				DEAD_CODE_STRIPPING = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "resources/ios-ntp-Prefix.pch";
-				GCC_VERSION = "";
-				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
-				INFOPLIST_FILE = "resources/ios-ntp-Info.plist";
-				INFOPLIST_OUTPUT_FORMAT = xml;
-				INFOPLIST_PREPROCESS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				LINK_WITH_STANDARD_LIBRARIES = NO;
-				MACH_O_TYPE = mh_object;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-all_load",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				RELEASE_TARBALL_FILE = "release/$(TARGET_NAME).tar.gz";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv6 armv7 x86_64 i386";
-				WRAPPER_EXTENSION = framework;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3470C4D615DB290B009295B2 /* Build configuration list for PBXNativeTarget "ios-ntp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3470C4D715DB290B009295B2 /* Debug */,
+				3470C4D815DB290B009295B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3470C4F015DB2947009295B2 /* Build configuration list for PBXNativeTarget "ntpA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3470C4F115DB2947009295B2 /* Debug */,
+				3470C4F215DB2947009295B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		86C39F03126A1FA000A9DCD1 /* Build configuration list for PBXProject "ios-ntp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86C39F29126A1FA100A9DCD1 /* Debug */,
 				86C39F2A126A1FA100A9DCD1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		86C39F2B126A1FA100A9DCD1 /* Build configuration list for PBXNativeTarget "ntpA" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				86C39F2C126A1FA100A9DCD1 /* Debug */,
-				86C39F2D126A1FA100A9DCD1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D9B2BA2913D9B4BB00C9385A /* Build configuration list for PBXNativeTarget "ios-ntp" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D9B2BA2713D9B4BB00C9385A /* Debug */,
-				D9B2BA2813D9B4BB00C9385A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
