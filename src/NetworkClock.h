@@ -18,6 +18,8 @@
 @interface NetworkClock : NSObject {
 
     NSTimeInterval          timeIntervalSinceDeviceTime;
+    
+    BOOL                    ready;
 
     NSMutableArray *        timeAssociations;
 

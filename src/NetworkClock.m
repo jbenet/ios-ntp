@@ -45,6 +45,9 @@
 
 - (id) init {
     if (!(self = [super init])) return nil;
+    
+    ready = NO;
+    
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
   │ array of empty associations to use ...                                                           │
@@ -101,6 +104,7 @@
 
     if (usefulCount > 0) {
         timeIntervalSinceDeviceTime /= usefulCount;
+        ready = YES;
     }
 //###ADDITION?
   if (usefulCount ==8)
@@ -117,7 +121,7 @@
   ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
-    return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime];
+    return ready ? [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime] : nil;
 
     //[[NSNotificationCenter defaultCenter] postNotificationName:@"net-time" object:self];
 
