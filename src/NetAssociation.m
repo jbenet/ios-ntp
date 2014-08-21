@@ -238,18 +238,20 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
             offset += fifoQueue[i];
         }
     }
+    if (good > 0)
+        offset = offset / good;
+   
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │   .. if we have at least one 'good' server response or four or more 'fail' responses, we'll      │
   │      inform our management accordingly.  If we have less than four 'fails' we won't make any     │
   │      note of that ... we won't condemn a server until we get four 'fail' packets.                │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     if (good > 0 || fail > 3) {
-        offset = offset / good;
-        
+       
         NTP_Logging(@"[%@] index=%i {good: %i; fail: %i; none: %i} offset=%3.1f", server,
                     fifoIndex, good, fail, none, offset * 1000.0);
         
-        if (good+none < 5) {                                // four or more 'fails'
+        if (fail > 3) {                                // four or more 'fails', (even if we have 4 goods ? (nat))
             trusty = FALSE;  
             [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-fail" object:self];
         }
