@@ -1,8 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ ntpAAppDelegate.m                                                                                ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Nov16/10                                                               ║
-  ║ Copyright © 2010 Ramsay Consulting. All rights reserved.                                         ║
+  ║ Created by Gavin Eadie on Nov16/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "ntpAAppDelegate.h"
@@ -30,7 +29,6 @@
                                         userInfo:nil repeats:YES];
 
     [[NSRunLoop currentRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
-    [repeatingTimer release];
 
     return YES;
 }
@@ -50,11 +48,5 @@
     [[NetworkClock sharedNetworkClock] finishAssociations];   // be nice and let all the servers go ...
 }
 
-- (void)dealloc {
-
-    [window release];
-    [viewController release];
-    [super dealloc];
-}
 
 @end

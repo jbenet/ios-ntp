@@ -1,28 +1,26 @@
-//
-//  ntpAAppDelegate.h
-//  ntpA
-//
-//  Created by Gavin Eadie on 10/16/10.
-//  Copyright (c) 2010 Ramsay Consulting. All rights reserved.
-//
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ ntpAAppDelegate.h                                                                                ║
+  ║                                                                                                  ║
+  ║ Created by Gavin Eadie on Nov16/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <UIKit/UIKit.h>
 
 @class ntpAViewController;
 
 @interface ntpAAppDelegate : NSObject <UIApplicationDelegate> {
-    
+
     NSDate *                        systemTime;
     NSDate *                        networkTime;
-    
+
     IBOutlet UILabel *              sysClockLabel;
     IBOutlet UILabel *              netClockLabel;
     IBOutlet UILabel *              differenceLabel;
-    
+
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *           window;
-@property (nonatomic, retain) IBOutlet ntpAViewController * viewController;
+@property (nonatomic, strong) IBOutlet UIWindow *           window;
+@property (nonatomic, strong) IBOutlet ntpAViewController * viewController;
 
 - (void) repeatingMethod:(NSTimer*)theTimer;
 

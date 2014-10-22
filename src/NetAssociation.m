@@ -1,8 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ NetAssociation.m                                                                                 ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Nov03/10                                                               ║
-  ║ Copyright 2010 Ramsay Consulting. All rights reserved.                                           ║
+  ║ Created by Gavin Eadie on Nov03/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "NetAssociation.h"
@@ -67,7 +66,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    server = [serverName retain];
+    server = serverName;
     socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:queue ? queue : dispatch_get_main_queue()];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -81,20 +80,16 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ Finally, initialize the repeating timer that queries the server, set it's trigger time to the    │
   │ infinite future, and put it on the run loop .. nothing will happen (yet)                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    repeatingTimer = [[NSTimer timerWithTimeInterval:pollIntervals[pollingIntervalIndex]
+    repeatingTimer = [NSTimer timerWithTimeInterval:pollIntervals[pollingIntervalIndex]
                                              target:self selector:@selector(queryTimeServer:)
-                                           userInfo:nil repeats:YES] retain];
+                                           userInfo:nil repeats:YES];
     [repeatingTimer setFireDate:[NSDate distantFuture]];
     [[NSRunLoop mainRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
     return self;
 }
 
 - (void)dealloc {
-    [server release];
     [repeatingTimer invalidate];
-    [repeatingTimer release];
-    [socket release];
-    [super dealloc];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -274,10 +269,9 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
             NTP_Logging(@"[%@] poll interval adusted: %3.1f >> %3.1f", server,
                         [repeatingTimer timeInterval], pollIntervals[pollingIntervalIndex]);
             [repeatingTimer invalidate];
-            [repeatingTimer release];
-            repeatingTimer = [[NSTimer scheduledTimerWithTimeInterval:pollIntervals[pollingIntervalIndex]
+            repeatingTimer = [NSTimer scheduledTimerWithTimeInterval:pollIntervals[pollingIntervalIndex]
                                                                target:self selector:@selector(queryTimeServer:)
-                                                             userInfo:nil repeats:YES] retain];
+                                                             userInfo:nil repeats:YES];
         } 
     });    
 }

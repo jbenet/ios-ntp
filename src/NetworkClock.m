@@ -1,8 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║  NetworkClock.m                                                                                  ║
   ║                                                                                                  ║
-  ║  Created by Gavin Eadie on Oct17/10                                                              ║
-  ║  Copyright 2010 Ramsay Consulting. All rights reserved.                                          ║
+  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <netinet/in.h>
@@ -43,6 +42,17 @@
     return sharedNetworkClockInstance;
 }
 
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Return the device clock time adjusted for the offset to network-derived UTC.  Since this could   ┃
+  ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (NSDate *) networkTime {
+    return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime];
+
+    //[[NSNotificationCenter defaultCenter] postNotificationName:@"net-time" object:self];
+
+}
+
 - (id) init {
     if (!(self = [super init])) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -50,15 +60,15 @@
   │ array of empty associations to use ...                                                           │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     dispersionSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES];
-    sortDescriptors = [[NSArray arrayWithObject:dispersionSortDescriptor] retain];
-    timeAssociations = [[NSMutableArray arrayWithCapacity:48] retain];
+    sortDescriptors = [NSArray arrayWithObject:dispersionSortDescriptor];
+    timeAssociations = [NSMutableArray arrayWithCapacity:48];
 
     associationDelegateQueue = dispatch_queue_create("org.ios-ntp.delegates", 0);
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [self createAssociations];                  
+    [self createAssociations];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ prepare to catch our application entering and leaving the background ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -74,9 +84,8 @@
 
 - (void)dealloc {
     [self finishAssociations];
-    dispatch_release(associationDelegateQueue);
+//  dispatch_release(associationDelegateQueue);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super dealloc];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -112,17 +121,6 @@
 //###
 }
 
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Return the device clock time adjusted for the offset to network-derived UTC.  Since this could   ┃
-  ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (NSDate *) networkTime {
-    return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime];
-
-    //[[NSNotificationCenter defaultCenter] postNotificationName:@"net-time" object:self];
-
-}
-
 #pragma mark                        I n t e r n a l  •  M e t h o d s
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -138,7 +136,6 @@
 
     NSArray *   ntpDomains = [fileData componentsSeparatedByCharactersInSet:
                                                                 [NSCharacterSet newlineCharacterSet]];
-    [fileData release];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  for each NTP service domain name in the 'ntp.hosts' file : "0.pool.ntp.org" etc ...             │
@@ -153,7 +150,6 @@
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         NetAssociation* timeAssociation = [[NetAssociation alloc] initWithServerName:ntpDomainName queue:associationDelegateQueue];
         [timeAssociations addObject:timeAssociation];
-        [timeAssociation release];
     }
 
     // Enable associations.

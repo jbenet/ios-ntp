@@ -1,8 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ NetworkClock.h                                                                                   ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Oct17/10                                                               ║
-  ║ Copyright 2010 Ramsay Consulting. All rights reserved.                                           ║
+  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <Foundation/Foundation.h>
@@ -22,10 +21,10 @@
     NSMutableArray *        timeAssociations;
 
 @private
-    
+
     NSSortDescriptor *      dispersionSortDescriptor;
     NSArray *               sortDescriptors;
-    
+
     dispatch_queue_t        associationDelegateQueue;
 }
 

@@ -1,10 +1,8 @@
-//
-//  ntpAViewController.m
-//  ntpA
-//
-//  Created by Gavin Eadie on 10/16/10.
-//  Copyright (c) 2010 Ramsay Consulting. All rights reserved.
-//
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ ntpAViewController.m                                                                             ║
+  ║                                                                                                  ║
+  ║ Created by Gavin Eadie on Nov16/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "ntpAViewController.h"
 
@@ -15,11 +13,6 @@
 }
 
 - (void)viewDidUnload {
-}
-
-
-- (void)dealloc {
-    [super dealloc];
 }
 
 @end
