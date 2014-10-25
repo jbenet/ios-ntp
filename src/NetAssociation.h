@@ -25,20 +25,20 @@ struct ntpTimestamp {
 	uint32_t    partSeconds;
 };
 
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  NTP Short Format Structure                                                                      │
-  │                                                                                                  │
-  │   0                   1                   2                   3                                  │
-  │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
-  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
-  │  |          Seconds              |           Fraction            | <-- 65536 = 1 second          │
-  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-struct ntpShortTime {
-	uint16_t    fullSeconds;
-	uint16_t    partSeconds;
-};
-
+///*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+//  │  NTP Short Format Structure                                                                      │
+//  │                                                                                                  │
+//  │   0                   1                   2                   3                                  │
+//  │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
+//  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+//  │  |          Seconds              |           Fraction            | <-- 65536 = 1 second          │
+//  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+//  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+//struct ntpShortTime {
+//	uint16_t    fullSeconds;
+//	uint16_t    partSeconds;
+//};
+//
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ NetAssociation represents one time server.  When it is created, it sends the first time query,   │
   │ evaluates the quality of the reply, and keeps the queries running till the server goes 'bad'     │
@@ -71,7 +71,7 @@ struct ntpShortTime {
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
-- (id) initWithServerName:(NSString *)serverName queue:(dispatch_queue_t)queue;
+- (instancetype) initWithServerName:(NSString *)serverName queue:(dispatch_queue_t)queue NS_DESIGNATED_INITIALIZER;
 - (void) enable;
 - (void) finish;
 

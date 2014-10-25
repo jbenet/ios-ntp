@@ -18,29 +18,16 @@ static double pollIntervals[18] = {
   ┃ This object manages the communication and time calculations for one server association.          ┃
   ┃                                                                                                  ┃
   ┃ Multiple servers are used in a process in which each client/server pair (association) works to   ┃
-  ┃ obtain its own best version of the time.  The client sends small UDP packets to each server      ┃
-  ┃ which overwrites certain fields in the packet and returns it immediately.  As each NTP message   ┃
-  ┃ is received, the offset theta between the peer clock and the system clock is computed along      ┃
-  ┃ with the associated statistics delta, epsilon, and psi.                                          ┃
+  ┃ obtain its own best version of the time from its server.  The client sends small UDP packets to  ┃
+  ┃ its server which overwrites certain fields in the packet and returns it immediately.  As each    ┃
+  ┃ NTP message is received, the offset (theta) between the peer clock and the system clock is       ┃
+  ┃ computed along with the associated statistics delta, epsilon, and psi.                           ┃
   ┃                                                                                                  ┃
   ┃ Each association does its own best effort at obtaining an accurate time and reports these times  ┃
   ┃ and their estimated accuracy to a system process that selects, clusters, and combines the        ┃
   ┃ various servers and reference clocks to determine the most accurate and reliable candidates to   ┃
   ┃ provide a best time.                                                                             ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-
-@interface NetAssociation (PrivateMethods)
-
-- (void) queryTimeServer:(NSTimer *) timer;     // query the association's server (fired by timer)
-
-- (NSDate *)  dateFromNetworkTime:(struct ntpTimestamp *) networkTime;
-- (NSData *) createPacket;
-- (void) evaluatePacket;
-
-- (NSString *) prettyPrintPacket;
-- (NSString *) prettyPrintTimers;
-
-@end
 
 static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
 
@@ -49,25 +36,24 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 
 @implementation NetAssociation
 
-@synthesize trusty, offset;
-
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Initialize the association with a blank socket and prepare the time transaction to happen every  ┃
-  ┃ 20 seconds (initial value) ...                                                                   ┃
+  ┃ 16 seconds (initial value) ...                                                                   ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (id) initWithServerName:(NSString *)serverName queue:(dispatch_queue_t)queue {
+- (instancetype) initWithServerName:(NSString *)serverName queue:(dispatch_queue_t)queue {
     if ((self = [super init]) == nil) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Set initial/default values for instance variables ...                                            │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    pollingIntervalIndex = 4;
-    trusty = FALSE;                                         // don't trust this clock to start with ...
-    offset = 0.0;                                           // start with clock on time (no offset)
+    pollingIntervalIndex = 4;                               // pollIntervals[4] = 16.0
+    _trusty = FALSE;                                        // don't trust this clock to start with ...
+    _offset = 0.0;                                          // start with clock on time (no offset)
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     server = serverName;
-    socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:queue ? queue : dispatch_get_main_queue()];
+    socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
+                                           delegateQueue:queue ? queue : dispatch_get_main_queue()];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a first-in/first-out queue for time samples.  As we compute each new time obtained from   │
@@ -81,10 +67,14 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ infinite future, and put it on the run loop .. nothing will happen (yet)                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     repeatingTimer = [NSTimer timerWithTimeInterval:pollIntervals[pollingIntervalIndex]
-                                             target:self selector:@selector(queryTimeServer:)
-                                           userInfo:nil repeats:YES];
+                                             target:self
+                                           selector:@selector(queryTimeServer:)
+                                           userInfo:nil
+                                            repeats:YES];
+
     [repeatingTimer setFireDate:[NSDate distantFuture]];
     [[NSRunLoop mainRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
+
     return self;
 }
 
@@ -98,7 +88,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 - (void) queryTimeServer:(NSTimer *) timer {
     [socket sendData:[self createPacket] toHost:server port:123L withTimeout:2.0 tag:0];
     
-    NSError* error = nil;
+    NSError *   error = nil;
     if(![socket beginReceiving:&error]) {
         NTP_Logging(@"Unable to start listening on socket for [%@] due to error [%@]", server, error);
         return;
@@ -115,7 +105,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
         return;
     }*/
     [repeatingTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:
-                                 (double)(5.0 * (float)rand()/(float)RAND_MAX)]];
+                                 (double)(15.0 * (float)rand()/(float)RAND_MAX)]];
 
     NTP_Logging(@"enabled: [%@]", server);
 }
@@ -191,7 +181,9 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 
 - (void) evaluatePacket {
     double          packetOffset = 0.0;                     // initial untrustworthy offset
+
 //  NTP_Logging(@"%@", [self prettyPrintPacket]);
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ determine the quality of this particular time ..                                                 │
   │ .. if max_error is less than 50mS (and not zero) AND                                             │
@@ -219,7 +211,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ look at the (up to eight) offsets in the fifo and and count 'good', 'fail' and 'not used yet'    │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     short           good = 0, fail = 0, none = 0;
-    offset = 0.0;
+    _offset = 0.0;
     for (short i = 0; i < 8; i++) {
         if (fifoQueue[i] > 1E9) {                           // fifo slot is unused
             none++;
@@ -230,7 +222,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
         }
         else {
             good++;
-            offset += fifoQueue[i];
+            _offset += fifoQueue[i];
         }
     }
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -239,17 +231,17 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │      note of that ... we won't condemn a server until we get four 'fail' packets.                │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     if (good > 0 || fail > 3) {
-        offset = offset / good;
+        _offset = _offset / good;
         
-        NTP_Logging(@"[%@] index=%i {good: %i; fail: %i; none: %i} offset=%3.1f", server,
-                    fifoIndex, good, fail, none, offset * 1000.0);
+        NTP_Logging(@"[%@] index=%i {good: %i; fail: %i; none: %i} offset=%3.1fmSec", server,
+                    fifoIndex, good, fail, none, _offset * 1000.0);
         
         if (good+none < 5) {                                // four or more 'fails'
-            trusty = FALSE;  
+            _trusty = FALSE;  
             [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-fail" object:self];
         }
         else {                                              // ...
-            trusty = TRUE;  
+            _trusty = TRUE;  
             [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-good" object:self];
         }
     }
@@ -405,14 +397,14 @@ static struct ntpTimestamp NTP_1970 = {JAN_1970, 0};    // network time for 1 Ja
     [prettyString appendFormat:@"time server addr: [%@]\n"
                                 " round trip time: %5.3f (mS)\n     server time: %5.3f (mS)\n"
                                 "    network time: %5.3f (mS)\n    clock offset: %5.3f (mS)\n\n",
-          server, el_time * 1000.0, st_time * 1000.0, (el_time-st_time) * 1000.0, offset * 1000.0];
+          server, el_time * 1000.0, st_time * 1000.0, (el_time-st_time) * 1000.0, _offset * 1000.0];
 
     return prettyString;
 }
 
 - (NSString *) description {
     return [NSString stringWithFormat:@"[%@] stratum=%i; offset=%3.1f±%3.1fmS",
-            server, stratum, offset *1000.0, dispersion];
+            server, stratum, _offset *1000.0, dispersion];
 }
 
 @end

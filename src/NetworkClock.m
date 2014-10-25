@@ -33,7 +33,7 @@
 
 @implementation NetworkClock
 
-+ (id)sharedNetworkClock {
++ (NetworkClock *)sharedNetworkClock {
     static id sharedNetworkClockInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -53,14 +53,14 @@
 
 }
 
-- (id) init {
-    if (!(self = [super init])) return nil;
+- (instancetype) init {
+    if ((self = [super init]) == nil) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
   │ array of empty associations to use ...                                                           │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     dispersionSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES];
-    sortDescriptors = [NSArray arrayWithObject:dispersionSortDescriptor];
+    sortDescriptors = @[dispersionSortDescriptor];
     timeAssociations = [NSMutableArray arrayWithCapacity:48];
 
     associationDelegateQueue = dispatch_queue_create("org.ios-ntp.delegates", 0);
@@ -188,7 +188,7 @@
                     format:@"Cannot convert address to string."];
   }
 
-  return [NSString stringWithCString:addrBuf encoding:NSASCIIStringEncoding];
+  return @(addrBuf);
 }
 
 #pragma mark                        N o t i f i c a t i o n • T r a p s

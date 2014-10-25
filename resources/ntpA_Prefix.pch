@@ -4,6 +4,11 @@
 
 #import <Availability.h>
 
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+#endif
+
 #ifndef __IPHONE_4_0
     #warning "This project uses features only available in iPhone SDK 4.0 and later."
 #endif
@@ -12,11 +17,6 @@
     #warning "DARWIN_BIG_ENDIAN"
 #else
     #warning "DARWIN_LITTLE_ENDIAN"
-#endif
-
-#ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-    #import <Foundation/Foundation.h>
 #endif
 
 #define NTP_Logging(fmt, ...)
@@ -29,5 +29,5 @@
     #undef NTP_Logging
     #define NTP_Logging(fmt, ...) \
         NSLog((@"%@|" fmt), [NSString stringWithFormat: @"%24s", \
-        [[[self class] description] UTF8String]], ##__VA_ARGS__)
+            [[[self class] description] UTF8String]], ##__VA_ARGS__)
 #endif

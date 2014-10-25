@@ -8,11 +8,4 @@
 
 @implementation ntpAViewController
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-}
-
-- (void)viewDidUnload {
-}
-
 @end

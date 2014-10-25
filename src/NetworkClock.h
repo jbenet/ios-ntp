@@ -5,7 +5,6 @@
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <Foundation/Foundation.h>
-#import <CFNetwork/CFNetwork.h>
 #import "GCDAsyncUdpSocket.h"
 #import "NetAssociation.h"
 

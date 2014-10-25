@@ -1,10 +1,8 @@
-//
-//  main.m
-//  ntpA
-//
-//  Created by Gavin Eadie on 10/16/10.
-//  Copyright (c) 2010 Ramsay Consulting. All rights reserved.
-//
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ main.m                                                                                           ║
+  ║                                                                                                  ║
+  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <UIKit/UIKit.h>
 
