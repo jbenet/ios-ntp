@@ -1,12 +1,13 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ NetworkClock.h                                                                                   ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-13 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <Foundation/Foundation.h>
-#import "GCDAsyncUdpSocket.h"
-#import "NetAssociation.h"
+#import <CFNetwork/CFNetwork.h>
+//#import "GCDAsyncUdpSocket.h"
+//#import "NetAssociation.h"
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ The NetworkClock sends notifications of the network time.  It will attempt to provide a very     ┃
@@ -15,14 +16,9 @@
 
 @interface NetworkClock : NSObject {
 
-    NSTimeInterval          timeIntervalSinceDeviceTime;
-
-    NSMutableArray *        timeAssociations;
-
 @private
 
     NSSortDescriptor *      dispersionSortDescriptor;
-    NSArray *               sortDescriptors;
 
     dispatch_queue_t        associationDelegateQueue;
 }
