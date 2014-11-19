@@ -65,6 +65,8 @@
 		86619085126C0D120046A2B8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		866F2B551A1D35A0008CCF83 /* iosntp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iosntp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C39F0D126A1FA100A9DCD1 /* ntp-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ntp-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		86C79ED71A1D659F00FC7CC2 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		86C79ED81A1D659F00FC7CC2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		86F300AE1A14815C0078CBF9 /* libios-ntp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-ntp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D91E95D913D9AF8C004E4194 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
 		D91E95DA13D9AF8C004E4194 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		86C39EFE126A1FA000A9DCD1 = {
 			isa = PBXGroup;
 			children = (
+				86C79ED61A1D657F00FC7CC2 /* ios-ntp-doc */,
 				D91E95D613D9AF8C004E4194 /* network-udp */,
 				D91E95D813D9AF8C004E4194 /* ios-ntp-lib */,
 				D91E95DD13D9AF8C004E4194 /* ios-ntp-app */,
@@ -144,6 +147,15 @@
 				D9B2BA3F13D9B95100C9385A /* ios-ntp.tar.gz */,
 			);
 			name = products;
+			sourceTree = "<group>";
+		};
+		86C79ED61A1D657F00FC7CC2 /* ios-ntp-doc */ = {
+			isa = PBXGroup;
+			children = (
+				86C79ED71A1D659F00FC7CC2 /* LICENSE */,
+				86C79ED81A1D659F00FC7CC2 /* README.md */,
+			);
+			name = "ios-ntp-doc";
 			sourceTree = "<group>";
 		};
 		D91E95D613D9AF8C004E4194 /* network-udp */ = {

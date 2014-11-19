@@ -5,6 +5,16 @@ work in progress.
 
 Created by Gavin Eadie on Oct 17, 2010
 
+----
+**November 19, 2014:** A large update was made to bring ios-ntp into the modern world.
+The changes do include one bug fix, but are mostly related to making the code comply
+with the recent Xcode changes and requirements.  Such things are sometimes tricky, so
+make sure you test carefully when you adopt today's changes.
+
+Some of jbenet's "Usage" notes below aren't completely accurate as a result of these
+changes, and I will update the text soon.
+
+----
 ### About
 
 The clock on an iPhone, iTouch or iPad is not closely synchronized to the
@@ -18,7 +28,7 @@ that rely on correct times to enforce functionality.
 This project contains code to provide time obtained from standard time servers
 using the network time protocol (NTP: RFCs 4330 and 5905). The implementation is
 not a rigorous as described in those RFCs since the goal was to improve time
-accuracy to with in a second, not to fractions of milliseconds.
+accuracy to within a second, not to fractions of milliseconds.
 
 ### This Fork
 
@@ -31,10 +41,14 @@ Why fork? Well, because git and github are much more convenient than google code
 for me. I (jbenet) am subscribed to the RSS feed of the original project and
 will merge any upstream changes.
 
+jbenet and I (gavineadie) have agreed that I will resume taking care of this project
+and will let the old version at Google Code fade away.  I've come to enjoy git much
+more than svn also.
+
 ### License
 
 The [MIT](http://www.opensource.org/licenses/mit-license.php) License
-Copyright (c) 2012, Ramsay Consulting
+Copyright (c) 2010-4, Ramsay Consulting
 
 ### Usage
 
