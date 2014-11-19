@@ -4,12 +4,12 @@
   ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
+#import <UIKit/UIApplication.h>
 #import <CFNetwork/CFNetwork.h>
 
+#import <arpa/inet.h>
 #import "NetworkClock.h"
 #import "NetAssociation.h"
-
-#import <UIKit/UIApplication.h>
 
 @interface NetworkClock () {
 
@@ -254,8 +254,6 @@
     }
     //###
 }
-
-#import <arpa/inet.h>
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ ... obtain IP address, "xx.xx.xx.xx", from the sockaddr structure ...                            ┃

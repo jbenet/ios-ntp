@@ -241,11 +241,11 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ .. if max_error is less than 50mS (and not zero) AND                                             │
   │ .. stratum > 0 AND                                                                               │
   │ .. the mode is 4 (packet came from server) AND                                                   │
-  │ .. the server clock was set less than 1 hour ago                                                 │
+  │ .. the server clock was set less than 1 hour ago ##############                                  │
   │ the packet is trustworthy -- compute and store offset in 8-slot fifo ...                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     if ((dispersion > 0.1 && dispersion < 50.0) && (stratum > 0) && (mode == 4) &&
-        (-[[self dateFromNetworkTime:&ntpServerBaseTime] timeIntervalSinceNow] < 3600.0)) {
+        (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 3600.0)) {
         el_time=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);     // .. (T4-T1)
         st_time=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);     // .. (T3-T2)
         skew1 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);     // .. (T2-T1)

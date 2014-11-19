@@ -1,24 +1,20 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
-  ║ ntpAAppDelegate.m                                                                                ║
+  ║ ntpAppDelegate.m                                                                                 ║
   ║                                                                                                  ║
   ║ Created by Gavin Eadie on Nov16/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
-#import "ntpAAppDelegate.h"
-#import "ntpAViewController.h"
+#import "ntpAppDelegate.h"
+
 #import "ios-ntp.h"
 
-@implementation ntpAAppDelegate
-
-@synthesize window;
-@synthesize viewController;
+@implementation ntpAppDelegate
 
 - (BOOL) application:(UIApplication *) app didFinishLaunchingWithOptions:(NSDictionary *) options {
 
     [NetworkClock sharedNetworkClock];                      // gather up the ntp servers ...
 
-    [window addSubview:viewController.view];
-    [window makeKeyAndVisible];
+    [_window makeKeyAndVisible];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  Create a timer that will fire in ten seconds and then every ten seconds thereafter to ask the   │
   │ network clock what time it is.                                                                   │

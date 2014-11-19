@@ -5,10 +5,12 @@
   ║ Copyright 2010 Ramsay Consulting. All rights reserved.                                           ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
-#import <Foundation/Foundation.h>
-#import <CFNetwork/CFNetwork.h>
-#import "GCDAsyncUdpSocket.h"
+#include <Foundation/Foundation.h>
+#include <CFNetwork/CFNetwork.h>
+
 #include <sys/time.h>
+
+#include "GCDAsyncUdpSocket.h"
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  NTP Timestamp Structure                                                                         │
