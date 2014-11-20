@@ -19,10 +19,17 @@
 		866F2B771A1D3624008CCF83 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
 		866F2B781A1D3624008CCF83 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		866F2B791A1D3624008CCF83 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
-		866F2B7A1A1D3706008CCF83 /* ios-ntp.pch in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA2C13D9B50200C9385A /* ios-ntp.pch */; };
 		869A7CDA1A1AB0AC00067303 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		869A7CDB1A1AB0AC00067303 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		869A7CDC1A1AB0AC00067303 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
+		86C2B3F71A1DAA1900481E2E /* NSDate+NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		86C2B3F81A1DAA1900481E2E /* NetAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95D913D9AF8C004E4194 /* NetAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		86C2B3F91A1DAA1900481E2E /* NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95DB13D9AF8C004E4194 /* NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		86C2B4041A1DAE6800481E2E /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		86E9F02F1A1E7CEE00D5CF25 /* TimeFifo.h in Headers */ = {isa = PBXBuildFile; fileRef = 86E9F02D1A1E7CEE00D5CF25 /* TimeFifo.h */; };
+		86E9F0301A1E7CEE00D5CF25 /* TimeFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */; };
+		86E9F0311A1E7CEE00D5CF25 /* TimeFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */; };
+		86E9F0321A1E7CEE00D5CF25 /* TimeFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */; };
 		86F300C61A1481C00078CBF9 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		86F300C81A1481C00078CBF9 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
 		86F300CC1A1483900078CBF9 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
@@ -64,9 +71,12 @@
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		86619085126C0D120046A2B8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		866F2B551A1D35A0008CCF83 /* iosntp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iosntp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		86C2B3F51A1DA95300481E2E /* rfc5905.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = rfc5905.pdf; sourceTree = "<group>"; };
 		86C39F0D126A1FA100A9DCD1 /* ntp-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ntp-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C79ED71A1D659F00FC7CC2 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		86C79ED81A1D659F00FC7CC2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		86E9F02D1A1E7CEE00D5CF25 /* TimeFifo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeFifo.h; sourceTree = "<group>"; };
+		86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeFifo.m; sourceTree = "<group>"; };
 		86F300AE1A14815C0078CBF9 /* libios-ntp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-ntp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D91E95D913D9AF8C004E4194 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
 		D91E95DA13D9AF8C004E4194 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
@@ -120,8 +130,8 @@
 				86C79ED61A1D657F00FC7CC2 /* ios-ntp-doc */,
 				D91E95D613D9AF8C004E4194 /* network-udp */,
 				D91E95D813D9AF8C004E4194 /* ios-ntp-lib */,
-				D91E95DD13D9AF8C004E4194 /* ios-ntp-app */,
 				D91E95E813D9B018004E4194 /* ios-ntp-rez */,
+				D91E95DD13D9AF8C004E4194 /* ios-ntp-app */,
 				86C39F08126A1FA100A9DCD1 /* frameworks */,
 				86C39F0E126A1FA100A9DCD1 /* products */,
 			);
@@ -152,6 +162,7 @@
 		86C79ED61A1D657F00FC7CC2 /* ios-ntp-doc */ = {
 			isa = PBXGroup;
 			children = (
+				86C2B3F51A1DA95300481E2E /* rfc5905.pdf */,
 				86C79ED71A1D659F00FC7CC2 /* LICENSE */,
 				86C79ED81A1D659F00FC7CC2 /* README.md */,
 			);
@@ -178,6 +189,8 @@
 				D91E95DA13D9AF8C004E4194 /* NetAssociation.m */,
 				D91E95DB13D9AF8C004E4194 /* NetworkClock.h */,
 				D91E95DC13D9AF8C004E4194 /* NetworkClock.m */,
+				86E9F02D1A1E7CEE00D5CF25 /* TimeFifo.h */,
+				86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */,
 			);
 			path = "ios-ntp-lib";
 			sourceTree = "<group>";
@@ -220,7 +233,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				866F2B751A1D35DE008CCF83 /* ios-ntp.h in Headers */,
-				866F2B7A1A1D3706008CCF83 /* ios-ntp.pch in Headers */,
+				86C2B3F71A1DAA1900481E2E /* NSDate+NetworkClock.h in Headers */,
+				86C2B3F81A1DAA1900481E2E /* NetAssociation.h in Headers */,
+				86E9F02F1A1E7CEE00D5CF25 /* TimeFifo.h in Headers */,
+				86C2B3F91A1DAA1900481E2E /* NetworkClock.h in Headers */,
+				86C2B4041A1DAE6800481E2E /* GCDAsyncUdpSocket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +360,7 @@
 			files = (
 				866F2B771A1D3624008CCF83 /* NSDate+NetworkClock.m in Sources */,
 				866F2B781A1D3624008CCF83 /* NetAssociation.m in Sources */,
+				86E9F0321A1E7CEE00D5CF25 /* TimeFifo.m in Sources */,
 				866F2B791A1D3624008CCF83 /* NetworkClock.m in Sources */,
 				866F2B761A1D3624008CCF83 /* GCDAsyncUdpSocket.m in Sources */,
 			);
@@ -353,11 +371,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D91E95E513D9AF8C004E4194 /* main.m in Sources */,
+				86E9F0301A1E7CEE00D5CF25 /* TimeFifo.m in Sources */,
+				8602E8321A1D5517001C265E /* ntpAppDelegate.m in Sources */,
 				86273CCB1A1AACBB00487A18 /* NSDate+NetworkClock.m in Sources */,
 				869A7CDB1A1AB0AC00067303 /* NetAssociation.m in Sources */,
 				869A7CDC1A1AB0AC00067303 /* NetworkClock.m in Sources */,
 				869A7CDA1A1AB0AC00067303 /* GCDAsyncUdpSocket.m in Sources */,
-				8602E8321A1D5517001C265E /* ntpAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +386,7 @@
 			files = (
 				86F300CC1A1483900078CBF9 /* NSDate+NetworkClock.m in Sources */,
 				86F300C61A1481C00078CBF9 /* NetAssociation.m in Sources */,
+				86E9F0311A1E7CEE00D5CF25 /* TimeFifo.m in Sources */,
 				86F300C81A1481C00078CBF9 /* NetworkClock.m in Sources */,
 				8602E82D1A1D50A4001C265E /* GCDAsyncUdpSocket.m in Sources */,
 			);
@@ -490,7 +510,7 @@
 		86C39F29126A1FA100A9DCD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -508,7 +528,7 @@
 		86C39F2A126A1FA100A9DCD1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_VERSION = "";

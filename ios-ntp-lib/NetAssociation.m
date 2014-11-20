@@ -1,7 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ NetAssociation.m                                                                                 ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Nov03/10 ... Copyright 2010-13 Ramsay Consulting. All rights reserved. ║
+  ║ Created by Gavin Eadie on Nov03/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "NetAssociation.h"
@@ -12,33 +12,20 @@ static double pollIntervals[18] = {
     4096.0,  8192.0, 16384.0, 32768.0, 65536.0, 131072.0
 };
 
-#define firstPollIntervalIndex (4)                // pollIntervals[4] = 16 seconds
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ This object manages the communication and time calculations for one server association.          ┃
-  ┃                                                                                                  ┃
-  ┃ Multiple servers are used in a process in which each client/server pair (association) works to   ┃
-  ┃ obtain its own best version of the time.  The client sends small UDP packets to each server      ┃
-  ┃ which overwrites certain fields in the packet and returns it immediately.  As each NTP message   ┃
-  ┃ is received, the offset theta between the peer clock and the system clock is computed along      ┃
-  ┃ with the associated statistics delta, epsilon, and psi.                                          ┃
-  ┃                                                                                                  ┃
-  ┃ Each association does its own best effort at obtaining an accurate time and reports these times  ┃
-  ┃ and their estimated accuracy to a system process that selects, clusters, and combines the        ┃
-  ┃ various servers and reference clocks to determine the most accurate and reliable candidates to   ┃
-  ┃ provide a best time.                                                                             ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+#define firstPollIntervalIndex (4)                  // pollIntervals[4] = 16 seconds
 
 @interface NetAssociation (PrivateMethods)
 
-- (void) queryTimeServer:(NSTimer *) timer;     // query the association's server (fired by timer)
+- (void) queryTimeServer:(NSTimer *) timer;         // query the association's server (fired by timer)
 
-- (NSDate *)  dateFromNetworkTime:(struct ntpTimestamp *) networkTime;
-- (NSData *) createPacket;
+- (NSDate *) dateFromNetworkTime:(struct ntpTimestamp *) networkTime;
+
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSData *   createPacket;
+
 - (void) evaluatePacket;
 
-- (NSString *) prettyPrintPacket;
-- (NSString *) prettyPrintTimers;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * prettyPrintPacket;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * prettyPrintTimers;
 
 @end
 
@@ -53,9 +40,9 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Initialize the association with a blank socket and prepare the time transaction to happen every  ┃
-  ┃ 20 seconds (initial value) ...                                                                   ┃
+  ┃ 16 seconds (initial value) ...                                                                   ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (id) init:(NSString *) serverName {
+- (instancetype) init:(NSString *) serverName {
     if ((self = [super init]) == nil) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Set initial/default values for instance variables ...                                            │
@@ -69,7 +56,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   │ the server we push it into the fifo.  We sample the contents of the fifo for quality and, if it  │
   │ meets our standards we use the contents of the fifo to obtain a weighted average of the times.   │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    for (short i = 0; i < 8; i++) fifoQueue[i] = 1E10;      // set fifo to all empty
+    for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
     fifoIndex = 0;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
@@ -131,7 +118,7 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
   ┃      Create a time query packet ...                                                              ┃
   ┃──────────────────────────────────────────────────────────────────────────────────────────────────┃
   ┃                                                                                                  ┃
-  ┃           1                   2                   3                                              ┃
+  ┃                               1                   2                   3                          ┃
   ┃           0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                        ┃
   ┃          +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                       ┃
   ┃     [ 0] | L | Ver |Mode |    Stratum    |     Poll      |   Precision   |                       ┃
@@ -234,17 +221,17 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 }
 
 - (void) evaluatePacket {
-    double          packetOffset = 0.0;                     // initial untrustworthy offset
-    NTP_Logging(@"%@", [self prettyPrintPacket]);
+    double          packetOffset = INFINITY;                     // initial untrustworthy offset
+//  NTP_Logging(@"%@", [self prettyPrintPacket]);
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ determine the quality of this particular time ..                                                 │
   │ .. if max_error is less than 50mS (and not zero) AND                                             │
   │ .. stratum > 0 AND                                                                               │
   │ .. the mode is 4 (packet came from server) AND                                                   │
-  │ .. the server clock was set less than 1 hour ago ##############                                  │
+  │ .. the server clock was set less than 1 hour ago                                                 │
   │ the packet is trustworthy -- compute and store offset in 8-slot fifo ...                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    if ((dispersion > 0.1 && dispersion < 50.0) && (stratum > 0) && (mode == 4) &&
+    if ((dispersion > 0.001 && dispersion < 50.0) && (stratum > 0) && (mode == 4) &&
         (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 3600.0)) {
         el_time=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);     // .. (T4-T1)
         st_time=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);     // .. (T3-T2)
@@ -253,23 +240,23 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
         packetOffset = (skew1+skew2)/2.0;                   // calulate trustworthy offset
     }
 
-    fifoQueue[fifoIndex % 8] = packetOffset;                // store offset
+    fifoQueue[fifoIndex % 8] = packetOffset * 1000;         // store offset
     fifoIndex++;                                            // rotate index
 
-    NTP_Logging(@"[%@] index=%i {%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f,%5.3f}", server,
-                fifoIndex % 8, fifoQueue[0], fifoQueue[1], fifoQueue[2], fifoQueue[3],
-                               fifoQueue[4], fifoQueue[5], fifoQueue[6], fifoQueue[7]);
+    NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f}", server,
+                fifoQueue[0], fifoQueue[1], fifoQueue[2], fifoQueue[3],
+                fifoQueue[4], fifoQueue[5], fifoQueue[6], fifoQueue[7]);
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ look at the (up to eight) offsets in the fifo and and count 'good', 'fail' and 'not used yet'    │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     short           good = 0, fail = 0, none = 0;
     offset = 0.0;
     for (short i = 0; i < 8; i++) {
-        if (fifoQueue[i] > 1E9) {                           // fifo slot is unused
+        if (isnan(fifoQueue[i])) {                          // fifo slot is unused
             none++;
             continue;
         }
-        if (fabs(fifoQueue[i]) < 1E-6) {                    // server can't be trusted
+        if (!isfinite(fifoQueue[i])) {                      // server can't be trusted
             fail++;
         }
         else {
@@ -285,8 +272,8 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
     if (good > 0 || fail > 3) {
         offset = offset / good;
 
-        NTP_Logging(@"[%@] index=%i {good: %i; fail: %i; none: %i} offset=%3.1f", server,
-                    fifoIndex, good, fail, none, offset * 1000.0);
+        NTP_Logging(@"%@ [%@] {good: %i; fail: %i; none: %i} offset=%3.1fmS ",
+                    (trusty) ? @"↑" : @"↓", server, good, fail, none, offset);
 
         if (good+none < 5) {                                // four or more 'fails'
             trusty = FALSE;
@@ -312,8 +299,10 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
         [repeatingTimer invalidate];
         repeatingTimer = nil;
         repeatingTimer = [NSTimer scheduledTimerWithTimeInterval:pollIntervals[pollingIntervalIndex]
-                                                          target:self selector:@selector(queryTimeServer:)
-                                                        userInfo:nil repeats:YES];
+                                                          target:self
+                                                        selector:@selector(queryTimeServer:)
+                                                        userInfo:nil
+                                                         repeats:YES];
     }
 }
 
@@ -324,20 +313,20 @@ static double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * 
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError *)error {
-    NTP_Logging(@"didNotConnect");
+    NTP_Logging(@"didNotConnect - %@", error.description);
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag {
-    NTP_Logging(@"didSendDataWithTag");
+//  NTP_Logging(@"didSendDataWithTag");
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error {
-    NTP_Logging(@"didNotSendDataWithTag");
+    NTP_Logging(@"didNotSendDataWithTag - %@", error.description);
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data
       fromAddress:(NSData *)address withFilterContext:(id)filterContext {
-    NTP_Logging(@"didReceiveData");
+//  NTP_Logging(@"didReceiveData");
     [self decodePacket:data];
 }
 
@@ -389,10 +378,10 @@ static struct ntpTimestamp NTP_1970 = {JAN_1970, 0};    // network time for 1 Ja
                                         refid>>24&0xff, refid>>16&0xff, refid>>8&0xff, refid&0xff];
 
     [prettyString appendFormat:@"  clock last set: %u.%.6u (%@)\n",
-                        ntpServerBaseTime.fullSeconds, Frac2uSec(ntpServerBaseTime.partSeconds),
+                        (unsigned int)ntpServerBaseTime.fullSeconds, Frac2uSec(ntpServerBaseTime.partSeconds),
                         [self dateFromNetworkTime:&ntpServerBaseTime]];
     [prettyString appendFormat:@"client send time: %u.%.6u (%@)\n",
-                        ntpClientSendTime.fullSeconds, Frac2uSec(ntpClientSendTime.partSeconds),
+                        (unsigned int)ntpClientSendTime.fullSeconds, Frac2uSec(ntpClientSendTime.partSeconds),
                         [self dateFromNetworkTime:&ntpClientSendTime]];
     [prettyString appendFormat:@"server recv time: %u.%.6u (%@)\n",
                         ntpServerRecvTime.fullSeconds, Frac2uSec(ntpServerRecvTime.partSeconds),
@@ -419,8 +408,8 @@ static struct ntpTimestamp NTP_1970 = {JAN_1970, 0};    // network time for 1 Ja
 }
 
 - (NSString *) description {
-    return [NSString stringWithFormat:@"[%@] stratum=%i; offset=%3.1f±%3.1fmS",
-            server, stratum, offset *1000.0, dispersion];
+    return [NSString stringWithFormat:@"%@ [%@] stratum=%i; offset=%3.1f±%3.1fmS",
+            (trusty) ? @"↑" : @"↓", server, stratum, offset, dispersion];
 }
 
 @end

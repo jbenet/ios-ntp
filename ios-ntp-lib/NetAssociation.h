@@ -1,8 +1,20 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ NetAssociation.h                                                                                 ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Nov03/10                                                               ║
-  ║ Copyright 2010 Ramsay Consulting. All rights reserved.                                           ║
+  ║ Created by Gavin Eadie on Nov03/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ║──────────────────────────────────────────────────────────────────────────────────────────────────║
+  ║ This NetAssociation manages the communication and time calculations for one server.              ║
+  ║                                                                                                  ║
+  ║ Multiple servers are used in a process in which each client/server pair (association) works to   ║
+  ║ obtain its own best version of the time.  The client sends small UDP packets to each server      ║
+  ║ which overwrites certain fields in the packet and returns it immediately.  As each NTP message   ║
+  ║ is received, the offset between the network time and the system clock is computed along with     ║
+  ║ associated statistics delta, epsilon, and psi.                                                   ║
+  ║                                                                                                  ║
+  ║ Each association does its own best effort at obtaining an accurate time and reports these times  ║
+  ║ and their estimated accuracy to a system process that selects, clusters, and combines the        ║
+  ║ various servers and reference clocks to determine the most accurate and reliable candidates to   ║
+  ║ provide a best time.                                                                             ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #include <Foundation/Foundation.h>
@@ -12,10 +24,12 @@
 
 #include "GCDAsyncUdpSocket.h"
 
+#define JAN_1970    0x83aa7e80          // UNIX epoch in NTP's epoch: 1970-1900 (2,208,988,800s)
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  NTP Timestamp Structure                                                                         │
   │                                                                                                  │
-  │   1                   2                   3                                                      │
+  │   0                   1                   2                   3                                  │
   │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
   │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
   │  |                           Seconds                             |                               │
@@ -24,29 +38,10 @@
   │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 struct ntpTimestamp {
-	uint32_t    fullSeconds;
-	uint32_t    partSeconds;
+	uint32_t      fullSeconds;
+	uint32_t      partSeconds;
 };
 
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  NTP Short Format Structure                                                                      │
-  │                                                                                                  │
-  │   0                   1                   2                   3                                  │
-  │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
-  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
-  │  |          Seconds              |           Fraction            | <-- 65536 = 1 second          │
-  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-struct ntpShortTime {
-	uint16_t    fullSeconds;
-	uint16_t    partSeconds;
-};
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ NetAssociation represents one time server.  When it is created, it sends the first time query,   │
-  │ evaluates the quality of the reply, and keeps the queries running till the server goes 'bad'     │
-  │ or its creator kills it ...                                                                      │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 @interface NetAssociation : NSObject <GCDAsyncUdpSocketDelegate> {
 
     GCDAsyncUdpSocket *     socket;                         // NetAssociation UDP Socket
@@ -74,7 +69,7 @@ struct ntpShortTime {
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
-- (id) init:(NSString *) serverName;
+- (instancetype) init:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
 - (void) enable;
 - (void) finish;
 
@@ -85,6 +80,3 @@ struct ntpShortTime {
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 #define uSec2Frac(x)    ( 4294*(x) + ( (1981*(x))>>11 ) )
 #define Frac2uSec(x)    ( ((x) >> 12) - 759 * ( ( ((x) >> 10) + 32768 ) >> 16 ) )
-
-#define JAN_1970        0x83aa7e80      /* 1970 - 1900 in seconds 2,208,988,800 | First day UNIX  */
-                                                  // 1 Jan 1972 : 2,272,060,800 | First day UTC

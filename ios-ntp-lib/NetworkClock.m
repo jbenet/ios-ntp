@@ -13,7 +13,7 @@
 
 @interface NetworkClock () {
 
-    NSTimeInterval          timeIntervalSinceDeviceTime;
+    NSTimeInterval          timeIntervalSinceDeviceTime;            // milliSeconds
     NSMutableArray *        timeAssociations;
     NSArray *               sortDescriptors;
 
@@ -33,7 +33,7 @@
 
 @implementation NetworkClock
 
-+ (id)sharedNetworkClock {
++ (NetworkClock*)sharedNetworkClock {
     static id sharedNetworkClockInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -47,14 +47,14 @@
   ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
-    return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime];
+    return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime/1000.0];
 }
 
 #pragma mark -
 #pragma mark                        I n t e r n a l  •  M e t h o d s
 
-- (id) init {
-    if (!(self = [super init])) return nil;
+- (instancetype) init {
+    if ((self = [super init]) == nil) return nil;
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
   │ array of empty associations to use ...                                                           │
@@ -138,7 +138,7 @@
 
         CFStreamError   nameError;
         if (!CFHostStartInfoResolution (ntpHostName, kCFHostAddresses, &nameError)) {
-            NTP_Logging(@"CFHostStartInfoResolution error %li", nameError.error);
+            NTP_Logging(@"CFHostStartInfoResolution error %i", (int)nameError.error);
             CFRelease(ntpHostName);
             continue;                                           // couldn't start resolution ...
         }
@@ -175,7 +175,9 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:@"assoc-good" object:nil queue:nil
                                                   usingBlock:^(NSNotification *note)
     {
-        NTP_Logging(@"*** true association: %@ (%i left)", [note object], [timeAssociations count]);
+        NetAssociation *    association = [note object];
+        NTP_Logging(@"%@ (%lu)",
+                    association, (unsigned long)[timeAssociations count]);
         [self offsetAverage];
     }];
 
@@ -186,9 +188,11 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:@"assoc-fail" object:nil queue:nil
                                                   usingBlock:^(NSNotification *note)
     {
+        NetAssociation *    association = [note object];
+        NTP_Logging(@"%@ (%lu)",
+                    association, (unsigned long)[timeAssociations count]);
+
         if ([timeAssociations count] > 8) {
-            NetAssociation *    association = [note object];
-            NTP_Logging(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
             [timeAssociations removeObject:association];
             [association finish];
             association = nil;
@@ -218,9 +222,7 @@
   ┃ Stop all the individual ntp clients ..                                                           ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finishAssociations {
-    for (NetAssociation * timeAssociation in timeAssociations) {
-        [timeAssociation finish];
-    }
+    for (NetAssociation * timeAssociation in timeAssociations) [timeAssociation finish];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -238,15 +240,17 @@
         if (timeAssociation.trusty) {
             usefulCount++;
             timeIntervalSinceDeviceTime += timeAssociation.offset;
+//          NTP_Logging(@"%@", timeAssociation);
         }
         if (usefulCount == 8) break;                // use 8 best dispersions
     }
 
     if (usefulCount > 0) {
         timeIntervalSinceDeviceTime /= usefulCount;
+//      NTP_Logging(@"  AVERAGE = %3.1f", timeIntervalSinceDeviceTime);
     }
     //###ADDITION?
-    if (usefulCount ==8)
+    if (usefulCount == 8)
     {
         //stop it for now
         //
@@ -270,29 +274,6 @@
 }
 
 #pragma mark                        N o t i f i c a t i o n • T r a p s
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ associationTrue -- notification from a 'truechimer' association of a trusty offset               ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (void) associationTrue:(NSNotification *) notification {
-    NTP_Logging(@"*** true association: %@ (%i left)",
-                    [notification object], [timeAssociations count]);
-    [self offsetAverage];
-}
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ associationFake -- notification from an association that became a 'falseticker'                  ┃
-  ┃ .. if we already have 8 associations in play, drop this one.                                     ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (void) associationFake:(NSNotification *) notification {
-    if ([timeAssociations count] > 8) {
-        NetAssociation *    association = [notification object];
-        NTP_Logging(@"*** false association: %@ (%i left)", association, [timeAssociations count]);
-        [timeAssociations removeObject:association];
-        [association finish];
-        association = nil;
-    }
-}
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ applicationBack -- catch the notification when the application goes into the background          ┃

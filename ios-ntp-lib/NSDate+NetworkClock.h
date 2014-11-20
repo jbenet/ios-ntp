@@ -10,7 +10,8 @@
 
 @interface NSDate (NetworkClock)
 
-- (NSTimeInterval) timeIntervalSinceNetworkDate;
+@property (NS_NONATOMIC_IOSONLY, readonly) NSTimeInterval timeIntervalSinceNetworkDate;
+
 + (NSTimeInterval) timeIntervalSinceNetworkDate;
 
 + (NSDate *) networkDate;

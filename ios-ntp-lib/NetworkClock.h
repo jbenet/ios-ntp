@@ -1,7 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ NetworkClock.h                                                                                   ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-13 Ramsay Consulting. All rights reserved. ║
+  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <Foundation/Foundation.h>
@@ -19,6 +19,7 @@
     NSSortDescriptor *      dispersionSortDescriptor;
 
     dispatch_queue_t        associationDelegateQueue;
+
 }
 
 + (NetworkClock *) sharedNetworkClock;
@@ -28,6 +29,6 @@
 - (void) reportAssociations;
 - (void) finishAssociations;
 
-- (NSDate *) networkTime;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDate *   networkTime;
 
 @end
