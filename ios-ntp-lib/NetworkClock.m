@@ -176,8 +176,8 @@
                                                   usingBlock:^(NSNotification *note)
     {
         NetAssociation *    association = [note object];
-        NTP_Logging(@"%@ (%lu)",
-                    association, (unsigned long)[timeAssociations count]);
+        NTP_Logging(@"%@ (%lu)", association,
+                    (unsigned long)[timeAssociations count]);
         [self offsetAverage];
     }];
 
@@ -189,8 +189,8 @@
                                                   usingBlock:^(NSNotification *note)
     {
         NetAssociation *    association = [note object];
-        NTP_Logging(@"%@ (%lu)",
-                    association, (unsigned long)[timeAssociations count]);
+        NTP_Logging(@"%@ (%lu)", association,
+                    (unsigned long)[timeAssociations count]);
 
         if ([timeAssociations count] > 8) {
             [timeAssociations removeObject:association];
@@ -240,15 +240,14 @@
         if (timeAssociation.trusty) {
             usefulCount++;
             timeIntervalSinceDeviceTime += timeAssociation.offset;
-//          NTP_Logging(@"%@", timeAssociation);
         }
         if (usefulCount == 8) break;                // use 8 best dispersions
     }
 
     if (usefulCount > 0) {
         timeIntervalSinceDeviceTime /= usefulCount;
-//      NTP_Logging(@"  AVERAGE = %3.1f", timeIntervalSinceDeviceTime);
     }
+
     //###ADDITION?
     if (usefulCount == 8)
     {

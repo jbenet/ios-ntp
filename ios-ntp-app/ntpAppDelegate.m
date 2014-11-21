@@ -16,8 +16,8 @@
 
     [_window makeKeyAndVisible];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  Create a timer that will fire in ten seconds and then every ten seconds thereafter to ask the   │
-  │ network clock what time it is.                                                                   │
+  │ Create a timer that will fire in one seconds and then every second thereafter to ask the network │
+  │ clock what time it is.                                                                           │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     NSTimer * repeatingTimer = [[NSTimer alloc]
                                 initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:1.0]
@@ -35,7 +35,7 @@
 
     sysClockLabel.text = [NSString stringWithFormat:@"%@", systemTime];
     netClockLabel.text = [NSString stringWithFormat:@"%@", networkTime];
-    differenceLabel.text = [NSString stringWithFormat:@"%5.3f",
+    differenceLabel.text = [NSString stringWithFormat:@"%7.6f",
                             [networkTime timeIntervalSinceDate:systemTime]];
 }
 

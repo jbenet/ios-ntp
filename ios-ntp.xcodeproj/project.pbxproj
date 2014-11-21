@@ -26,10 +26,6 @@
 		86C2B3F81A1DAA1900481E2E /* NetAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95D913D9AF8C004E4194 /* NetAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86C2B3F91A1DAA1900481E2E /* NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95DB13D9AF8C004E4194 /* NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86C2B4041A1DAE6800481E2E /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		86E9F02F1A1E7CEE00D5CF25 /* TimeFifo.h in Headers */ = {isa = PBXBuildFile; fileRef = 86E9F02D1A1E7CEE00D5CF25 /* TimeFifo.h */; };
-		86E9F0301A1E7CEE00D5CF25 /* TimeFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */; };
-		86E9F0311A1E7CEE00D5CF25 /* TimeFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */; };
-		86E9F0321A1E7CEE00D5CF25 /* TimeFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */; };
 		86F300C61A1481C00078CBF9 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		86F300C81A1481C00078CBF9 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
 		86F300CC1A1483900078CBF9 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
@@ -75,8 +71,6 @@
 		86C39F0D126A1FA100A9DCD1 /* ntp-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ntp-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C79ED71A1D659F00FC7CC2 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		86C79ED81A1D659F00FC7CC2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		86E9F02D1A1E7CEE00D5CF25 /* TimeFifo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeFifo.h; sourceTree = "<group>"; };
-		86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeFifo.m; sourceTree = "<group>"; };
 		86F300AE1A14815C0078CBF9 /* libios-ntp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-ntp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D91E95D913D9AF8C004E4194 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
 		D91E95DA13D9AF8C004E4194 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
@@ -189,8 +183,6 @@
 				D91E95DA13D9AF8C004E4194 /* NetAssociation.m */,
 				D91E95DB13D9AF8C004E4194 /* NetworkClock.h */,
 				D91E95DC13D9AF8C004E4194 /* NetworkClock.m */,
-				86E9F02D1A1E7CEE00D5CF25 /* TimeFifo.h */,
-				86E9F02E1A1E7CEE00D5CF25 /* TimeFifo.m */,
 			);
 			path = "ios-ntp-lib";
 			sourceTree = "<group>";
@@ -235,7 +227,6 @@
 				866F2B751A1D35DE008CCF83 /* ios-ntp.h in Headers */,
 				86C2B3F71A1DAA1900481E2E /* NSDate+NetworkClock.h in Headers */,
 				86C2B3F81A1DAA1900481E2E /* NetAssociation.h in Headers */,
-				86E9F02F1A1E7CEE00D5CF25 /* TimeFifo.h in Headers */,
 				86C2B3F91A1DAA1900481E2E /* NetworkClock.h in Headers */,
 				86C2B4041A1DAE6800481E2E /* GCDAsyncUdpSocket.h in Headers */,
 			);
@@ -360,7 +351,6 @@
 			files = (
 				866F2B771A1D3624008CCF83 /* NSDate+NetworkClock.m in Sources */,
 				866F2B781A1D3624008CCF83 /* NetAssociation.m in Sources */,
-				86E9F0321A1E7CEE00D5CF25 /* TimeFifo.m in Sources */,
 				866F2B791A1D3624008CCF83 /* NetworkClock.m in Sources */,
 				866F2B761A1D3624008CCF83 /* GCDAsyncUdpSocket.m in Sources */,
 			);
@@ -371,7 +361,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D91E95E513D9AF8C004E4194 /* main.m in Sources */,
-				86E9F0301A1E7CEE00D5CF25 /* TimeFifo.m in Sources */,
 				8602E8321A1D5517001C265E /* ntpAppDelegate.m in Sources */,
 				86273CCB1A1AACBB00487A18 /* NSDate+NetworkClock.m in Sources */,
 				869A7CDB1A1AB0AC00067303 /* NetAssociation.m in Sources */,
@@ -386,7 +375,6 @@
 			files = (
 				86F300CC1A1483900078CBF9 /* NSDate+NetworkClock.m in Sources */,
 				86F300C61A1481C00078CBF9 /* NetAssociation.m in Sources */,
-				86E9F0311A1E7CEE00D5CF25 /* TimeFifo.m in Sources */,
 				86F300C81A1481C00078CBF9 /* NetworkClock.m in Sources */,
 				8602E82D1A1D50A4001C265E /* GCDAsyncUdpSocket.m in Sources */,
 			);
