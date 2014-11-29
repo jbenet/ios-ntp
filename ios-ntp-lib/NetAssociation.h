@@ -17,59 +17,29 @@
   ║ provide a best time.                                                                             ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
-#include <Foundation/Foundation.h>
-#include <CFNetwork/CFNetwork.h>
+#import <UIKit/UIKit.h>
+#import <sys/time.h>
 
-#include <sys/time.h>
-
-#include "GCDAsyncUdpSocket.h"
+#import "GCDAsyncUdpSocket.h"
 
 #define JAN_1970    0x83aa7e80          // UNIX epoch in NTP's epoch: 1970-1900 (2,208,988,800s)
 
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  NTP Timestamp Structure                                                                         │
-  │                                                                                                  │
-  │   0                   1                   2                   3                                  │
-  │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
-  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
-  │  |                           Seconds                             |                               │
-  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
-  │  |                  Seconds Fraction (0-padded)                  | <-- 4294967296 = 1 second     │
-  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-struct ntpTimestamp {
-	uint32_t      fullSeconds;
-	uint32_t      partSeconds;
-};
-
 @interface NetAssociation : NSObject <GCDAsyncUdpSocketDelegate> {
 
-    GCDAsyncUdpSocket *     socket;                         // NetAssociation UDP Socket
     NSString *              server;                         // server name "123.45.67.89"
-
-    NSTimer *               repeatingTimer;                 // fires off an ntp request ...
-    int                     pollingIntervalIndex;           // index into polling interval table
-
-    struct ntpTimestamp     ntpClientSendTime,
-                            ntpServerRecvTime,
-                            ntpServerSendTime,
-                            ntpClientRecvTime,
-                            ntpServerBaseTime;
 
     double                  root_delay, dispersion,         // milliSeconds
                             el_time, st_time, skew1, skew2; // seconds
 
     int                     li, vn, mode, stratum, poll, prec, refid;
 
-    double                  fifoQueue[8];
-    short                   fifoIndex;
-
 }
 
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
-- (instancetype) init:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
+- (instancetype) initWithServerName:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
+
 - (void) enable;
 - (void) finish;
 

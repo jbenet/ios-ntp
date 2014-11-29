@@ -4,8 +4,7 @@
   ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
-#import <Foundation/Foundation.h>
-#import <CFNetwork/CFNetwork.h>
+#import "NetAssociation.h"
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ The NetworkClock sends notifications of the network time.  It will attempt to provide a very     ┃
@@ -13,6 +12,8 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
 @interface NetworkClock : NSObject {
+
+    NetAssociation *        netAssoc;
 
 @private
 
@@ -22,11 +23,9 @@
 
 }
 
-+ (NetworkClock *) sharedNetworkClock;
++ (instancetype) sharedNetworkClock;
 
 - (void) createAssociations;
-- (void) enableAssociations;
-- (void) reportAssociations;
 - (void) finishAssociations;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDate *   networkTime;

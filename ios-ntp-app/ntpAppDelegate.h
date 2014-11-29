@@ -6,19 +6,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ntpAppDelegate : NSObject <UIApplicationDelegate> {
+@interface ntpAppDelegate : NSObject <UIApplicationDelegate>
 
-    NSDate *                        systemTime;
-    NSDate *                        networkTime;
-
-    IBOutlet UILabel *              sysClockLabel;
-    IBOutlet UILabel *              netClockLabel;
-    IBOutlet UILabel *              differenceLabel;
-
-}
-
-@property (nonatomic, strong) IBOutlet UIWindow *           window;
-
-- (void) repeatingMethod:(NSTimer*)theTimer;
+@property (nonatomic, strong) UIWindow * window;
 
 @end

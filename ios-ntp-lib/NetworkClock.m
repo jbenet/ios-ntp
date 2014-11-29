@@ -4,12 +4,9 @@
   ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
-#import <UIKit/UIApplication.h>
-#import <CFNetwork/CFNetwork.h>
-
 #import <arpa/inet.h>
+
 #import "NetworkClock.h"
-#import "NetAssociation.h"
 
 @interface NetworkClock () {
 
@@ -33,7 +30,7 @@
 
 @implementation NetworkClock
 
-+ (NetworkClock*)sharedNetworkClock {
++ (instancetype) sharedNetworkClock {
     static id sharedNetworkClockInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -60,7 +57,7 @@
   │ array of empty associations to use ...                                                           │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES]];
-    timeAssociations = [NSMutableArray arrayWithCapacity:64];
+    timeAssociations = [NSMutableArray arrayWithCapacity:80];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -68,27 +65,6 @@
                                                   initWithTarget:self
                                                         selector:@selector(createAssociations)
                                                           object:nil]];
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ applicationBack -- catch the notification when the application goes into the background          │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification
-                                                      object:nil queue:nil
-                                                  usingBlock:^(NSNotification * note)
-     {
-         NTP_Logging(@"Application -> Background");
-         [self finishAssociations];
-     }];
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ applicationFore -- catch the notification when the application comes out of the background       │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
-                                                      object:nil queue:nil
-                                                  usingBlock:^(NSNotification * note)
-     {
-         NTP_Logging(@"Application -> Foreground");
-//       [self enableAssociations];
-     }];
 
     return self;
 }
@@ -118,7 +94,7 @@
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  for each NTP service domain name in the 'ntp.hosts' file : "0.pool.ntp.org" etc ...             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    NSMutableSet *      hostAddresses = [NSMutableSet setWithCapacity:64];
+    NSMutableSet *      hostAddresses = [NSMutableSet setWithCapacity:80];
 
     for (NSString * ntpDomainName in ntpDomains) {
         if ([ntpDomainName length] == 0 ||
@@ -132,13 +108,13 @@
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         CFHostRef ntpHostName = CFHostCreateWithName (nil, (__bridge CFStringRef)ntpDomainName);
         if (nil == ntpHostName) {
-            NTP_Logging(@"CFHostCreateWithName ntpHost <nil>");
+            NTP_Logging(@"CFHostCreateWithName <nil> for %@", ntpDomainName);
             continue;                                           // couldn't create 'host object' ...
         }
 
         CFStreamError   nameError;
         if (!CFHostStartInfoResolution (ntpHostName, kCFHostAddresses, &nameError)) {
-            NTP_Logging(@"CFHostStartInfoResolution error %i", (int)nameError.error);
+            NTP_Logging(@"CFHostStartInfoResolution error %i for %@", (int)nameError.error, ntpDomainName);
             CFRelease(ntpHostName);
             continue;                                           // couldn't start resolution ...
         }
@@ -147,13 +123,13 @@
         CFArrayRef      ntpHostAddrs = CFHostGetAddressing (ntpHostName, &nameFound);
 
         if (!nameFound) {
-            NTP_Logging(@"CFHostGetAddressing: NOT resolved");
+            NTP_Logging(@"CFHostGetAddressing: %@ NOT resolved", ntpHostName);
             CFRelease(ntpHostName);
             continue;                                           // resolution failed ...
         }
 
         if (ntpHostAddrs == nil) {
-            NTP_Logging(@"CFHostGetAddressing: no addresses resolved");
+            NTP_Logging(@"CFHostGetAddressing: no addresses resolved for %@", ntpHostName);
             CFRelease(ntpHostName);
             continue;                                           // NO addresses were resolved ...
         }
@@ -164,10 +140,11 @@
         for (NSData * ntpHost in (__bridge NSArray *)ntpHostAddrs) {
             [hostAddresses addObject:[self hostAddress:(struct sockaddr_in *)[ntpHost bytes]]];
         }
+
         CFRelease(ntpHostName);
     }
 
-    NTP_Logging(@"%@", hostAddresses);
+    NTP_Logging(@"%@", hostAddresses);                          // all the addresses resolved
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ associationTrue -- notification from a 'truechimer' association of a trusty offset               │
@@ -176,8 +153,7 @@
                                                   usingBlock:^(NSNotification *note)
     {
         NetAssociation *    association = [note object];
-        NTP_Logging(@"%@ (%lu)", association,
-                    (unsigned long)[timeAssociations count]);
+        NTP_Logging(@"%@ (%lu servers)", association, (unsigned long)[timeAssociations count]);
         [self offsetAverage];
     }];
 
@@ -189,8 +165,7 @@
                                                   usingBlock:^(NSNotification *note)
     {
         NetAssociation *    association = [note object];
-        NTP_Logging(@"%@ (%lu)", association,
-                    (unsigned long)[timeAssociations count]);
+        NTP_Logging(@"%@ (%lu servers)", association, (unsigned long)[timeAssociations count]);
 
         if ([timeAssociations count] > 8) {
             [timeAssociations removeObject:association];
@@ -200,26 +175,18 @@
     }];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... now start an 'association' (network clock object) for each address.                         │
+  │  ... now start one 'association' (network clock server) for each address.                        │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     for (NSString * server in hostAddresses) {
-        NetAssociation *    timeAssociation = [[NetAssociation alloc] init:server];
+        NetAssociation *    timeAssociation = [[NetAssociation alloc] initWithServerName:server];
 
         [timeAssociations addObject:timeAssociation];
         [timeAssociation enable];                               // starts are randomized internally
     }
 }
 
-- (void) enableAssociations {
-
-}
-
-- (void) reportAssociations {
-
-}
-
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Stop all the individual ntp clients ..                                                           ┃
+  ┃ Stop all the individual ntp clients associations ..                                              ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finishAssociations {
     for (NetAssociation * timeAssociation in timeAssociations) [timeAssociation finish];
@@ -270,24 +237,6 @@
     }
 
     return @(addrBuf);
-}
-
-#pragma mark                        N o t i f i c a t i o n • T r a p s
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ applicationBack -- catch the notification when the application goes into the background          ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (void) applicationBack:(NSNotification *) notification {
-    NTP_Logging(@"*** application -> Background");
-    [self finishAssociations];
-}
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ applicationFore -- catch the notification when the application comes out of the background       ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (void) applicationFore:(NSNotification *) notification {
-    NTP_Logging(@"*** application -> Foreground");
-    [self enableAssociations];
 }
 
 @end
