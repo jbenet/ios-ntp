@@ -51,21 +51,22 @@
 #pragma mark                        I n t e r n a l  •  M e t h o d s
 
 - (instancetype) init {
-    if ((self = [super init]) == nil) return nil;
+    if (self = [super init]) {
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
   │ array of empty associations to use ...                                                           │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES]];
-    timeAssociations = [NSMutableArray arrayWithCapacity:80];
+        sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES]];
+        timeAssociations = [NSMutableArray arrayWithCapacity:80];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
-                                                  initWithTarget:self
-                                                        selector:@selector(createAssociations)
-                                                          object:nil]];
-
+        [[[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
+                                                      initWithTarget:self
+                                                            selector:@selector(createAssociations)
+                                                              object:nil]];
+    }
+    
     return self;
 }
 
@@ -147,31 +148,24 @@
     NTP_Logging(@"%@", hostAddresses);                          // all the addresses resolved
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ associationTrue -- notification from a 'truechimer' association of a trusty offset               │
+  │ associationTick -- notification from a association of a new measure (or not) ..                  │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"assoc-good" object:nil queue:nil
-                                                  usingBlock:^(NSNotification *note)
-    {
-        NetAssociation *    association = [note object];
-        NTP_Logging(@"%@ (%lu servers)", association, (unsigned long)[timeAssociations count]);
-        [self offsetAverage];
-    }];
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ associationFake -- notification from an association that became a 'falseticker'                  │
-  │ .. if we already have 8 associations in play, drop this one.                                     │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"assoc-fail" object:nil queue:nil
-                                                  usingBlock:^(NSNotification *note)
-    {
-        NetAssociation *    association = [note object];
-        NTP_Logging(@"%@ (%lu servers)", association, (unsigned long)[timeAssociations count]);
-
-        if ([timeAssociations count] > 8) {
-            [timeAssociations removeObject:association];
-            [association finish];
-            association = nil;
-        }
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"assoc-tick"
+                                                      object:nil queue:nil
+                                                  usingBlock:^
+     (NSNotification * note) {
+         NetAssociation *    association = [note object];
+         NTP_Logging(@"%@ (%lu servers)", association, (unsigned long)[timeAssociations count]);
+         if (association.trusty) {
+             [self offsetAverage];
+         }
+         else {
+             if ([timeAssociations count] > 8) {
+                 [timeAssociations removeObject:association];
+                 [association finish];
+                 association = nil;
+             }
+         }
     }];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
