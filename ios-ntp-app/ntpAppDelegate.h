@@ -6,8 +6,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ntpAppDelegate : NSObject <UIApplicationDelegate>
+@interface ntpAppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (nonatomic, strong) UIWindow * window;
+@property (strong, nonatomic) UIWindow *window;
 
 @end

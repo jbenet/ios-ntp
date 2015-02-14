@@ -1,34 +1,53 @@
-//
-//  ntpViewController.m
-//  ios-ntp
-//
-//  Created by Gavin Eadie on 11/28/14.
-//  Copyright (c) 2014 Ramsay Consulting. All rights reserved.
-//
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ ntpViewController.m                                                                              ║
+  ║                                                                                                  ║
+  ║ Created by Gavin Eadie on Nov28/14 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "ntpViewController.h"
+
+@interface ntpViewController () {
+
+    NetworkClock *                  netClock;
+
+}
+
+@end
 
 @implementation ntpViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+#ifdef ONECLOCK
+
+    netClock = [NetworkClock sharedNetworkClock];
+    [netClock xmitTime];
+
+#else
+
     netClock = [NetworkClock sharedNetworkClock];               // gather up the ntp servers ...
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ Create a timer that will fire in one second and then every second thereafter to ask the network  │
-  │ clock what time it is and set the text labels in the UI.                                         │
+  │ Create a timer that will fire every second to refresh the text labels in the UI.                 │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    NSTimer * repeatingTimer = [[NSTimer alloc]
-                                initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:1.0]
-                                interval:1.0 target:self selector:@selector(repeatingMethod:)
-                                userInfo:nil repeats:YES];
+    NSTimer * repeatingTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:1.0]
+                                                        interval:1.0
+                                                          target:self
+                                                        selector:@selector(timerFireMethod:)
+                                                        userInfo:nil
+                                                         repeats:YES];
 
-    [[NSRunLoop currentRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer:repeatingTimer
+                                 forMode:NSDefaultRunLoopMode];
+
+#endif
 
 }
 
-- (void) repeatingMethod:(NSTimer *) theTimer {
+#ifndef ONECLOCK
+
+- (void) timerFireMethod:(NSTimer *) theTimer {
     NSDate *            systemTime = [NSDate date];
     NSDate *            networkTime = netClock.networkTime;
 
@@ -38,20 +57,11 @@
                             [networkTime timeIntervalSinceDate:systemTime]];
 }
 
+#endif
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -22,14 +22,34 @@
 
 #import "GCDAsyncUdpSocket.h"
 
-#define JAN_1970    0x83aa7e80          // UNIX epoch in NTP's epoch: 1970-1900 (2,208,988,800s)
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  NTP Timestamp Structure                                                                         │
+  │                                                                                                  │
+  │   0                   1                   2                   3                                  │
+  │   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1                                │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  │  |                           Seconds                             |                               │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  │  |                  Seconds Fraction (0-padded)                  | <-- 4294967296 = 1 second     │
+  │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+
+#define JAN_1970    		0x83aa7e80                      // UNIX epoch in NTP's epoch:
+                                                            // 1970-1900 (2,208,988,800s)
+struct ntpTimestamp {
+	uint32_t      wholeSeconds;
+	uint32_t      fractSeconds;
+};
+
+static struct ntpTimestamp NTP_1970 = {JAN_1970, 0};        // network time for 1 January 1970, GMT
 
 @interface NetAssociation : NSObject <GCDAsyncUdpSocketDelegate> {
 
     NSString *              server;                         // server name "123.45.67.89"
 
     double                  root_delay, dispersion,         // milliSeconds
-                            el_time, st_time, skew1, skew2; // seconds
+                            roundtrip, serverDelay,         // seconds
+                            skew1, skew2;                   // seconds
 
     int                     li, vn, mode, stratum, poll, prec, refid;
 
@@ -40,13 +60,9 @@
 
 - (instancetype) initWithServerName:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
 
+- (void) transmitPacket;
+
 - (void) enable;
 - (void) finish;
 
 @end
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ conversions of 'NTP Timestamp Format' fractional part to/from microseconds ...                   ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-#define uSec2Frac(x)    ( 4294*(x) + ( (1981*(x))>>11 ) )
-#define Frac2uSec(x)    ( ((x) >> 12) - 759 * ( ( ((x) >> 10) + 32768 ) >> 16 ) )

@@ -1,22 +1,13 @@
-//
-//  ntpViewController.h
-//  ios-ntp
-//
-//  Created by Gavin Eadie on 11/28/14.
-//  Copyright (c) 2014 Ramsay Consulting. All rights reserved.
-//
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ ntpViewController.h                                                                              ║
+  ║                                                                                                  ║
+  ║ Created by Gavin Eadie on Nov28/14 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <UIKit/UIKit.h>
-
 #import "ios-ntp.h"
 
-@interface ntpViewController : UIViewController {
-
-@private
-
-    NetworkClock *                  netClock;
-
-}
+@interface ntpViewController : UIViewController
 
 @property IBOutlet UILabel *        sysClockLabel;
 @property IBOutlet UILabel *        netClockLabel;

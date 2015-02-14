@@ -25,6 +25,12 @@
 
 + (instancetype) sharedNetworkClock;
 
+#ifdef ONECLOCK
+
+- (void) xmitTime;
+
+#endif
+
 - (void) createAssociations;
 - (void) finishAssociations;
 

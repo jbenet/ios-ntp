@@ -31,11 +31,13 @@
 @implementation NetworkClock
 
 + (instancetype) sharedNetworkClock {
-    static id sharedNetworkClockInstance = nil;
-    static dispatch_once_t onceToken;
+    static id               sharedNetworkClockInstance = nil;
+    static dispatch_once_t  onceToken;
+
     dispatch_once(&onceToken, ^{
         sharedNetworkClockInstance = [[self alloc] init];
     });
+
     return sharedNetworkClockInstance;
 }
 
@@ -49,6 +51,17 @@
 
 #pragma mark -
 #pragma mark                        I n t e r n a l  •  M e t h o d s
+
+#ifdef ONECLOCK
+
+- (void) xmitTime {
+
+    netAssoc = [[NetAssociation alloc] initWithServerName:@"time.apple.com"];
+    [netAssoc transmitPacket];
+
+}
+
+#else
 
 - (instancetype) init {
     if (self = [super init]) {
@@ -69,6 +82,8 @@
     
     return self;
 }
+
+#endif
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Read the "ntp.hosts" file from the resources and derive all the IP addresses they refer to,      ┃
