@@ -19,14 +19,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    netClock = [NetworkClock sharedNetworkClock];
+
 #ifdef ONECLOCK
 
-    netClock = [NetworkClock sharedNetworkClock];
     [netClock xmitTime];
 
 #else
-
-    netClock = [NetworkClock sharedNetworkClock];               // gather up the ntp servers ...
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a timer that will fire every second to refresh the text labels in the UI.                 │
@@ -53,15 +52,10 @@
 
     _sysClockLabel.text = [NSString stringWithFormat:@"%@", systemTime];
     _netClockLabel.text = [NSString stringWithFormat:@"%@", networkTime];
-    _differenceLabel.text = [NSString stringWithFormat:@"%7.6f",
+    _differenceLabel.text = [NSString stringWithFormat:@"%5.3f",
                             [networkTime timeIntervalSinceDate:systemTime]];
 }
 
 #endif
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 @end

@@ -15,21 +15,11 @@
 
     NetAssociation *        netAssoc;
 
-@private
-
-    NSSortDescriptor *      dispersionSortDescriptor;
-
-    dispatch_queue_t        associationDelegateQueue;
-
 }
 
 + (instancetype) sharedNetworkClock;
 
-#ifdef ONECLOCK
-
-- (void) xmitTime;
-
-#endif
+- (void) xmitTime;                      // for ONECLOCK
 
 - (void) createAssociations;
 - (void) finishAssociations;
