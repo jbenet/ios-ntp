@@ -18,36 +18,90 @@
   │  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 
-static double pollIntervals[18] = {
-       4.0,    16.0,    16.0,    16.0,    16.0,     35.0,
-      72.0,   127.0,   258.0,   511.0,  1024.0,   2048.0,
-    4096.0,  8192.0, 16384.0, 32768.0, 65536.0, 131072.0
+#define JAN_1970    		0x83aa7e80                      // UNIX epoch in NTP's epoch:
+                                                            // 1970-1900 (2,208,988,800s)
+struct ntpTimestamp {
+    uint32_t      wholeSeconds;
+    uint32_t      fractSeconds;
 };
 
-static double ntpDiffSeconds(struct ntpTimestamp * timeStart,
-                             struct ntpTimestamp * timeUntil);
+static struct ntpTimestamp NTP_1970 = {JAN_1970, 0};        // network time for 1 January 1970, GMT
+
+#pragma -
+#pragma mark                        T i m e • C o n v e r t e r s
+
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Convert from Unix time to NTP time                                                               │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+void unix2ntp(const struct timeval * tv, struct ntpTimestamp * ntp) {
+    ntp->wholeSeconds = (uint32_t)(tv->tv_sec + JAN_1970);
+    ntp->fractSeconds = (uint32_t)(((double)tv->tv_usec + 0.5) * (double)(1LL<<32) * 1.0e-6);
+}
+
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Convert from NTP time to Unix time                                                               │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+void ntp2unix(const struct ntpTimestamp * ntp, struct timeval * tv) {
+    tv->tv_sec  = ntp->wholeSeconds - JAN_1970;
+    tv->tv_usec = (uint32_t)((double)ntp->fractSeconds / (1LL<<32) * 1.0e6);
+}
+
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ get current time in NTP format                                                                   │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+void ntp_time_now(struct ntpTimestamp * ntp) {
+    struct timeval          now;
+    gettimeofday(&now, (struct timezone *)NULL);
+    unix2ntp(&now, ntp);
+}
+
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ get (ntpTime2 - ntpTime1) in (double) seconds                                                    │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
+    int32_t         a;
+    uint32_t        b;
+    a = stop->wholeSeconds - start->wholeSeconds;
+    if (stop->fractSeconds >= start->fractSeconds) {
+        b = stop->fractSeconds - start->fractSeconds;
+    }
+    else {
+        b = start->fractSeconds - stop->fractSeconds;
+        b = ~b;
+        a -= 1;
+    }
+    
+    return a + b / 4294967296.0;
+}
+
+static double pollIntervals[18] = {
+    4.0,    16.0,    16.0,    16.0,    16.0,    35.0,    72.0,   127.0,    258.0,
+  511.0,  1024.0,   2048.0, 4096.0,  8192.0, 16384.0, 32768.0, 65536.0, 131072.0
+};
 
 @interface NetAssociation () {
 
-    GCDAsyncUdpSocket *     socket;                 // NetAssociation UDP Socket
+    NSString *              server;                         // server name "123.45.67.89"
+    GCDAsyncUdpSocket *     socket;                         // NetAssociation UDP Socket
 
-    NSTimer *               repeatingTimer;         // fires off an ntp request ...
-    int                     pollingIntervalIndex;   // index into polling interval table
+    NSTimer *               repeatingTimer;                 // fires off an ntp request ...
+    int                     pollingIntervalIndex;           // index into polling interval table
 
     struct ntpTimestamp     ntpClientSendTime,
                             ntpServerRecvTime,
                             ntpServerSendTime,
                             ntpClientRecvTime,
                             ntpServerBaseTime;
+    
+    double                  root_delay, dispersion,         // milliSeconds
+                            roundtrip, serverDelay;         // seconds
+    
+    int                     li, vn, mode, stratum, poll, prec, refid;
 
     double                  fifoQueue[8];
     short                   fifoIndex;
 
 }
-
-//- (void) queryTimeServer:(NSTimer *) timer;         // query the association's server (fired by timer)
-//
-//- (void) evaluatePacket;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSData *   createPacket;
 
@@ -55,11 +109,6 @@ static double ntpDiffSeconds(struct ntpTimestamp * timeStart,
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString * prettyPrintTimers;
 
 @end
-
-void unix2ntp(const struct timeval * tv, struct ntpTimestamp * ntp);
-void ntp2unix(const struct ntpTimestamp * ntp, struct timeval * tv);
-void ntp_time_get(struct ntpTimestamp * ntp);
-double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
 
 #pragma mark -
 #pragma mark                        N E T W O R K • A S S O C I A T I O N
@@ -80,6 +129,12 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
         _offset = INFINITY;                                 // start with net clock meaningless
         server = serverName;
 
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+        socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
+                                               delegateQueue:dispatch_get_main_queue()];
+        
 #ifndef ONECLOCK
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -127,16 +182,6 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
              fifoIndex = 0;
          }];
 
-#endif
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
-                                               delegateQueue:dispatch_get_main_queue()];
-
-#ifndef ONECLOCK
-
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Finally, initialize the repeating timer that queries the server, set it's trigger time to the    │
   │ infinite future, and put it on the run loop .. nothing will happen (yet)                         │
@@ -158,13 +203,11 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
   ┃ Set the receiver and send the time query with 2 second timeout, ...                              ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) queryTimeServer:(NSTimer *) timer {
-    [socket sendData:[self createPacket] toHost:server port:123L withTimeout:2.0 tag:0];
+    [self transmitPacket];
 
-    NSError *   error = nil;
-    if(![socket beginReceiving:&error]) {
-        NTP_Logging(@"Unable to start listening on socket for [%@] due to error [%@]", server, error);
-        return;
-    }
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Put some wobble into the repeating time so they don't synchronize and thump the network          │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 
     repeatingTimer.tolerance = 2.0;                                     // it can be up to 2 secs late
     NSTimeInterval  interval = pollIntervals[pollingIntervalIndex] +
@@ -178,12 +221,12 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
 - (void) transmitPacket {
     NSError *   error = nil;
 
-    if (![socket bindToPort:0 error:&error]) NTP_Logging(@"Error binding: %@", error);
+    [socket sendData:[self createPacket] toHost:server port:123 withTimeout:2.0 tag:0];
 
-    if(![socket beginReceiving:&error])
+    if(![socket beginReceiving:&error]) {
         NTP_Logging(@"Unable to start listening on socket for [%@] due to error [%@]", server, error);
-
-    [socket sendData:[self createPacket] toHost:server port:123 withTimeout:1.0 tag:0];
+        return;
+    }
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -241,6 +284,21 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
   ┃     [11] |                                                               |                       ┃
   ┃                                                                                                  ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+
+struct pkt {
+/* wireData[0] */   u_char                  li_vn_mode;	/* peer leap indicator */
+                    u_char                  stratum;	/* peer stratum */
+                    u_char                  ppoll;		/* peer poll interval */
+                    signed char             precision;	/* peer clock precision */
+/* wireData[1] */   uint32_t                rootdelay;	/* roundtrip delay to primary source */
+/* wireData[2] */   uint32_t                rootdisp;	/* dispersion to primary source*/
+/* wireData[3] */   uint32_t                refid;		/* reference id */
+/* wireData[4] */   struct ntpTimestamp     reftime;	/* last update time */
+/* wireData[6] */   struct ntpTimestamp     org;		/* originate time stamp */
+/* wireData[8] */   struct ntpTimestamp     rec;		/* receive time stamp */
+/* wireData[10] */  struct ntpTimestamp     xmt;		/* transmit time stamp */
+};
+
 - (NSData *) createPacket {
 	uint32_t        wireData[12];
 
@@ -254,7 +312,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
 	wireData[1] = htonl(1<<16);
 	wireData[2] = htonl(1<<16);
 
-    ntp_time_get(&ntpClientSendTime);
+    ntp_time_now(&ntpClientSendTime);
 
     wireData[10] = htonl(ntpClientSendTime.wholeSeconds);                   // Transmit Timestamp
 	wireData[11] = htonl(ntpClientSendTime.fractSeconds);
@@ -266,7 +324,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  grab the packet arrival time as fast as possible, before computations below ...                 │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    ntp_time_get(&ntpClientRecvTime);
+    ntp_time_now(&ntpClientRecvTime);
 
     uint32_t                hostData[12];
     [data getBytes:hostData length:48];
@@ -287,33 +345,29 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
     prec    = ntohl(hostData[0])       & 0xff;
     if (prec & 0x80) prec |= 0xffffff00;                                // -ve byte --> -ve int
 
-    root_delay = ntohl(hostData[1]) * 0.0152587890625;                  // delay - round trip (mS) [1000.0/2**16]
+    root_delay = ntohl(hostData[1]) * 0.0152587890625;                  // delay - round trip (mS) [1000.0/2**16].
     dispersion = ntohl(hostData[2]) * 0.0152587890625;                  // error - upper limit (mS)
 
     refid   = ntohl(hostData[3]);
+
+    ntpServerBaseTime.wholeSeconds = ntohl(hostData[4]);                // when server clock was wound
+    ntpServerBaseTime.fractSeconds = ntohl(hostData[5]);
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  if the send time in the packet isn't the same as the remembered send time, ditch it ...         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     if (ntpClientSendTime.wholeSeconds != ntohl(hostData[6]) ||
         ntpClientSendTime.fractSeconds != ntohl(hostData[7])) return;   //  NO;
 
-    ntpServerBaseTime.wholeSeconds = ntohl(hostData[4]);
-    ntpServerBaseTime.fractSeconds = ntohl(hostData[5]);
     ntpServerRecvTime.wholeSeconds = ntohl(hostData[8]);
     ntpServerRecvTime.fractSeconds = ntohl(hostData[9]);
     ntpServerSendTime.wholeSeconds = ntohl(hostData[10]);
     ntpServerSendTime.fractSeconds = ntohl(hostData[11]);
-
+    
     [self evaluatePacket];
 }
 
 - (void) evaluatePacket {
-
-#ifdef ONECLOCK
-
-    NTP_Logging(@"%@", [self prettyPrintPacket]);
-
-#endif
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ determine the quality of this particular time ..                                                 │
@@ -323,27 +377,31 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
   │ .. the server clock was set less than 1 hour ago                                                 │
   │ the packet is trustworthy -- compute and store offset in 8-slot fifo ...                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+    
+    NTP_Logging(@"%@", [self prettyPrintPacket]);
+
     if ((dispersion > 0.001 && dispersion < 50.0) &&
         (stratum > 0) &&
         (mode == 4) &&
         (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 3600.0)) {
 
-        roundtrip=ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);       // .. (T4-T1)
-        serverDelay=ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);     // .. (T3-T2)
-        skew1 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);         // .. (T2-T1)
-        skew2 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);         // .. (T3-T4)
-        _offset = (skew1 + skew2) / 2.0;                                         // calulate offset
+        roundtrip   = ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);   // .. (T4-T1)
+        serverDelay = ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);   // .. (T3-T2)
+        
+        double  t21 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);   // .. (T2-T1)
+        double  t34 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);   // .. (T3-T4)
+        _offset = (t21 + t34) / 2.0;                                            // calculate offset
 
+        NTP_Logging(@"%@", [self prettyPrintTimers]);
+    }
+    else {
+        ///### what now ??
     }
 
-#ifdef ONECLOCK
-
-    NTP_Logging(@"%@", [self prettyPrintTimers]);
-
-#else
-
-    fifoQueue[fifoIndex % 8] = _offset * 1000;               // store offset in mSec
-    fifoIndex++;                                            // rotate index
+    [self.delegate reportFromDelegate];                           // tell delegate we're done
+    
+    fifoQueue[fifoIndex % 8] = _offset * 1000;                    // store offset in mSec
+    fifoIndex++;                                                  // rotate index
 
     NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f}", server,
                 fifoQueue[0], fifoQueue[1], fifoQueue[2], fifoQueue[3],
@@ -358,7 +416,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
             none++;
             continue;
         }
-        if (!isfinite(fifoQueue[i])) {                      // server can't be trusted
+        if (isinf(fifoQueue[i]) || fabs(fifoQueue[i]) < 0.01) {                      // server can't be trusted
             fail++;
         }
         else {
@@ -366,6 +424,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
             _offset += fifoQueue[i];
         }
     }
+ 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │   .. if we have at least one 'good' server response or four or more 'fail' responses, we'll      │
   │      inform our management accordingly.  If we have less than four 'fails' we won't make any     │
@@ -378,6 +437,17 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-tick" object:self];
     }
 
+    NTP_Logging(@"  [%@] { %3@ , %3@ , %3@ , %3@ , %3@ , %3@ , %3@ , %3@} ↑=%i, ↓=%i, •=%i  %@", server,
+                isnan(fifoQueue[0]) ? @"-" : (isinf(fifoQueue[0]) || fabs(fifoQueue[0]) < 0.01) ? @"↓" : @"↑",
+                isnan(fifoQueue[1]) ? @"-" : (isinf(fifoQueue[1]) || fabs(fifoQueue[1]) < 0.01) ? @"↓" : @"↑",
+                isnan(fifoQueue[2]) ? @"-" : (isinf(fifoQueue[2]) || fabs(fifoQueue[2]) < 0.01) ? @"↓" : @"↑",
+                isnan(fifoQueue[3]) ? @"-" : (isinf(fifoQueue[3]) || fabs(fifoQueue[3]) < 0.01) ? @"↓" : @"↑",
+                isnan(fifoQueue[4]) ? @"-" : (isinf(fifoQueue[4]) || fabs(fifoQueue[4]) < 0.01) ? @"↓" : @"↑",
+                isnan(fifoQueue[5]) ? @"-" : (isinf(fifoQueue[5]) || fabs(fifoQueue[5]) < 0.01) ? @"↓" : @"↑",
+                isnan(fifoQueue[6]) ? @"-" : (isinf(fifoQueue[6]) || fabs(fifoQueue[6]) < 0.01) ? @"↓" : @"↑",
+                isnan(fifoQueue[7]) ? @"-" : (isinf(fifoQueue[7]) || fabs(fifoQueue[7]) < 0.01) ? @"↓" : @"↑",
+                good, fail, none, _trusty ? @"TRUST" : @"");
+    
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │   .. if the association is providing times which don't vary much, we could increase its polling  │
   │      interval.  In practice, once things settle down, the standard deviation on any time server  │
@@ -387,9 +457,6 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
     if ((stratum == 1 && pollingIntervalIndex != 6) || (stratum == 2 && pollingIntervalIndex != 5)) {
         pollingIntervalIndex = 7 - stratum;
     }
-
-#endif
-
 }
 
 #pragma mark                        N e t w o r k • C a l l b a c k s
@@ -412,7 +479,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data
       fromAddress:(NSData *)address withFilterContext:(id)filterContext {
-    NTP_Logging(@"didReceiveData");
+    NTP_Logging(@"didReceiveData from: %@", server);
 
     [self decodePacket:data];
 }
@@ -421,54 +488,10 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop);
     NTP_Logging(@"Socket closed : [%@]", server);
 }
 
-#pragma -
-#pragma mark                        T i m e • C o n v e r t e r s
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ Convert from Unix time to NTP time                                                               │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-void unix2ntp(const struct timeval * tv, struct ntpTimestamp * ntp) {
-    ntp->wholeSeconds = (uint32_t)(tv->tv_sec + JAN_1970);
-    ntp->fractSeconds = (uint32_t)(((double)tv->tv_usec + 0.5) * (double)(1LL<<32) * 1.0e-6);
-}
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ Convert from NTP time to Unix time                                                               │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-void ntp2unix(const struct ntpTimestamp * ntp, struct timeval * tv) {
-    tv->tv_sec  = ntp->wholeSeconds - JAN_1970;
-    tv->tv_usec = (uint32_t)((double)ntp->fractSeconds / (1LL<<32) * 1.0e6);
-}
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ get current time in NTP format                                                                   │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-void ntp_time_get(struct ntpTimestamp * ntp) {
-    struct timeval          now;
-    gettimeofday(&now, NULL);
-    unix2ntp(&now, ntp);
-}
-
-double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
-    int                 a;
-    unsigned int        b;
-    a = stop->wholeSeconds - start->wholeSeconds;
-    if (stop->fractSeconds >= start->fractSeconds) {
-        b = stop->fractSeconds - start->fractSeconds;
-    }
-    else {
-        b = start->fractSeconds - stop->fractSeconds;
-        b = ~b;
-        a -= 1;
-    }
-
-    return a + b / 4294967296.0;
-}
-
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Make an NSDate from ntpTimestamp ... (via seconds from JAN_1970) ...                             ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (NSDate *)  dateFromNetworkTime:(struct ntpTimestamp *) networkTime {
+- (NSDate *) dateFromNetworkTime:(struct ntpTimestamp *) networkTime {
     return [NSDate dateWithTimeIntervalSince1970:ntpDiffSeconds(&NTP_1970, networkTime)];
 }
 
@@ -483,9 +506,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
                                 "   precision exp: %3d\n\n", li, vn, mode, stratum, poll, prec];
 
     [prettyString appendFormat:@"      root delay: %7.3f (mS)\n"
-                                "      dispersion: %7.3f (mS)\n"
-                                "    reference ID: %3u.%u.%u.%u\n\n", root_delay, dispersion,
-                                        refid>>24&0xff, refid>>16&0xff, refid>>8&0xff, refid&0xff];
+                                "      dispersion: %7.3f (mS)\n\n", root_delay, dispersion];
 
     struct timeval      tempTime;
 

@@ -11,15 +11,9 @@
   ┃ early estimate and then refine that and reduce the number of notifications ...                   ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 
-@interface NetworkClock : NSObject {
-
-    NetAssociation *        netAssoc;
-
-}
+@interface NetworkClock : NSObject
 
 + (instancetype) sharedNetworkClock;
-
-- (void) xmitTime;                      // for ONECLOCK
 
 - (void) createAssociations;
 - (void) finishAssociations;

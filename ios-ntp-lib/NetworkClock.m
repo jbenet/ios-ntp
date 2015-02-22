@@ -52,16 +52,6 @@
     return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime/1000.0];
 }
 
-#pragma mark -
-#pragma mark                        I n t e r n a l  •  M e t h o d s
-
-- (void) xmitTime {
-
-    netAssoc = [[NetAssociation alloc] initWithServerName:@"time.apple.com"];
-    [netAssoc transmitPacket];
-
-}
-
 - (instancetype) init {
     if (self = [super init]) {
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -69,7 +59,7 @@
   │ array of empty associations to use ...                                                           │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES]];
-        timeAssociations = [NSMutableArray arrayWithCapacity:80];
+        timeAssociations = [NSMutableArray arrayWithCapacity:100];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -90,11 +80,13 @@
     NSArray *           ntpDomains;
     NSString *          filePath = [[NSBundle mainBundle] pathForResource:@"ntp.hosts" ofType:@""];
     if (nil == filePath) {
-        ntpDomains = @[@"0.pool.ntp.org", @"1.pool.ntp.org", @"2.pool.ntp.org", @"3.pool.ntp.org",
-                       @"0.US.pool.ntp.org", @"1.US.pool.ntp.org", @"2.US.pool.ntp.org", @"3.US.pool.ntp.org",
-                       @"asia.pool.ntp.org", @"europe.pool.ntp.org",
-                       @"north-america.pool.ntp.org", @"south-america.pool.ntp.org", @"oceania.pool.ntp.org",
-                       @"time.apple.com"];
+        ntpDomains = @[@"0.pool.ntp.org",
+                       @"0.US.pool.ntp.org",
+                       @"asia.pool.ntp.org",
+                       @"europe.pool.ntp.org",
+                       @"north-america.pool.ntp.org",
+                       @"south-america.pool.ntp.org",
+                       @"oceania.pool.ntp.org"];
     }
     else {
         NSString *      fileData = [[NSString alloc] initWithData:[[NSFileManager defaultManager]
@@ -107,7 +99,7 @@
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  for each NTP service domain name in the 'ntp.hosts' file : "0.pool.ntp.org" etc ...             │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    NSMutableSet *      hostAddresses = [NSMutableSet setWithCapacity:80];
+    NSMutableSet *      hostAddresses = [NSMutableSet setWithCapacity:100];
 
     for (NSString * ntpDomainName in ntpDomains) {
         if ([ntpDomainName length] == 0 ||
@@ -199,6 +191,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark -
+#pragma mark                        I n t e r n a l  •  M e t h o d s
+
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
@@ -220,15 +215,6 @@
     if (usefulCount > 0) {
         timeIntervalSinceDeviceTime /= usefulCount;
     }
-
-    //###ADDITION?
-    if (usefulCount == 8)
-    {
-        //stop it for now
-        //
-        //    [self finishAssociations];
-    }
-    //###
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -244,5 +230,23 @@
 
     return @(addrBuf);
 }
+
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Gets a single NetAssociation and tells it to get the time from its server.                       ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+//- (IBAction) timeCheck:(id)sender {
+//    netAssociation = [[NetAssociation alloc] initWithServerName:@"time.apple.com"];
+//    netAssociation.delegate = self;
+//    [netAssociation transmitPacket];
+//}
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Called when that single NetAssociation has a network time to report.                             ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+//- (void) reportFromDelegate {
+//    _timeCheckLabel.text = [NSString stringWithFormat:@"Network ahead by (secs): %5.3f [%@]",
+//                            -netAssociation.offset, netAssociation.trusty ? @"SUCCESS" : @"FAILURE"];
+//}
 
 @end

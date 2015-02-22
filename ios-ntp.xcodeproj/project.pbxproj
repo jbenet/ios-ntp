@@ -65,6 +65,7 @@
 		8602E82E1A1D5517001C265E /* ntpAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpAppDelegate.h; sourceTree = "<group>"; };
 		8602E82F1A1D5517001C265E /* ntpAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpAppDelegate.m; sourceTree = "<group>"; };
 		860E46A21A4F7B9E004C705B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		862DA2551A999FC000F65F3E /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; name = Notes; path = "ios-ntp-lib/Notes"; sourceTree = "<group>"; };
 		8661906E126C0CD70046A2B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -181,6 +182,7 @@
 				86C2B3F51A1DA95300481E2E /* rfc5905.pdf */,
 				86C79ED71A1D659F00FC7CC2 /* LICENSE */,
 				86C79ED81A1D659F00FC7CC2 /* README.md */,
+				862DA2551A999FC000F65F3E /* Notes */,
 			);
 			name = "ios-ntp-doc";
 			sourceTree = "<group>";

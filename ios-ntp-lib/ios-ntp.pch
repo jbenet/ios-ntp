@@ -20,8 +20,6 @@
             [[[self class] description] UTF8String]], ##__VA_ARGS__)
 #endif
 
-//#define ONECLOCK
-
 /*
 
 #if __DARWIN_BYTE_ORDER == __DARWIN_BIG_ENDIAN

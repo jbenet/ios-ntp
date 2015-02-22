@@ -7,10 +7,12 @@
 #import <UIKit/UIKit.h>
 #import "ios-ntp.h"
 
-@interface ntpViewController : UIViewController
+@interface ntpViewController : UIViewController <NetAssociationDelegate>
 
-@property IBOutlet UILabel *        sysClockLabel;
-@property IBOutlet UILabel *        netClockLabel;
-@property IBOutlet UILabel *        differenceLabel;
+@property (weak, nonatomic) IBOutlet UILabel *  sysClockLabel;
+@property (weak, nonatomic) IBOutlet UILabel *  netClockLabel;
+@property (weak, nonatomic) IBOutlet UILabel *  differenceLabel;
+
+@property (weak, nonatomic) IBOutlet UILabel *  timeCheckLabel;
 
 @end
