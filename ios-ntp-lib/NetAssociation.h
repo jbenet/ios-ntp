@@ -19,9 +19,15 @@
 #import <UIKit/UIKit.h>
 #import <sys/time.h>
 
+@protocol NetAssociationDelegate <NSObject>
+
+- (void) reportFromDelegate;
+
+@end
+
 #import "GCDAsyncUdpSocket.h"
 
-@interface NetAssociation : NSObject <GCDAsyncUdpSocketDelegate>
+@interface NetAssociation : NSObject <GCDAsyncUdpSocketDelegate, NetAssociationDelegate>
 
 @property (nonatomic, weak) id delegate;
 
@@ -37,12 +43,5 @@
 - (void) finish;
 
 - (void) transmitPacket;
-
-@end
-
-
-@protocol NetAssociationDelegate <NSObject>
-
-- (void) reportFromDelegate;
 
 @end

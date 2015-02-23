@@ -67,8 +67,9 @@
   ┃ Called when that single NetAssociation has a network time to report.                             ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) reportFromDelegate {
-    _timeCheckLabel.text = [NSString stringWithFormat:@"Network ahead by (secs): %5.3f [%@]",
-                            -netAssociation.offset, netAssociation.trusty ? @"SUCCESS" : @"FAILURE"];
+    _timeCheckLabel.text = [NSString stringWithFormat:@"System ahead by (secs): %5.3f [%@]",
+                            netAssociation.offset,
+                            netAssociation.trusty ? @"SUCCESS" : @"FAILURE"];
 }
 
 @end

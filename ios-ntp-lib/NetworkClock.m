@@ -231,22 +231,4 @@
     return @(addrBuf);
 }
 
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Gets a single NetAssociation and tells it to get the time from its server.                       ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-//- (IBAction) timeCheck:(id)sender {
-//    netAssociation = [[NetAssociation alloc] initWithServerName:@"time.apple.com"];
-//    netAssociation.delegate = self;
-//    [netAssociation transmitPacket];
-//}
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Called when that single NetAssociation has a network time to report.                             ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-//- (void) reportFromDelegate {
-//    _timeCheckLabel.text = [NSString stringWithFormat:@"Network ahead by (secs): %5.3f [%@]",
-//                            -netAssociation.offset, netAssociation.trusty ? @"SUCCESS" : @"FAILURE"];
-//}
-
 @end
