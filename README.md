@@ -18,8 +18,8 @@ that iOS apps have is different; they are more likely to want an fast
 estimate of the time on demand.  To provide ability to the developer,
 access has been provided to use the 'associations.'
 
-An association can get one measure of the time from one time server so
-now an iOS app can create an association, use it to get the time, and be
+An association can now get one measure of the time from one time server
+so an iOS app can create an association, use it to get the time, and be
 done.
 
 This code operates on 32-bit and 64-bit iOS devices.
@@ -29,20 +29,22 @@ This code **requires** iOS 7, or higher.
 ----
 ### About
 
-The clock on an older iPhone, iTouch or iPad is not closely synchronized
-to the correct time. In the case of a device which is obtaining its time
-from the telephone system, there is a setting to enable synchronizing to
-the phone company time, but that time has been known to be over a minute
-different from UTC.
+The clock on the oldest iPhone, iTouch or iPad is not closely
+synchronized to the correct time. In the case of a device which is
+obtaining its time from the telephone system, there is a setting to
+enable synchronizing to the phone company time, but that time has been
+known to be over a minute different from the correct time.
 
 In addition, users may change their device time and severely affect
-applications that rely on correct times to enforce functionality.
+applications that rely on correct times to enforce functionality, or may
+set their devices clock into the past in an attempt to dodge an expiry
+date.
 
 This project contains code to provide time obtained from standard time
 servers using the simple network time protocol (SNTP: RFC 5905). The
-implementation is not a rigorous as described in those RFCs since the
-goal was to improve time accuracy to less than a tens of milliSeconds,
-not to microseconds.
+implementation is not a rigorous as described in that document since the
+goal was to improve time accuracy to tens of milliSeconds, not to
+microseconds.
 
 Computers using the NTP protocol usually employ it in a continuous low
 level task to keep track of the time on a continuous basis.  A
@@ -62,7 +64,7 @@ The code can be incorporated as source code or as a framework in an
 Xcode project.  The framework usage is temporarily unavailable but will
 be restored soon.
 
-_More come about using a framework._
+_More to come about using a framework._
 
 Download the [ios-ntp](http://github.com/jbenet/ios-ntp) project, add
 the necessary to your project, build and run.  You will need:
@@ -87,6 +89,9 @@ calling:
 
 		NSDate * nt = nc.networkTime;
 
+It will take about one minute before untrustworthy servers start to get
+dropped from the pool.
+
 _It would probably be better if NetworkClock called back to a delegate
 method, like NetAssociation does below, when it had a good time but
 that's not how it works, yet, so you have to wait till things settle
@@ -101,13 +106,26 @@ itself with time information.
 
 		netAssociation = [[NetAssociation alloc] initWithServerName:@"time.apple.com"];
 		netAssociation.delegate = self;
-		[netAssociation transmitPacket];
+		[netAssociation sendTimeQuery];
 
 		...
 
 		- (void) reportFromDelegate {
 		   double timeOffset = netAssociation.offset;
 		}
+
+### Performance
+
+iOS is an event driven system with an emphasis
+on rapid response to gestures at the cost of other activity. This
+encourages the extensive use of design patterns like notification and
+delegation so, I think, the calculation small time differences in this
+environments suffers as a result.
+
+Empirical observations of one time server shows some an occasional time
+offset that is significantly greater than its usual values; the
+calculated standard deviations of any one server's offsets is higher
+than would be expected, and I don't know the cause of this.
 
 ### License
 
@@ -116,9 +134,10 @@ License Copyright (c) 2010-2015, Ramsay Consulting
 
 ### Building
 
-_More come about building a framework._
+_More to come about building a framework._
 
 ### History
+
 **November 19, 2014:** A large update was made today to bring ios-ntp
 into the modern world. The changes do include one bug fix, but are
 mostly related to making the code comply with the recent Xcode changes
@@ -132,18 +151,3 @@ Finally, note that this code was first written when there were only
 run the latest version of iOS (iPhone 4S, for example), but all newer
 iOS devices have a 64-bit architecture (iPhone 6, for example), and
 Apple requires that this be supported.
-
-----
-**November 19, 2014:** jbenet and I (gavineadie) have agreed that I will resume
-taking care of this project and will let the old version at Google Code fade away.
-I've come to enjoy git much more than svn also.
-
-----
-This is a fork from the original source at
-[http://code.google.com/p/ios-ntp/](http://code.google.com/p/ios-ntp/) that
-provides ios-ntp as a *static* iOS framework. This makes its use easier and
-avoids symbol clashing.
-
-Why fork? Well, because git and github are much more convenient than google code
-for me. I (jbenet) am subscribed to the RSS feed of the original project and
-will merge any upstream changes.

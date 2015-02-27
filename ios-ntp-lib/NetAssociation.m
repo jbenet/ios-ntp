@@ -228,7 +228,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   ┃ Set the receiver and send the time query with 2 second timeout, ...                              ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) queryTimeServer {
-    [self transmitPacket];
+    [self sendTimeQuery];
     
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Put some wobble into the repeating time so they don't synchronize and thump the network          │
@@ -241,7 +241,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃                                                                 ...                              ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (void) transmitPacket {
+- (void) sendTimeQuery {
     NSError *   error = nil;
     
     [socket sendData:[self createPacket] toHost:server port:123 withTimeout:2.0 tag:0];
@@ -428,18 +428,21 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
         _offset = _offset / good;                                   // average good times
         
         for (short i = 0; i < 8; i++) {
-            if (isnan(fifoQueue[i]) || isinf(fifoQueue[i]) || fabs(fifoQueue[i])) continue;
+            if (isnan(fifoQueue[i])) continue;
+            
+            if (isinf(fifoQueue[i]) || fabs(fifoQueue[i]) < 0.001) continue;
             
             stdDev += (fifoQueue[i] - _offset) * (fifoQueue[i] - _offset);
         }
         stdDev = sqrt(stdDev/(float)good);
 
-        _trusty = (good+none > 4);                                  // four or more 'fails'
+        _trusty = (good+none > 4) &&                                // four or more 'fails'
+                  (fabs(_offset) > stdDev*3.0);                     // s.d. < offset
         
-//        NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", server,
-//                    fifoQueue[0], fifoQueue[1], fifoQueue[2], fifoQueue[3],
-//                    fifoQueue[4], fifoQueue[5], fifoQueue[6], fifoQueue[7],
-//                    good, fail, _offset, stdDev, _trusty ? @"TRUST" : @"DOUBT");
+//      NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", server,
+//                  fifoQueue[0], fifoQueue[1], fifoQueue[2], fifoQueue[3],
+//                  fifoQueue[4], fifoQueue[5], fifoQueue[6], fifoQueue[7],
+//                  good, fail, _offset, stdDev, _trusty ? @"↑" : @"↓");
 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-tick" object:self];
     }
@@ -552,7 +555,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 
 - (NSString *) description {
     return [NSString stringWithFormat:@"%@ [%@] stratum=%i; offset=%3.1f±%3.1fmS",
-            (_trusty) ? @"↑" : @"↓", server, stratum, _offset, dispersion];
+            _trusty ? @"↑" : @"↓", server, stratum, _offset, dispersion];
 }
 
 @end

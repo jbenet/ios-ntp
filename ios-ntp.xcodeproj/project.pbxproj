@@ -70,7 +70,7 @@
 		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		86619085126C0D120046A2B8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		866F2B551A1D35A0008CCF83 /* iosntp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iosntp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		866F2B551A1D35A0008CCF83 /* ios_fwk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ios_fwk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86734BD61A2181FD00F191CE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		86C2B3F51A1DA95300481E2E /* rfc5905.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = rfc5905.pdf; sourceTree = "<group>"; };
 		86C39F0D126A1FA100A9DCD1 /* ntp-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ntp-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,7 +78,7 @@
 		86C79ED81A1D659F00FC7CC2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		86CE9ED51A2841FB00AFDE79 /* ntpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpViewController.h; sourceTree = "<group>"; };
 		86CE9ED61A2841FB00AFDE79 /* ntpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpViewController.m; sourceTree = "<group>"; };
-		86F300AE1A14815C0078CBF9 /* libios-ntp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-ntp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		86F300AE1A14815C0078CBF9 /* libios-lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-lib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D91E95D913D9AF8C004E4194 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
 		D91E95DA13D9AF8C004E4194 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
 		D91E95DB13D9AF8C004E4194 /* NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkClock.h; sourceTree = "<group>"; };
@@ -169,8 +169,8 @@
 			isa = PBXGroup;
 			children = (
 				86C39F0D126A1FA100A9DCD1 /* ntp-app.app */,
-				86F300AE1A14815C0078CBF9 /* libios-ntp.a */,
-				866F2B551A1D35A0008CCF83 /* iosntp.framework */,
+				86F300AE1A14815C0078CBF9 /* libios-lib.a */,
+				866F2B551A1D35A0008CCF83 /* ios_fwk.framework */,
 				D9B2BA3F13D9B95100C9385A /* ios-ntp.tar.gz */,
 			);
 			name = products;
@@ -261,9 +261,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		866F2B541A1D35A0008CCF83 /* iosntp */ = {
+		866F2B541A1D35A0008CCF83 /* ios_fwk */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "iosntp" */;
+			buildConfigurationList = 866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "ios_fwk" */;
 			buildPhases = (
 				866F2B501A1D35A0008CCF83 /* Sources */,
 				866F2B511A1D35A0008CCF83 /* Frameworks */,
@@ -274,9 +274,9 @@
 			);
 			dependencies = (
 			);
-			name = iosntp;
+			name = ios_fwk;
 			productName = "ios-ntp-framework";
-			productReference = 866F2B551A1D35A0008CCF83 /* iosntp.framework */;
+			productReference = 866F2B551A1D35A0008CCF83 /* ios_fwk.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		86C39F0C126A1FA100A9DCD1 /* ntp-app */ = {
@@ -297,9 +297,9 @@
 			productReference = 86C39F0D126A1FA100A9DCD1 /* ntp-app.app */;
 			productType = "com.apple.product-type.application";
 		};
-		86F300AD1A14815C0078CBF9 /* ios-ntp */ = {
+		86F300AD1A14815C0078CBF9 /* ios-lib */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 86F300BF1A14815C0078CBF9 /* Build configuration list for PBXNativeTarget "ios-ntp" */;
+			buildConfigurationList = 86F300BF1A14815C0078CBF9 /* Build configuration list for PBXNativeTarget "ios-lib" */;
 			buildPhases = (
 				86F300AA1A14815C0078CBF9 /* Sources */,
 				86F300AB1A14815C0078CBF9 /* Frameworks */,
@@ -309,9 +309,9 @@
 			);
 			dependencies = (
 			);
-			name = "ios-ntp";
+			name = "ios-lib";
 			productName = "ios-ntp";
-			productReference = 86F300AE1A14815C0078CBF9 /* libios-ntp.a */;
+			productReference = 86F300AE1A14815C0078CBF9 /* libios-lib.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -345,8 +345,8 @@
 			projectRoot = "";
 			targets = (
 				86C39F0C126A1FA100A9DCD1 /* ntp-app */,
-				86F300AD1A14815C0078CBF9 /* ios-ntp */,
-				866F2B541A1D35A0008CCF83 /* iosntp */,
+				86F300AD1A14815C0078CBF9 /* ios-lib */,
+				866F2B541A1D35A0008CCF83 /* ios_fwk */,
 			);
 		};
 /* End PBXProject section */
@@ -447,8 +447,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gavin Eadie (LCMB47AMGF)";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -498,8 +497,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gavin Eadie (CXE9ZR7J3U)";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -567,7 +565,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -588,7 +586,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ios-ntp-lib/ios-ntp.pch";
@@ -665,7 +663,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "iosntp" */ = {
+		866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "ios_fwk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				866F2B6F1A1D35A0008CCF83 /* Debug */,
@@ -692,7 +690,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		86F300BF1A14815C0078CBF9 /* Build configuration list for PBXNativeTarget "ios-ntp" */ = {
+		86F300BF1A14815C0078CBF9 /* Build configuration list for PBXNativeTarget "ios-lib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86F300C01A14815C0078CBF9 /* Debug */,

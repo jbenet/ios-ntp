@@ -42,6 +42,6 @@
 - (void) enable;
 - (void) finish;
 
-- (void) transmitPacket;
+- (void) sendTimeQuery;
 
 @end
