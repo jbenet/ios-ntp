@@ -1,12 +1,5 @@
-//
-// Prefix header for all source files of the 'ntpA' target in the 'ntpA' project
-//
-
 #import <Availability.h>
-
-#ifndef __IPHONE_7_0
-    #warning "This project uses features only available in iPhone SDK 7.0 and later."
-#endif
+#import <Foundation/Foundation.h>
 
 #define NTP_Logging(fmt, ...)
 #define LogInProduction(fmt, ...) \
@@ -19,13 +12,3 @@
         NSLog((@"%@|" fmt), [NSString stringWithFormat: @"%16s", \
             [[[self class] description] UTF8String]], ##__VA_ARGS__)
 #endif
-
-/*
-
-#if __DARWIN_BYTE_ORDER == __DARWIN_BIG_ENDIAN
-    #warning "DARWIN_BIG_ENDIAN"
-#else
-    #warning "DARWIN_LITTLE_ENDIAN"
-#endif
-
-*/

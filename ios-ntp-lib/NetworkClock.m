@@ -7,6 +7,7 @@
 #import <arpa/inet.h>
 
 #import "NetworkClock.h"
+#import "ntp-log.h"
 
 @interface NetworkClock () {
 
