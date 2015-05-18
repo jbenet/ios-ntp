@@ -138,6 +138,8 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
                                                delegateQueue:dispatch_get_main_queue()];
+
+		[self registerObservations];
     }
 
     return self;
@@ -158,52 +160,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;   // set fifo to all empty
     fifoIndex = 0;
-    
-#pragma mark                      N o t i f i c a t i o n • T r a p s
 
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ if associations are going to have a life, they have to react to their app being backgrounded.    ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-    
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ applicationBack -- catch the notification when the application goes into the background          │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification
-                                                      object:nil queue:nil
-                                                  usingBlock:^
-     (NSNotification * note) {
-         NTP_Logging(@"Application -> Background");
-         [self finish];
-     }];
-    
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ applicationFore -- catch the notification when the application comes out of the background       │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
-                                                      object:nil queue:nil
-                                                  usingBlock:^
-     (NSNotification * note) {
-         NTP_Logging(@"Application -> Foreground");
-         [self enable];
-     }];
-    
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ if associations are going to have a life, they have to react to midnight and daylight saving.    ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ significantTimeChange -- trash the fifo ..                                                       │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationSignificantTimeChangeNotification
-                                                      object:nil
-                                                       queue:nil
-                                                  usingBlock:^
-     (NSNotification * note) {
-         NTP_Logging(@"Application -> SignificantTimeChange");
-         for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
-         fifoIndex = 0;
-     }];
-    
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Finally, initialize the repeating timer that queries the server, set it's trigger time to the    │
   │ infinite future, and put it on the run loop .. nothing will happen (yet)                         │
@@ -557,6 +514,54 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 - (NSString *) description {
     return [NSString stringWithFormat:@"%@ [%@] stratum=%i; offset=%3.1f±%3.1fmS",
             _trusty ? @"↑" : @"↓", server, stratum, _offset, dispersion];
+}
+
+#pragma mark                      N o t i f i c a t i o n • T r a p s
+
+- (void)registerObservations {
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ if associations are going to have a life, they have to react to their app being backgrounded.    ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ applicationBack -- catch the notification when the application goes into the background          │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+	[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification
+													  object:nil queue:nil
+												  usingBlock:^
+	 (NSNotification * note) {
+		 NTP_Logging(@"Application -> Background");
+		 [self finish];
+	 }];
+
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ applicationFore -- catch the notification when the application comes out of the background       │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+	[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
+													  object:nil queue:nil
+												  usingBlock:^
+	 (NSNotification * note) {
+		 NTP_Logging(@"Application -> Foreground");
+		 [self enable];
+	 }];
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ if associations are going to have a life, they have to react to midnight and daylight saving.    ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ significantTimeChange -- trash the fifo ..                                                       │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+	[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationSignificantTimeChangeNotification
+													  object:nil
+													   queue:nil
+												  usingBlock:^
+	 (NSNotification * note) {
+		 NTP_Logging(@"Application -> SignificantTimeChange");
+		 for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
+		 fifoIndex = 0;
+	 }];
 }
 
 @end
