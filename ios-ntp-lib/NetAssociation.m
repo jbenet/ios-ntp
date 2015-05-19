@@ -137,7 +137,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   │ Create a UDP socket that will communicate with the time server and set its delegate ...          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         socket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self
-                                               delegateQueue:dispatch_get_main_queue()];
+            delegateQueue:dispatch_queue_create("com.ramsaycons.ios-ntp", DISPATCH_QUEUE_SERIAL)];
 
 		[self registerObservations];
     }
