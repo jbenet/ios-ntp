@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary      = 'SNTP implementation for iOS.'
   s.homepage     = 'https://github.com/jbenet/ios-ntp'
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
-  s.source       = { :git => 'https://github.com/jbenet/ios-ntp.git', :tag => 'v1.0.0' }
+  s.source       = { :git => 'https://github.com/jbenet/ios-ntp.git', :tag => '1.0.0' }
   s.author       = { 'Gavin Eadie' => 'https://github.com/gavineadie' }
   s.ios.deployment_target = '7.0'
   s.source_files = 'ios-ntp-lib/*.{h,m}'
