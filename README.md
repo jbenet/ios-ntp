@@ -6,21 +6,39 @@ This is a continues to be a work in progress.
 Created by Gavin Eadie on Oct 17, 2010
 
 ### News
+**June 10, 2015:** (version 1.1) I recently discovered a re-entrancy bug when John 
+Grismore brought my attention to inaccuracies in reported network time
+offsets. When
+a NetAssociation notified the NetClock that it had a new time
+offset, that event might interrupt the offset averaging that NetClock
+does causing the averaging to break.
+
+In fact, this mechanism isn't optimal anyway!  The notifications
+that cause offset averaging arrive at NetClock constantly whether
+the result is used or not.  We're keeping the NetClock network time 
+offset property up
+to date whether we need it or not.  Better would be to perform the
+averaging only when the offset NetClock property is called for, and 
+that is how
+ios-ntp now works.
+
+The API is not changed, so your application should require no changes.
+
 **February 22, 2015:** Several important changes have been made
 including one that will be helpful for those who want to get a quick
 one-time value of the difference between system time and network time.
 
-Before this change, ios-ntp would use repeated time estimates from a set
-of 'associations' with time servers, constantly determining the best
+Before this change, ios-ntp would use time estimates from a set
+of NetAssociations (one per time servers), constantly determining the best
 time by sampling these values.  This is the model for computers which
-have a continuous low level task monitoring the time.  The need for time
-that iOS apps have is different; they are more likely to want an fast
-estimate of the time on demand.  To provide ability to the developer,
-access has been provided to use the 'associations.'
+have a continuous low level task monitoring the time.  Application in
+iOS often have a different need; they are more likely to want an fast
+estimate of the time on demand.  To provide the ability to the developer,
+access has been provided to use a NetAssociations directly
 
-An association can now get one measure of the time from one time server
-so an iOS app can create an association, use it to get the time, and be
-done.
+An NetAssociation can now be asked for one measure of the time 
+from one time server so an iOS app can create an NetAssociation, use 
+it to get the time, and be done.
 
 This code operates on 32-bit and 64-bit iOS devices.
 
