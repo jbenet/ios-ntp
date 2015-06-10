@@ -827,6 +827,7 @@
 				865E53A41B20B3EF0048F8B1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "ios_fwk" */ = {
 			isa = XCConfigurationList;

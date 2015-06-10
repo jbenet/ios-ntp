@@ -32,19 +32,18 @@
 @property (nonatomic, weak) id delegate;
 
 @property (readonly) NSString *         server;             // server name "123.45.67.89"
-
 @property (readonly) BOOL               active;             // is this clock running yet?
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ create a NetAssociation with the provided server                                                 ┃
+  ┃ create a NetAssociation with the provided server name ..                                         ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (instancetype) initWithServerName:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
 
 - (void) enable;
 - (void) finish;
 
-- (void) sendTimeQuery;                                     // send one datagram ..
+- (void) sendTimeQuery;                                     // send one datagram to server ..
 
 @end

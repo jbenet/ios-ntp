@@ -405,7 +405,6 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 //                    fifoQueue[4]*1000.0, fifoQueue[5]*1000.0, fifoQueue[6]*1000.0, fifoQueue[7]*1000.0,
 //                    good, fail, _offset*1000.0, stdDev*1000.0, _trusty ? @"↑" : @"↓");
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-tick" object:self];
     }
     
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
