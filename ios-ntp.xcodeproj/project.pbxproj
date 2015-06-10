@@ -11,6 +11,9 @@
 		8602E8321A1D5517001C265E /* ntpAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8602E82F1A1D5517001C265E /* ntpAppDelegate.m */; };
 		861A02BD1A4F80610070989E /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = D91E95EF13D9B018004E4194 /* ntp.hosts */; };
 		86273CCB1A1AACBB00487A18 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
+		865E53A01B20B3EF0048F8B1 /* ntp_test.m in Sources */ = {isa = PBXBuildFile; fileRef = 865E539F1B20B3EF0048F8B1 /* ntp_test.m */; };
+		865E53A71B20B9510048F8B1 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
+		865E53A81B20B96C0048F8B1 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661906E126C0CD70046A2B8 /* UIKit.framework */; };
 		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
 		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
@@ -66,6 +69,9 @@
 		8602E82F1A1D5517001C265E /* ntpAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpAppDelegate.m; sourceTree = "<group>"; };
 		860E46A21A4F7B9E004C705B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		862DA2551A999FC000F65F3E /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; name = Notes; path = "ios-ntp-lib/Notes"; sourceTree = "<group>"; };
+		865E539B1B20B3EF0048F8B1 /* ntp-test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ntp-test.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		865E539E1B20B3EF0048F8B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		865E539F1B20B3EF0048F8B1 /* ntp_test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ntp_test.m; sourceTree = "<group>"; };
 		8661906E126C0CD70046A2B8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -97,6 +103,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		865E53981B20B3EF0048F8B1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		866F2B511A1D35A0008CCF83 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -141,6 +154,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		865E539C1B20B3EF0048F8B1 /* ntp-test */ = {
+			isa = PBXGroup;
+			children = (
+				865E539F1B20B3EF0048F8B1 /* ntp_test.m */,
+				865E539D1B20B3EF0048F8B1 /* Supporting Files */,
+			);
+			path = "ntp-test";
+			sourceTree = "<group>";
+		};
+		865E539D1B20B3EF0048F8B1 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				865E539E1B20B3EF0048F8B1 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		86C39EFE126A1FA000A9DCD1 = {
 			isa = PBXGroup;
 			children = (
@@ -149,6 +179,7 @@
 				D91E95D813D9AF8C004E4194 /* ios-ntp-lib */,
 				D91E95E813D9B018004E4194 /* ios-ntp-rez */,
 				D91E95DD13D9AF8C004E4194 /* ios-ntp-app */,
+				865E539C1B20B3EF0048F8B1 /* ntp-test */,
 				86C39F08126A1FA100A9DCD1 /* frameworks */,
 				86C39F0E126A1FA100A9DCD1 /* products */,
 				860E46A01A4F7B9E004C705B /* ios-ntp.framework */,
@@ -173,6 +204,7 @@
 				86F300AE1A14815C0078CBF9 /* libios-lib.a */,
 				866F2B551A1D35A0008CCF83 /* ios_fwk.framework */,
 				D9B2BA3F13D9B95100C9385A /* ios-ntp.tar.gz */,
+				865E539B1B20B3EF0048F8B1 /* ntp-test.xctest */,
 			);
 			name = products;
 			sourceTree = "<group>";
@@ -263,6 +295,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		865E539A1B20B3EF0048F8B1 /* ntp-test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 865E53A51B20B3EF0048F8B1 /* Build configuration list for PBXNativeTarget "ntp-test" */;
+			buildPhases = (
+				865E53971B20B3EF0048F8B1 /* Sources */,
+				865E53981B20B3EF0048F8B1 /* Frameworks */,
+				865E53991B20B3EF0048F8B1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ntp-test";
+			productName = "ntp-test";
+			productReference = 865E539B1B20B3EF0048F8B1 /* ntp-test.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		866F2B541A1D35A0008CCF83 /* ios_fwk */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "ios_fwk" */;
@@ -325,6 +374,10 @@
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = "Ramsay Consulting";
 				TargetAttributes = {
+					865E539A1B20B3EF0048F8B1 = {
+						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = 86C39F0C126A1FA100A9DCD1;
+					};
 					866F2B541A1D35A0008CCF83 = {
 						CreatedOnToolsVersion = 6.1;
 					};
@@ -349,11 +402,19 @@
 				86C39F0C126A1FA100A9DCD1 /* ntp-app */,
 				86F300AD1A14815C0078CBF9 /* ios-lib */,
 				866F2B541A1D35A0008CCF83 /* ios_fwk */,
+				865E539A1B20B3EF0048F8B1 /* ntp-test */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		865E53991B20B3EF0048F8B1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		866F2B531A1D35A0008CCF83 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -375,6 +436,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		865E53971B20B3EF0048F8B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				865E53A01B20B3EF0048F8B1 /* ntp_test.m in Sources */,
+				865E53A81B20B96C0048F8B1 /* GCDAsyncUdpSocket.m in Sources */,
+				865E53A71B20B9510048F8B1 /* NetAssociation.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		866F2B501A1D35A0008CCF83 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -433,6 +504,94 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		865E53A31B20B3EF0048F8B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "ntp-test/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ntp-app.app/ntp-app";
+			};
+			name = Debug;
+		};
+		865E53A41B20B3EF0048F8B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "ntp-test/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ntp-app.app/ntp-app";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		866F2B6F1A1D35A0008CCF83 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -661,6 +820,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		865E53A51B20B3EF0048F8B1 /* Build configuration list for PBXNativeTarget "ntp-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				865E53A31B20B3EF0048F8B1 /* Debug */,
+				865E53A41B20B3EF0048F8B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "ios_fwk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

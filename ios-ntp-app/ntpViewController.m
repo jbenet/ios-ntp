@@ -46,11 +46,12 @@
 - (void) timerFireMethod:(NSTimer *) theTimer {
     NSDate *            systemTime = [NSDate date];
     NSDate *            networkTime = netClock.networkTime;
+    NSTimeInterval      timeDifference = [networkTime timeIntervalSinceDate:systemTime] * 1000.0;
 
     _sysClockLabel.text = [NSString stringWithFormat:@"System Clock: %@", systemTime];
     _netClockLabel.text = [NSString stringWithFormat:@"Network Clock: %@", networkTime];
-    _differenceLabel.text = [NSString stringWithFormat:@"Network ahead by (secs): %5.3f",
-                            [networkTime timeIntervalSinceDate:systemTime]];
+    _differenceLabel.text = [NSString stringWithFormat:@"Network ahead by (mS): %5.3f",
+                            timeDifference];
 }
 
 

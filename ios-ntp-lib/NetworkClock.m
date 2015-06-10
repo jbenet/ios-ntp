@@ -11,7 +11,7 @@
 
 @interface NetworkClock () {
 
-    NSTimeInterval          timeIntervalSinceDeviceTime;            // milliSeconds
+//  NSTimeInterval          timeIntervalSinceDeviceTime;            // milliSeconds
     NSMutableArray *        timeAssociations;
     NSArray *               sortDescriptors;
 
@@ -50,7 +50,35 @@
   ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
-    return [[NSDate date] dateByAddingTimeInterval:-timeIntervalSinceDeviceTime/1000.0];
+
+    if ([timeAssociations count] == 0) return [NSDate date];
+    
+    NSArray *       sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
+
+    double          timeInterval = 0.0;
+    short           usefulCount = 0;
+    
+    for (NetAssociation * timeAssociation in sortedArray) {
+        if (timeAssociation.trusty) {
+            usefulCount++;
+            timeInterval = timeInterval + timeAssociation.offset;
+            NSLog(@"[%@]: %f (%d)", timeAssociation.server, timeAssociation.offset, usefulCount);
+        }
+        else {
+            if ([timeAssociations count] > 8) {
+                [timeAssociations removeObject:timeAssociation];
+                [timeAssociation finish];
+            }
+        }
+        if (usefulCount == 8) break;                // use 8 best dispersions
+    }
+    
+    if (usefulCount > 0) {
+        timeInterval = timeInterval / usefulCount;
+        NSLog(@"timeIntervalSinceDeviceTime: %f (%d)", timeInterval, usefulCount);
+    }
+
+    return [[NSDate date] dateByAddingTimeInterval:-timeInterval/1000.0];
 }
 
 - (instancetype) init {
@@ -144,34 +172,13 @@
   │  drop the IP address string into a Set to remove duplicates.                                     │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         for (NSData * ntpHost in (__bridge NSArray *)ntpHostAddrs) {
-            [hostAddresses addObject:[self hostAddress:(struct sockaddr_in *)[ntpHost bytes]]];
+            [hostAddresses addObject:[GCDAsyncUdpSocket hostFromAddress:ntpHost]];
         }
 
         CFRelease(ntpHostName);
     }
 
     NTP_Logging(@"%@", hostAddresses);                          // all the addresses resolved
-
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ associationTick -- notification from a association of a new measure (or not) ..                  │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"assoc-tick"
-                                                      object:nil queue:nil
-                                                  usingBlock:^
-     (NSNotification * note) {
-         NetAssociation *    association = [note object];
-         NTP_Logging(@"%@ (%lu servers)", association, (unsigned long)[timeAssociations count]);
-         if (association.trusty) {
-             [self offsetAverage];
-         }
-         else {
-             if ([timeAssociations count] > 8) {
-                 [timeAssociations removeObject:association];
-                 [association finish];
-                 association = nil;
-             }
-         }
-    }];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  ... now start one 'association' (network clock server) for each address.                        │
@@ -194,42 +201,5 @@
 
 #pragma mark -
 #pragma mark                        I n t e r n a l  •  M e t h o d s
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (void) offsetAverage {
-    if ([timeAssociations count] == 0) return;
-
-    timeIntervalSinceDeviceTime = 0.0;
-    NSArray *       sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
-    short           usefulCount = 0;
-
-    for (NetAssociation * timeAssociation in sortedArray) {
-        if (timeAssociation.trusty) {
-            usefulCount++;
-            timeIntervalSinceDeviceTime += timeAssociation.offset;
-        }
-        if (usefulCount == 8) break;                // use 8 best dispersions
-    }
-
-    if (usefulCount > 0) {
-        timeIntervalSinceDeviceTime /= usefulCount;
-    }
-}
-
-/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ ... obtain IP address, "xx.xx.xx.xx", from the sockaddr structure ...                            ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (NSString *) hostAddress:(struct sockaddr_in *) sockAddr {
-    char addrBuf[INET_ADDRSTRLEN];
-
-    if (inet_ntop(AF_INET, &sockAddr->sin_addr, addrBuf, sizeof(addrBuf)) == NULL) {
-        [NSException raise:NSInternalInconsistencyException
-                    format:@"Cannot convert address to string."];
-    }
-
-    return @(addrBuf);
-}
 
 @end
