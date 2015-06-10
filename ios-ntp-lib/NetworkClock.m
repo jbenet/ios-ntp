@@ -11,7 +11,6 @@
 
 @interface NetworkClock () {
 
-//  NSTimeInterval          timeIntervalSinceDeviceTime;            // milliSeconds
     NSMutableArray *        timeAssociations;
     NSArray *               sortDescriptors;
 
@@ -46,12 +45,11 @@
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Return the device clock time adjusted for the offset to network-derived UTC.  Since this could   ┃
-  ┃ be called very frequently, we recompute the average offset every 30 seconds.                     ┃
+  ┃ Return the offset to network-derived UTC.                                                        ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
-- (NSDate *) networkTime {
+- (NSTimeInterval) networkOffset {
 
-    if ([timeAssociations count] == 0) return [NSDate date];
+    if ([timeAssociations count] == 0) return 0.0;
     
     NSArray *       sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
 
@@ -59,26 +57,37 @@
     short           usefulCount = 0;
     
     for (NetAssociation * timeAssociation in sortedArray) {
-        if (timeAssociation.trusty) {
-            usefulCount++;
-            timeInterval = timeInterval + timeAssociation.offset;
-            NSLog(@"[%@]: %f (%d)", timeAssociation.server, timeAssociation.offset, usefulCount);
-        }
-        else {
-            if ([timeAssociations count] > 8) {
-                [timeAssociations removeObject:timeAssociation];
-                [timeAssociation finish];
+        if (timeAssociation.active) {
+            if (timeAssociation.trusty) {
+                usefulCount++;
+                timeInterval = timeInterval + timeAssociation.offset;
+//              NSLog(@"[%@]: %f (%d)", timeAssociation.server, timeAssociation.offset*1000.0, usefulCount);
             }
+            else {
+//              NSLog(@"Clock•Drop: [%@]", timeAssociation.server);
+                if ([timeAssociations count] > 8) {
+                    [timeAssociations removeObject:timeAssociation];
+                    [timeAssociation finish];
+                }
+            }
+            
+            if (usefulCount == 8) break;                // use 8 best dispersions
         }
-        if (usefulCount == 8) break;                // use 8 best dispersions
     }
     
     if (usefulCount > 0) {
         timeInterval = timeInterval / usefulCount;
-        NSLog(@"timeIntervalSinceDeviceTime: %f (%d)", timeInterval, usefulCount);
+//      NSLog(@"timeIntervalSinceDeviceTime: %f (%d)", timeInterval*1000.0, usefulCount);
     }
 
-    return [[NSDate date] dateByAddingTimeInterval:-timeInterval/1000.0];
+    return timeInterval;
+}
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Return the device clock time adjusted for the offset to network-derived UTC.                     ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (NSDate *) networkTime {
+    return [[NSDate date] dateByAddingTimeInterval:[self networkOffset]];
 }
 
 - (instancetype) init {

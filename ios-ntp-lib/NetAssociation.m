@@ -126,6 +126,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         _delegate = self;
         pollingIntervalIndex = 0;                           // ensure the first timer firing is soon
+        _active = FALSE;                                    // isn't running till it reports time ...
         _trusty = FALSE;                                    // don't trust this clock to start with ...
         _offset = INFINITY;                                 // start with net clock meaningless
         _server = serverName;
@@ -139,7 +140,8 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 
 		[self registerObservations];
     }
-
+//  NSLog(@"Assoc•Init: [%@]", serverName);
+    
     return self;
 }
 
@@ -216,6 +218,8 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 
     for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
     fifoIndex = 0;
+    
+    _active = FALSE;
 }
 
 #pragma mark                        N e t w o r k • T r a n s a c t i o n s
@@ -339,8 +343,9 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
         double  t34 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);   // .. (T3-T4)
 
         _offset = (t21 + t34) / 2.0;                                            // calculate offset
+        _active = TRUE;
         
-        NTP_Logging(@"%@", [self prettyPrintTimers]);
+//      NTP_Logging(@"%@", [self prettyPrintTimers]);
     }
     
     [_delegate reportFromDelegate];                                 // tell delegate we're done
@@ -351,7 +356,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   │ the packet is trustworthy -- compute and store offset in 8-slot fifo ...                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     
-    fifoQueue[fifoIndex++ % 8] = _offset * 1000.0;                  // store offset in mSec
+    fifoQueue[fifoIndex++ % 8] = _offset;                           // store offset in seconds
     fifoIndex %= 8;                                                 // rotate index in range
     
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -395,10 +400,10 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
         _trusty = (good+none > 4) &&                                // four or more 'fails'
                   (fabs(_offset) > stdDev*3.0);                     // s.d. < offset
         
-        NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
-                    fifoQueue[0], fifoQueue[1], fifoQueue[2], fifoQueue[3],
-                    fifoQueue[4], fifoQueue[5], fifoQueue[6], fifoQueue[7],
-                    good, fail, _offset, stdDev, _trusty ? @"↑" : @"↓");
+//        NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
+//                    fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,
+//                    fifoQueue[4]*1000.0, fifoQueue[5]*1000.0, fifoQueue[6]*1000.0, fifoQueue[7]*1000.0,
+//                    good, fail, _offset*1000.0, stdDev*1000.0, _trusty ? @"↑" : @"↓");
 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"assoc-tick" object:self];
     }
@@ -434,7 +439,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data
       fromAddress:(NSData *)address withFilterContext:(id)filterContext {
-    NTP_Logging(@"didReceiveData - [%@]", [GCDAsyncUdpSocket hostFromAddress:address]);
+//  NTP_Logging(@"didReceiveData - [%@]", [GCDAsyncUdpSocket hostFromAddress:address]);
 
     [self decodePacket:data];
 }

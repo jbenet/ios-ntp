@@ -19,5 +19,6 @@
 - (void) finishAssociations;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDate *   networkTime;
+@property (NS_NONATOMIC_IOSONLY, readonly) NSTimeInterval   networkOffset;
 
 @end
