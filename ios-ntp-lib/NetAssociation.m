@@ -303,8 +303,8 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
     prec    = ntohl(wireData[0])       & 0xff;
     if (prec & 0x80) prec |= 0xffffff00;                                // -ve byte --> -ve int
 
-    _root_delay = ntohl(wireData[1]) * 0.0152587890625;                  // delay (mS) [1000.0/2**16].
-    _dispersion = ntohl(wireData[2]) * 0.0152587890625;                  // error (mS)
+    _root_delay = ntohl(wireData[1]) * 0.0152587890625;                 // delay (mS) [1000.0/2**16].
+    _dispersion = ntohl(wireData[2]) * 0.0152587890625;                 // error (mS)
 
     refid   = ntohl(wireData[3]);
 
@@ -329,20 +329,24 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   │ .. if max_error is less than 50mS (and not zero) AND                                             │
   │ .. stratum > 0 AND                                                                               │
   │ .. the mode is 4 (packet came from server) AND                                                   │
-  │ .. the server clock was set less than 1 hour ago                                                 │
+  │ .. the server clock was set less than 1 minute ago                                               │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     _offset = INFINITY;                                                 // clock meaningless
-    if ((_dispersion < 50.0 && _dispersion > 0.001) &&
+    if ((_dispersion < 50.0 && _dispersion > 0.00001) &&
         (stratum > 0) && (mode == 4) &&
-        (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 3600.0)) {
+        (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 60.0)) {
         
-        _roundtrip   = ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);   // .. (T4-T1)
-        _serverDelay = ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);   // .. (T3-T2)
+        double  t41 = ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);   // .. (T4-T1)
+        double  t32 = ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);   // .. (T3-T2)
+
+        _roundtrip  = t41 - t32;
         
         double  t21 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);   // .. (T2-T1)
         double  t34 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);   // .. (T3-T4)
 
         _offset = (t21 + t34) / 2.0;                                            // calculate offset
+        
+//      NSLog(@"t21=%.6f t34=%.6f delta=%.6f offset=%.6f", t21, t34, _roundtrip, _offset);
         _active = TRUE;
         
 //      NTP_Logging(@"%@", [self prettyPrintTimers]);
@@ -400,10 +404,10 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
         _trusty = (good+none > 4) &&                                // four or more 'fails'
                   (fabs(_offset) > stdDev*3.0);                     // s.d. < offset
         
-//        NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
-//                    fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,
-//                    fifoQueue[4]*1000.0, fifoQueue[5]*1000.0, fifoQueue[6]*1000.0, fifoQueue[7]*1000.0,
-//                    good, fail, _offset*1000.0, stdDev*1000.0, _trusty ? @"↑" : @"↓");
+        NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
+                    fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,
+                    fifoQueue[4]*1000.0, fifoQueue[5]*1000.0, fifoQueue[6]*1000.0, fifoQueue[7]*1000.0,
+                    good, fail, _offset*1000.0, stdDev*1000.0, _trusty ? @"↑" : @"↓");
 
     }
     
@@ -507,9 +511,9 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
     NSMutableString *   prettyString = [NSMutableString stringWithFormat:@"prettyPrintTimers\n\n"];
 
     [prettyString appendFormat:@"time server addr: [%@]\n"
-                                " round trip time: %7.3f (mS)\n     server time: %7.3f (mS)\n"
+                                " round trip time: %7.3f (mS)\n"
                                 "    clock offset: %7.3f (mS)\n\n",
-          _server, _roundtrip * 1000.0, _serverDelay * 1000.0, _offset * 1000.0];
+          _server, _roundtrip * 1000.0, _offset * 1000.0];
 
     return prettyString;
 }

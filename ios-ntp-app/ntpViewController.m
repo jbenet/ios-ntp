@@ -44,14 +44,9 @@
   ┃ The method executed by the timer -- gets the latest times and displays them.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) timerFireMethod:(NSTimer *) theTimer {
-    NSDate *            systemTime = [NSDate date];
-    NSDate *            networkTime = netClock.networkTime;
-    NSTimeInterval      timeDifference = [networkTime timeIntervalSinceDate:systemTime] * 1000.0;
-
-    _sysClockLabel.text = [NSString stringWithFormat:@"System Clock: %@", systemTime];
-    _netClockLabel.text = [NSString stringWithFormat:@"Network Clock: %@", networkTime];
-    _differenceLabel.text = [NSString stringWithFormat:@"Network ahead by (mS): %5.3f",
-                            timeDifference];
+    _sysClockLabel.text = [NSString stringWithFormat:@"System Clock: %@", [NSDate date]];
+    _netClockLabel.text = [NSString stringWithFormat:@"Network Clock: %@", netClock.networkTime];
+    _offsetLabel.text = [NSString stringWithFormat:@"Clock Offet (mS): %5.3f", netClock.networkOffset * 1000.0];
 }
 
 

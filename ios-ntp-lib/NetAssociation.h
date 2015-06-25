@@ -11,9 +11,9 @@
   ║ is received, the offset between the client's network time and the system clock is derived with   ║
   ║ associated statistics delta, epsilon, and psi.                                                   ║
   ║                                                                                                  ║
-  ║ Each association makes a best effort at obtaining an accurate time and reports these times and   ║
-  ║ their estimated accuracy to a process that selects, clusters, and combines the various servers   ║
-  ║ to determine the most accurate and reliable candidates to provide an overall best time.          ║
+  ║ Each association makes a best effort at obtaining an accurate time and makes it available as a   ║
+  ║ property.  Another process may use this to select, cluster, and combine the various servers'     ║
+  ║ data to determine the most accurate and reliable candidates to provide an overall best time.     ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <UIKit/UIKit.h>

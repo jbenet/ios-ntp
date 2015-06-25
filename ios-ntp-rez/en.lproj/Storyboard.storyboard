@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="NzZ-Z5-pqQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="NzZ-Z5-pqQ">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--Ntp View Controller-->
@@ -167,8 +167,8 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="differenceLabel" destination="efY-GZ-fHc" id="ejJ-XF-hGk"/>
                         <outlet property="netClockLabel" destination="uMv-ws-g9n" id="2pW-5T-o5A"/>
+                        <outlet property="offsetLabel" destination="efY-GZ-fHc" id="36M-lt-8Wx"/>
                         <outlet property="sysClockLabel" destination="VS6-zt-ElX" id="NHX-M4-VMb"/>
                         <outlet property="timeCheckLabel" destination="UVY-T0-fY7" id="eZJ-dW-Ey4"/>
                     </connections>

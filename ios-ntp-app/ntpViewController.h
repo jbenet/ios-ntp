@@ -11,7 +11,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *  sysClockLabel;
 @property (weak, nonatomic) IBOutlet UILabel *  netClockLabel;
-@property (weak, nonatomic) IBOutlet UILabel *  differenceLabel;
+@property (weak, nonatomic) IBOutlet UILabel *  offsetLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *  timeCheckLabel;
 

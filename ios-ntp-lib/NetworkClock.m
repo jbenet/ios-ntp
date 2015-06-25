@@ -64,7 +64,7 @@
 //              NSLog(@"[%@]: %f (%d)", timeAssociation.server, timeAssociation.offset*1000.0, usefulCount);
             }
             else {
-//              NSLog(@"Clock•Drop: [%@]", timeAssociation.server);
+                NSLog(@"Clock•Drop: [%@]", timeAssociation.server);
                 if ([timeAssociations count] > 8) {
                     [timeAssociations removeObject:timeAssociation];
                     [timeAssociation finish];
