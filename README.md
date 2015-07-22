@@ -6,6 +6,49 @@ This is a continues to be a work in progress.
 Created by Gavin Eadie on Oct 17, 2010
 
 ### News
+**July 22, 2015:** (version 1.1.1) `ios-ntp` has contained a resource file 
+(called `ntp.hosts`) which contained a list of time server hosts to be used
+for querying the time.  That file has been removed in this release.
+
+The logic is that, since `ios-ntp` can now be added to a project via CocoaPods, 
+any local changes made to that file will be overwritten the next time the `ios-ntp`
+pod is updated and, since `ios-ntp` already contains a built-in list of time servers,
+removing this file from the pod should not impact the behavior of the `ios-ntp` code.
+
+The `ntp.hosts` file was always meant to over-ride the default host list -- that 
+intent is now better served.  The `ntp.hosts` file used to contain:
+
+		#
+		# tasteful worldwide time server name collection
+		#
+
+		0.pool.ntp.org
+		#1.pool.ntp.org
+		#2.pool.ntp.org
+		#3.pool.ntp.org
+		0.uk.pool.ntp.org
+		#1.uk.pool.ntp.org
+		#2.uk.pool.ntp.org
+		#3.uk.pool.ntp.org
+		0.US.pool.ntp.org
+		#1.US.pool.ntp.org
+		#2.US.pool.ntp.org
+		#3.US.pool.ntp.org
+		asia.pool.ntp.org
+		europe.pool.ntp.org
+		north-america.pool.ntp.org
+		oceania.pool.ntp.org
+		south-america.pool.ntp.org
+		africa.pool.ntp.org
+		#time.apple.com
+
+.. which is exactly the same as the internal default list (though that has no
+commented host addresses).
+
+If you want to use your own list of time servers, you need to create a file containing
+time host names, one per line, name it `ntp.hosts` and place it in the main bundle of your
+application (the sample app `ios-ntp-app` does this to use the server at `time.apple.com`).
+
 **June 10, 2015:** (version 1.1) I recently discovered a re-entrancy bug when John 
 Grismore brought my attention to inaccuracies in reported network time
 offsets. When

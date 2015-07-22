@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8602E82D1A1D50A4001C265E /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		8602E8321A1D5517001C265E /* ntpAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8602E82F1A1D5517001C265E /* ntpAppDelegate.m */; };
-		861A02BD1A4F80610070989E /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = D91E95EF13D9B018004E4194 /* ntp.hosts */; };
 		86273CCB1A1AACBB00487A18 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
 		865E53A01B20B3EF0048F8B1 /* ntp_test.m in Sources */ = {isa = PBXBuildFile; fileRef = 865E539F1B20B3EF0048F8B1 /* ntp_test.m */; };
 		865E53A71B20B9510048F8B1 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
@@ -18,6 +17,7 @@
 		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
 		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
 		86619086126C0D120046A2B8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619085126C0D120046A2B8 /* CFNetwork.framework */; };
+		866ED2FF1B601121004E4394 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = 866ED2FE1B601121004E4394 /* ntp.hosts */; };
 		866F2B751A1D35DE008CCF83 /* ios-ntp.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		866F2B761A1D3624008CCF83 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		866F2B771A1D3624008CCF83 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
@@ -36,7 +36,6 @@
 		86F300C81A1481C00078CBF9 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
 		86F300CC1A1483900078CBF9 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
 		D91E95E513D9AF8C004E4194 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DE13D9AF8C004E4194 /* main.m */; };
-		D91E95F713D9B029004E4194 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = D91E95EF13D9B018004E4194 /* ntp.hosts */; };
 		D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D91E95F913D9B063004E4194 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +75,7 @@
 		8661907A126C0CEC0046A2B8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86619081126C0CFD0046A2B8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		86619085126C0D120046A2B8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		866ED2FE1B601121004E4394 /* ntp.hosts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ntp.hosts; sourceTree = "<group>"; };
 		866F2B551A1D35A0008CCF83 /* ios_fwk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ios_fwk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86734BD61A2181FD00F191CE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		867541861ACA2CD900D9990D /* ios-ntp.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ios-ntp.podspec"; sourceTree = "<group>"; };
@@ -91,7 +91,6 @@
 		D91E95DB13D9AF8C004E4194 /* NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkClock.h; sourceTree = "<group>"; };
 		D91E95DC13D9AF8C004E4194 /* NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkClock.m; sourceTree = "<group>"; };
 		D91E95DE13D9AF8C004E4194 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		D91E95EF13D9B018004E4194 /* ntp.hosts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ntp.hosts; sourceTree = "<group>"; };
 		D91E95F013D9B018004E4194 /* ntp-app-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ntp-app-Info.plist"; path = "../ios-ntp-rez/ntp-app-Info.plist"; sourceTree = "<group>"; };
 		D91E95FA13D9B063004E4194 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		D9B2BA2B13D9B50200C9385A /* ios-ntp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-ntp-Info.plist"; sourceTree = "<group>"; };
@@ -249,6 +248,7 @@
 			isa = PBXGroup;
 			children = (
 				D91E95F013D9B018004E4194 /* ntp-app-Info.plist */,
+				866ED2FE1B601121004E4394 /* ntp.hosts */,
 				D91E95DE13D9AF8C004E4194 /* main.m */,
 				8602E82E1A1D5517001C265E /* ntpAppDelegate.h */,
 				8602E82F1A1D5517001C265E /* ntpAppDelegate.m */,
@@ -261,7 +261,6 @@
 		D91E95E813D9B018004E4194 /* ios-ntp-rez */ = {
 			isa = PBXGroup;
 			children = (
-				D91E95EF13D9B018004E4194 /* ntp.hosts */,
 				D9B2BA2B13D9B50200C9385A /* ios-ntp-Info.plist */,
 				D91E95F813D9B063004E4194 /* en.lproj */,
 			);
@@ -419,7 +418,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				861A02BD1A4F80610070989E /* ntp.hosts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,7 +425,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D91E95F713D9B029004E4194 /* ntp.hosts in Resources */,
+				866ED2FF1B601121004E4394 /* ntp.hosts in Resources */,
 				86734BD71A2181FD00F191CE /* Storyboard.storyboard in Resources */,
 				D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */,
 			);
