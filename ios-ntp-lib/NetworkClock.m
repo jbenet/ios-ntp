@@ -87,7 +87,7 @@
   ┃ Return the device clock time adjusted for the offset to network-derived UTC.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
-    return [[NSDate date] dateByAddingTimeInterval:[self networkOffset]];
+    return [[NSDate date] dateByAddingTimeInterval:-[self networkOffset]];
 }
 
 - (instancetype) init {
