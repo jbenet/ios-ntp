@@ -8,6 +8,7 @@
 
 #import "NetworkClock.h"
 #import "ntp-log.h"
+#import "GCDAsyncUdpSocket.h"
 
 @interface NetworkClock () {
 
@@ -16,7 +17,7 @@
 
     NSSortDescriptor *      dispersionSortDescriptor;
     dispatch_queue_t        associationDelegateQueue;
-    
+
 }
 
 @end
@@ -50,12 +51,12 @@
 - (NSTimeInterval) networkOffset {
 
     if ([timeAssociations count] == 0) return 0.0;
-    
+
     NSArray *       sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
 
     double          timeInterval = 0.0;
     short           usefulCount = 0;
-    
+
     for (NetAssociation * timeAssociation in sortedArray) {
         if (timeAssociation.active) {
             if (timeAssociation.trusty) {
@@ -70,11 +71,11 @@
                     [timeAssociation finish];
                 }
             }
-            
+
             if (usefulCount == 8) break;                // use 8 best dispersions
         }
     }
-    
+
     if (usefulCount > 0) {
         timeInterval = timeInterval / usefulCount;
 //      NSLog(@"timeIntervalSinceDeviceTime: %f (%d)", timeInterval*1000.0, usefulCount);
@@ -106,7 +107,7 @@
                                                             selector:@selector(createAssociations)
                                                               object:nil]];
     }
-    
+
     return self;
 }
 

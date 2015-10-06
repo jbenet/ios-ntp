@@ -25,7 +25,7 @@
 
 @end
 
-#import "GCDAsyncUdpSocket.h"
+@protocol GCDAsyncUdpSocketDelegate;
 
 @interface NetAssociation : NSObject <GCDAsyncUdpSocketDelegate, NetAssociationDelegate>
 
