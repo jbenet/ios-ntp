@@ -7,6 +7,7 @@
 #import "NetAssociation.h"
 #import <sys/time.h>
 #import "ntp-log.h"
+#import "GCDAsyncUdpSocket.h"
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  NTP Timestamp Structure                                                                         │
@@ -77,7 +78,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
         b = ~b;
         a -= 1;
     }
-    
+
     return a + b / 4294967296.0;
 }
 
@@ -93,11 +94,11 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
                             ntpServerSendTime,
                             ntpClientRecvTime,
                             ntpServerBaseTime;
-    
+
     int                     li, vn, mode, stratum, poll, prec, refid;
 
     double                  timerWobbleFactor;              // 0.75 .. 1.25
-    
+
     double                  fifoQueue[8];
     short                   fifoIndex;
 
@@ -141,7 +142,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 		[self registerObservations];
     }
 //  NSLog(@"Assoc•Init: [%@]", serverName);
-    
+
     return self;
 }
 
@@ -152,7 +153,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   ┃ starts the timer firing (sets the fire time randonly within the next five seconds) ...           ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) enable {
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Create a first-in/first-out queue for time samples.  As we compute each new time obtained from   │
   │ the server we push it into the fifo.  We sample the contents of the fifo for quality and, if it  │
@@ -170,7 +171,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
                                            userInfo:nil repeats:YES];
     repeatingTimer.tolerance = 1.0;                     // it can be up to 1 second late
     [[NSRunLoop mainRunLoop] addTimer:repeatingTimer forMode:NSDefaultRunLoopMode];
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ now start the timer .. fire the first one soon, and put some wobble in its timing so we don't    │
   │ get pulses of activity.                                                                          │
@@ -187,7 +188,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) queryTimeServer {
     [self sendTimeQuery];
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Put some wobble into the repeating time so they don't synchronize and thump the network          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
@@ -201,7 +202,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) sendTimeQuery {
     NSError *   error = nil;
-    
+
     [socket sendData:[self createPacket] toHost:_server port:123 withTimeout:2.0 tag:0];
 
     if(![socket beginReceiving:&error]) {
@@ -218,7 +219,7 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 
     for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
     fifoIndex = 0;
-    
+
     _active = FALSE;
 }
 
@@ -321,9 +322,9 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
     ntpServerRecvTime.fractSeconds = ntohl(wireData[9]);
     ntpServerSendTime.wholeSeconds = ntohl(wireData[10]);
     ntpServerSendTime.fractSeconds = ntohl(wireData[11]);
-    
+
 //  NTP_Logging(@"%@", [self prettyPrintPacket]);
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ determine the quality of this particular time ..                                                 │
   │ .. if max_error is less than 50mS (and not zero) AND                                             │
@@ -335,23 +336,23 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
     if ((_dispersion < 50.0 && _dispersion > 0.00001) &&
         (stratum > 0) && (mode == 4) &&
         (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 60.0)) {
-        
+
         double  t41 = ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);   // .. (T4-T1)
         double  t32 = ntpDiffSeconds(&ntpServerRecvTime, &ntpServerSendTime);   // .. (T3-T2)
 
         _roundtrip  = t41 - t32;
-        
+
         double  t21 = ntpDiffSeconds(&ntpServerSendTime, &ntpClientRecvTime);   // .. (T2-T1)
         double  t34 = ntpDiffSeconds(&ntpServerRecvTime, &ntpClientSendTime);   // .. (T3-T4)
 
         _offset = (t21 + t34) / 2.0;                                            // calculate offset
-        
+
 //      NSLog(@"t21=%.6f t34=%.6f delta=%.6f offset=%.6f", t21, t34, _roundtrip, _offset);
         _active = TRUE;
-        
+
 //      NTP_Logging(@"%@", [self prettyPrintTimers]);
     }
-    
+
     [_delegate reportFromDelegate];                                 // tell delegate we're done
 }
 
@@ -359,16 +360,16 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ the packet is trustworthy -- compute and store offset in 8-slot fifo ...                         │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-    
+
     fifoQueue[fifoIndex++ % 8] = _offset;                           // store offset in seconds
     fifoIndex %= 8;                                                 // rotate index in range
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ look at the (up to eight) offsets in the fifo and and count 'good', 'fail' and 'not used yet'    │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     short           good = 0, fail = 0, none = 0;
     _offset = 0.0;                                                  // reset for averaging
-    
+
     for (short i = 0; i < 8; i++) {
         if (isnan(fifoQueue[i])) {                                  // fifo slot is unused
             none++;
@@ -378,11 +379,11 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
             fail++;
             continue;
         }
-        
+
         good++;
         _offset += fifoQueue[i];                                    // accumulate good times
     }
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │   .. if we have at least one 'good' server response or four or more 'fail' responses, we'll      │
   │      inform our management accordingly.  If we have less than four 'fails' we won't make any     │
@@ -391,26 +392,26 @@ double ntpDiffSeconds(struct ntpTimestamp * start, struct ntpTimestamp * stop) {
     double	stdDev = 0.0;
     if (good > 0 || fail > 3) {
         _offset = _offset / good;                                   // average good times
-        
+
         for (short i = 0; i < 8; i++) {
             if (isnan(fifoQueue[i])) continue;
-            
+
             if (isinf(fifoQueue[i]) || fabs(fifoQueue[i]) < 0.001) continue;
-            
+
             stdDev += (fifoQueue[i] - _offset) * (fifoQueue[i] - _offset);
         }
         stdDev = sqrt(stdDev/(float)good);
 
         _trusty = (good+none > 4) &&                                // four or more 'fails'
                   (fabs(_offset) > stdDev*3.0);                     // s.d. < offset
-        
+
         NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
                     fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,
                     fifoQueue[4]*1000.0, fifoQueue[5]*1000.0, fifoQueue[6]*1000.0, fifoQueue[7]*1000.0,
                     good, fail, _offset*1000.0, stdDev*1000.0, _trusty ? @"↑" : @"↓");
 
     }
-    
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │   .. if the association is providing times which don't vary much, we could increase its polling  │
   │      interval.  In practice, once things settle down, the standard deviation on any time server  │
