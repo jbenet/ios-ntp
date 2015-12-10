@@ -40,6 +40,7 @@
   ┃ create a NetAssociation with the provided server name ..                                         ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (instancetype) initWithServerName:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
+- (instancetype) init NS_UNAVAILABLE;
 
 - (void) enable;
 - (void) finish;
