@@ -18,6 +18,7 @@
 
 #import <UIKit/UIKit.h>
 #import <sys/time.h>
+#import "GCDAsyncUdpSocket.h"
 
 @protocol NetAssociationDelegate <NSObject>
 
@@ -36,6 +37,7 @@
 @property (readonly) BOOL               trusty;             // is this clock trustworthy
 @property (readonly) double             offset;             // offset from device time (secs)
 
+- (instancetype) init NS_UNAVAILABLE;
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ create a NetAssociation with the provided server name ..                                         ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/

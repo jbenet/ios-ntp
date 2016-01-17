@@ -6,6 +6,8 @@ This is a continues to be a work in progress.
 Created by Gavin Eadie on Oct 17, 2010
 
 ### News
+**January 17, 2016:** (version 1.1.2) minor cleanup for Xcode 7.x 
+
 **July 22, 2015:** (version 1.1.1) `ios-ntp` has contained a resource file 
 (called `ntp.hosts`) which contained a list of time server hosts to be used
 for querying the time.  That file has been removed in this release.
