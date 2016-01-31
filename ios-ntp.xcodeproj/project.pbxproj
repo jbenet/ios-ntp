@@ -11,8 +11,6 @@
 		8602E8321A1D5517001C265E /* ntpAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8602E82F1A1D5517001C265E /* ntpAppDelegate.m */; };
 		86273CCB1A1AACBB00487A18 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
 		865E53A01B20B3EF0048F8B1 /* ntp_test.m in Sources */ = {isa = PBXBuildFile; fileRef = 865E539F1B20B3EF0048F8B1 /* ntp_test.m */; };
-		865E53A71B20B9510048F8B1 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
-		865E53A81B20B96C0048F8B1 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661906E126C0CD70046A2B8 /* UIKit.framework */; };
 		8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8661907A126C0CEC0046A2B8 /* Foundation.framework */; };
 		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
@@ -439,8 +437,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				865E53A01B20B3EF0048F8B1 /* ntp_test.m in Sources */,
-				865E53A81B20B96C0048F8B1 /* GCDAsyncUdpSocket.m in Sources */,
-				865E53A71B20B9510048F8B1 /* NetAssociation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
