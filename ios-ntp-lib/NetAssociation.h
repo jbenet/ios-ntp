@@ -76,7 +76,7 @@ double          ntpDiffSeconds(union ntpTime * start, union ntpTime * stop);
 
 - (instancetype) init NS_UNAVAILABLE;
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ create a NetAssociation with the provided server name ..                                         ┃
+  ┃ create a NetAssociation with the provided server name .. just sitting idle ..                    ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (instancetype) initWithServerName:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
 
@@ -84,5 +84,7 @@ double          ntpDiffSeconds(union ntpTime * start, union ntpTime * stop);
 - (void) finish;
 
 - (void) sendTimeQuery;                                     // send one datagram to server ..
+
++ (NSString *) ipAddrFromName: (NSString *) domainName;
 
 @end

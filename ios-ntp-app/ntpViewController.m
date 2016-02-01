@@ -8,8 +8,8 @@
 
 @interface ntpViewController () {
 
-    NetworkClock *                  netClock;
-    NetAssociation *                netAssociation;
+    NetworkClock *          netClock;           // complex clock
+    NetAssociation *        netAssociation;     // one-time server
 
 }
 
@@ -33,11 +33,10 @@
                                                          repeats:YES];
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ Add the repeating timer to the run-loop.                                                         │
+  │ Add the screen refresh repeating timer to the run-loop ..                                        │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     [[NSRunLoop currentRunLoop] addTimer:repeatingTimer
                                  forMode:NSDefaultRunLoopMode];
-
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -46,15 +45,16 @@
 - (void) timerFireMethod:(NSTimer *) theTimer {
     _sysClockLabel.text = [NSString stringWithFormat:@"System Clock: %@", [NSDate date]];
     _netClockLabel.text = [NSString stringWithFormat:@"Network Clock: %@", netClock.networkTime];
-    _offsetLabel.text = [NSString stringWithFormat:@"Clock Offet (mS): %5.3f", netClock.networkOffset * 1000.0];
+    _offsetLabel.text = [NSString stringWithFormat:@"Clock Offet: %5.3f mSec", netClock.networkOffset * 1000.0];
 }
+
 
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Gets a single NetAssociation and tells it to get the time from its server.                       ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (IBAction) timeCheck:(id)sender {
-    netAssociation = [[NetAssociation alloc] initWithServerName:@"time.apple.com"];
+    netAssociation = [[NetAssociation alloc] initWithServerName:[NetAssociation ipAddrFromName:@"time.apple.com"]];
     netAssociation.delegate = self;
     [netAssociation sendTimeQuery];
 }
@@ -63,8 +63,8 @@
   ┃ Called when that single NetAssociation has a network time to report.                             ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) reportFromDelegate {
-    _timeCheckLabel.text = [NSString stringWithFormat:@"System ahead by (secs): %5.3f",
-                            netAssociation.offset];
+    _timeCheckLabel.text = [NSString stringWithFormat:@"System ahead by: %5.3f mSec",
+                            netAssociation.offset * 1000.0];
 }
 
 @end

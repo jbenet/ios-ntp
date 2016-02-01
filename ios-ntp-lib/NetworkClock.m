@@ -13,9 +13,10 @@
 @interface NetworkClock () {
 
     NSMutableArray *        timeAssociations;
-    NSArray *               sortDescriptors;
 
+    NSArray *               sortDescriptors;
     NSSortDescriptor *      dispersionSortDescriptor;
+
     dispatch_queue_t        associationDelegateQueue;
 
 }
@@ -43,6 +44,26 @@
     });
 
     return sharedNetworkClockInstance;
+}
+
+- (instancetype) init {
+    if (self = [super init]) {
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
+  │ array of empty associations to use ...                                                           │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+        sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES]];
+        timeAssociations = [NSMutableArray arrayWithCapacity:100];
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+        [[[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
+                                                       initWithTarget:self
+                                                       selector:@selector(createAssociations)
+                                                       object:nil]];
+    }
+    
+    return self;
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -89,26 +110,6 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
     return [[NSDate date] dateByAddingTimeInterval:-self.networkOffset];
-}
-
-- (instancetype) init {
-    if (self = [super init]) {
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
-  │ array of empty associations to use ...                                                           │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES]];
-        timeAssociations = [NSMutableArray arrayWithCapacity:100];
-/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
-  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        [[[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
-                                                      initWithTarget:self
-                                                            selector:@selector(createAssociations)
-                                                              object:nil]];
-    }
-
-    return self;
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -167,7 +168,7 @@
         }
 
         Boolean         nameFound;
-        CFArrayRef      ntpHostAddrs = CFHostGetAddressing (ntpHostName, &nameFound);
+        NSArray *       ntpHostAddrs = (__bridge NSArray *)(CFHostGetAddressing (ntpHostName, &nameFound));
 
         if (!nameFound) {
             NTP_Logging(@"CFHostGetAddressing: %@ NOT resolved", ntpHostName);
@@ -180,15 +181,15 @@
             CFRelease(ntpHostName);
             continue;                                           // NO addresses were resolved ...
         }
+        CFRelease(ntpHostName);
+
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  for each (sockaddr structure wrapped by a CFDataRef/NSData *) associated with the hostname,     │
   │  drop the IP address string into a Set to remove duplicates.                                     │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
-        for (NSData * ntpHost in (__bridge NSArray *)ntpHostAddrs) {
+        for (NSData * ntpHost in ntpHostAddrs) {
             [hostAddresses addObject:[GCDAsyncUdpSocket hostFromAddress:ntpHost]];
         }
-
-        CFRelease(ntpHostName);
     }
 
     NTP_Logging(@"%@", hostAddresses);                          // all the addresses resolved

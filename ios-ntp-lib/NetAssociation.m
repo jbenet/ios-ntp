@@ -119,6 +119,8 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
                                                delegateQueue:dispatch_queue_create(
                    [serverName cStringUsingEncoding:NSUTF8StringEncoding], DISPATCH_QUEUE_SERIAL)];
 
+//        [socket setReceiveFilter:filter withQueue:dispatch_get_main_queue()];
+
 		[self registerObservations];
     }
 //  NSLog(@"Assoc•Init: [%@]", serverName);
@@ -195,10 +197,11 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
   ┃ This stops the timer firing (sets the fire time to the infinite future) ...                      ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finish {
-    repeatingTimer.fireDate = [NSDate distantFuture];
 
     for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
     fifoIndex = 0;
+
+    [repeatingTimer invalidate];
 
     _active = FALSE;
 }
@@ -313,8 +316,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
   │ .. the server clock was set less than 1 minute ago                                               │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     _offset = INFINITY;                                                 // clock meaningless
-    if ((_dispersion < 50.0 && _dispersion > 0.00001) &&
-        (stratum > 0) && (mode == 4) &&
+    if ((_dispersion < 50.0 && _dispersion > 0.00001) && (stratum > 0) && (mode == 4) &&
         (ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime) < 60.0)) {
 
         double  t41 = ntpDiffSeconds(&ntpClientSendTime, &ntpClientRecvTime);   // .. (T4-T1)
@@ -333,7 +335,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
 //      NTP_Logging(@"%@", [self prettyPrintTimers]);
     }
 
-    [_delegate reportFromDelegate];                                 // tell delegate we're done
+    dispatch_async(dispatch_get_main_queue(), ^{ [_delegate reportFromDelegate]; });// tell delegate we're done
 }
 
 - (void) reportFromDelegate {
@@ -383,7 +385,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
         stdDev = sqrt(stdDev/(float)good);
 
         _trusty = (good+none > 4) &&                                // four or more 'fails'
-                  (fabs(_offset) > stdDev);                         // s.d. < offset (*3.0)
+                  (fabs(_offset) > 3.0 * stdDev);                   // s.d. < offset * 2
 
         NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
                     fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,
@@ -404,31 +406,38 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
     }
 }
 
+#pragma mark                        I n b o u n d • D a t a   F i l t e r
+
+GCDAsyncUdpSocketReceiveFilterBlock filter = ^BOOL (NSData *data, NSData *address, id *context) {
+
+    return TRUE;
+
+};
+
 #pragma mark                        N e t w o r k • C a l l b a c k s
 
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didConnectToAddress:(NSData *)address {
-    NTP_Logging(@"didConnectToAddress");
+- (void) udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag {
 }
 
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError *)error {
-    NTP_Logging(@"didNotConnect - %@", error.description);
-}
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag {
-}
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error {
+- (void) udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error {
     NTP_Logging(@"didNotSendDataWithTag - %@", error.description);
 }
 
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data
-      fromAddress:(NSData *)address withFilterContext:(id)filterContext {
-//  NTP_Logging(@"didReceiveData - [%@]", [GCDAsyncUdpSocket hostFromAddress:address]);
+- (void) udpSocket:(GCDAsyncUdpSocket *)sock
+    didReceiveData:(NSData *)data
+       fromAddress:(NSData *)address
+ withFilterContext:(id)filterContext {
+
+    if (![_server isEqualToString:[GCDAsyncUdpSocket hostFromAddress:address]]) {
+        NTP_Logging(@"### didReceiveData - addr: %@ + %@", [GCDAsyncUdpSocket hostFromAddress:address], _server);
+    }
 
     [self decodePacket:data];
+
 }
 
-- (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error {
+- (void) udpSocketDidClose:(GCDAsyncUdpSocket *)sock
+                 withError:(NSError *)error {
     NTP_Logging(@"Socket closed : [%@]", _server);
 }
 
@@ -437,6 +446,45 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) dateFromNetworkTime:(union ntpTime *) networkTime {
     return [NSDate dateWithTimeIntervalSince1970:ntpDiffSeconds(&NTP_1970, networkTime)];
+}
+
++ (NSString *) ipAddrFromName: (NSString *) domainName {
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  ... resolve the IP address of the named host : "0.pool.ntp.org" --> [123.45.67.89], ...         │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+    CFHostRef ntpHostName = CFHostCreateWithName (nil, (__bridge CFStringRef)domainName);
+    if (nil == ntpHostName) {
+        NTP_Logging(@"CFHostCreateWithName <nil> for %@", domainName);
+        return NULL;                                         // couldn't create 'host object' ...
+    }
+
+    CFStreamError   nameError;
+    if (!CFHostStartInfoResolution (ntpHostName, kCFHostAddresses, &nameError)) {
+        NTP_Logging(@"CFHostStartInfoResolution error %i for %@", (int)nameError.error, domainName);
+        CFRelease(ntpHostName);
+        return NULL;                                        // couldn't start resolution ...
+    }
+
+    Boolean         nameFound;
+    NSArray *       ntpHostAddrs = (__bridge NSArray *)(CFHostGetAddressing (ntpHostName, &nameFound));
+
+    if (!nameFound) {
+        NTP_Logging(@"CFHostGetAddressing: %@ NOT resolved", ntpHostName);
+        CFRelease(ntpHostName);
+        return NULL;                                        // resolution failed ...
+    }
+
+    if (ntpHostAddrs == nil || ntpHostAddrs.count == 0) {
+        NTP_Logging(@"CFHostGetAddressing: no addresses resolved for %@", ntpHostName);
+        CFRelease(ntpHostName);
+        return NULL;                                        // NO addresses were resolved ...
+    }
+    CFRelease(ntpHostName);
+/*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  for each (sockaddr structure wrapped by a CFDataRef/NSData *) associated with the hostname,     │
+  │  drop the IP address string into a Set to remove duplicates.                                     │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
+    return [GCDAsyncUdpSocket hostFromAddress:ntpHostAddrs[0]];
 }
 
 #pragma mark                        P r e t t y P r i n t e r s
