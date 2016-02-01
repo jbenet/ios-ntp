@@ -50,7 +50,7 @@
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSTimeInterval) networkOffset {
 
-    if ([timeAssociations count] == 0) return 0.0;
+    if (timeAssociations.count == 0) return 0.0;
 
     NSArray *       sortedArray = [timeAssociations sortedArrayUsingDescriptors:sortDescriptors];
 
@@ -66,7 +66,7 @@
             }
             else {
                 NSLog(@"Clock•Drop: [%@]", timeAssociation.server);
-                if ([timeAssociations count] > 8) {
+                if (timeAssociations.count > 8) {
                     [timeAssociations removeObject:timeAssociation];
                     [timeAssociation finish];
                 }
@@ -88,7 +88,7 @@
   ┃ Return the device clock time adjusted for the offset to network-derived UTC.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (NSDate *) networkTime {
-    return [[NSDate date] dateByAddingTimeInterval:-[self networkOffset]];
+    return [[NSDate date] dateByAddingTimeInterval:-self.networkOffset];
 }
 
 - (instancetype) init {
@@ -144,7 +144,7 @@
     NSMutableSet *      hostAddresses = [NSMutableSet setWithCapacity:100];
 
     for (NSString * ntpDomainName in ntpDomains) {
-        if ([ntpDomainName length] == 0 ||
+        if (ntpDomainName.length == 0 ||
             [ntpDomainName characterAtIndex:0] == ' ' ||
             [ntpDomainName characterAtIndex:0] == '#') {
             continue;

@@ -158,7 +158,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     timerWobbleFactor = ((float)rand()/(float)RAND_MAX / 2.0) + 0.75;       // 0.75 .. 1.25
     NSTimeInterval  interval = pollIntervals[pollingIntervalIndex] * timerWobbleFactor;
-    [repeatingTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:interval]];
+    repeatingTimer.fireDate = [NSDate dateWithTimeIntervalSinceNow:interval];
 
     pollingIntervalIndex = 4;                           // subsequent timers fire at default intervals
 }
@@ -174,7 +174,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     timerWobbleFactor = ((float)rand()/(float)RAND_MAX / 2.0) + 0.75;       // 0.75 .. 1.25
     NSTimeInterval  interval = pollIntervals[pollingIntervalIndex] * timerWobbleFactor;
-    [repeatingTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:interval]];
+    repeatingTimer.fireDate = [NSDate dateWithTimeIntervalSinceNow:interval];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -195,7 +195,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
   ┃ This stops the timer firing (sets the fire time to the infinite future) ...                      ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finish {
-    [repeatingTimer setFireDate:[NSDate distantFuture]];
+    repeatingTimer.fireDate = [NSDate distantFuture];
 
     for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
     fifoIndex = 0;
@@ -383,7 +383,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
         stdDev = sqrt(stdDev/(float)good);
 
         _trusty = (good+none > 4) &&                                // four or more 'fails'
-                  (fabs(_offset) > stdDev*3.0);                     // s.d. < offset
+                  (fabs(_offset) > stdDev);                         // s.d. < offset (*3.0)
 
         NTP_Logging(@"  [%@] {%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f} ↑=%i, ↓=%i, %3.1f(%3.1f) %@", _server,
                     fifoQueue[0]*1000.0, fifoQueue[1]*1000.0, fifoQueue[2]*1000.0, fifoQueue[3]*1000.0,

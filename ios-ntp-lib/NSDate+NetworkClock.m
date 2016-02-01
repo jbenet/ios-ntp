@@ -14,13 +14,13 @@
 
 
 + (NSDate *) networkDate {
-  return [[NetworkClock sharedNetworkClock] networkTime];
+  return [NetworkClock sharedNetworkClock].networkTime;
 }
 
 + (NSDate *) threadsafeNetworkDate {
   NetworkClock *sharedClock = [NetworkClock sharedNetworkClock];
   @synchronized(sharedClock) {
-    return [sharedClock networkTime];
+    return sharedClock.networkTime;
   }
 }
 
