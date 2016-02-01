@@ -6,6 +6,39 @@ This is a continues to be a work in progress.
 Created by Gavin Eadie on Oct 17, 2010
 
 ### News
+**February 1, 2016:** (version 1.1.3) improvements have been made in a few areas:
+
+* arithmetic operating on an NTP 64-bit time has been improved slightly.
+* the delegate callback from `NetAssocation` now runs on the main thread, which allows it to modify any UI component (illegal from a background thread).
+* a "receive packet filter" has been added, but not yet invoked.  This will used to drop UPD packets that don't pass validation.
+* `[NetAssociation finish]` now invalidates its timer so that association plays no further part in time derivation.
+* upgrade sources to most recent Objective-C conventions.
+
+_Getting a Quick Timecheck_
+
+`ios-ntp` is often (mostly?) used to make sure someone hasn't fiddled with the system clock.  The complications involved in using multiple servers and averaging time offsets is overkill for this purpose.  The following skeleton code is all that is needed to check the time.  If you want some more assurance of accuracy, repeat the operation a few time; if you want to continue to watch the clock, you might invoke this every five minutes:
+
+		#import "ios-ntp.h"
+
+		@interface ntpViewController : UIViewController <NetAssociationDelegate>
+
+		@end
+
+		@implementation ntpViewController
+		- (void)viewDidLoad {
+			[super viewDidLoad];		
+		
+			netAssociation = [[NetAssociation alloc] 
+			initWithServerName:[NetAssociation ipAddrFromName:@"time.apple.com"]];
+			netAssociation.delegate = self;
+			[netAssociation sendTimeQuery];
+		}
+
+		- (void) reportFromDelegate {
+			printf("time offset: %5.3f mSec", netAssociation.offset * 1000.0];
+		}
+____
+
 **January 17, 2016:** (version 1.1.2) minor cleanup for Xcode 7.x 
 
 **July 22, 2015:** (version 1.1.1) `ios-ntp` has contained a resource file 
