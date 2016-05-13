@@ -113,23 +113,32 @@
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Use the following time servers or, if it exists, read the "ntp.hosts" file from the application  ┃
+  ┃ Use the default time servers or, if it exists, read the "ntp.hosts" file from the application    ┃
   ┃ resources and derive all the IP addresses referred to, remove any duplicates and create an       ┃
   ┃ 'association' (individual host client) for each one.                                             ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) createAssociations {
+    [self createAssociationsWithServers:@[@"0.pool.ntp.org",
+                                          @"0.uk.pool.ntp.org",
+                                          @"0.us.pool.ntp.org",
+                                          @"asia.pool.ntp.org",
+                                          @"europe.pool.ntp.org",
+                                          @"north-america.pool.ntp.org",
+                                          @"south-america.pool.ntp.org",
+                                          @"oceania.pool.ntp.org",
+                                          @"africa.pool.ntp.org"]];
+}
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Use the following time servers or, if it exists, read the "ntp.hosts" file from the application  ┃
+  ┃ resources and derive all the IP addresses referred to, remove any duplicates and create an       ┃
+  ┃ 'association' (individual host client) for each one.                                             ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) createAssociationsWithServers:(NSArray *)servers {
     NSArray *           ntpDomains;
     NSString *          filePath = [[NSBundle mainBundle] pathForResource:@"ntp.hosts" ofType:@""];
     if (nil == filePath) {
-        ntpDomains = @[@"0.pool.ntp.org",
-                       @"0.uk.pool.ntp.org",
-                       @"0.us.pool.ntp.org",
-                       @"asia.pool.ntp.org",
-                       @"europe.pool.ntp.org",
-                       @"north-america.pool.ntp.org",
-                       @"south-america.pool.ntp.org",
-                       @"oceania.pool.ntp.org",
-                       @"africa.pool.ntp.org"];
+        ntpDomains = servers;
     }
     else {
         NSString *      fileData = [[NSString alloc] initWithData:[[NSFileManager defaultManager]

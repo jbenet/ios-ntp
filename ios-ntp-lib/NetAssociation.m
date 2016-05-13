@@ -406,14 +406,6 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
     }
 }
 
-#pragma mark                        I n b o u n d • D a t a   F i l t e r
-
-GCDAsyncUdpSocketReceiveFilterBlock filter = ^BOOL (NSData *data, NSData *address, id *context) {
-
-    return TRUE;
-
-};
-
 #pragma mark                        N e t w o r k • C a l l b a c k s
 
 - (void) udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag {
