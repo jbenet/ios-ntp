@@ -1,6 +1,9 @@
-
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ Author: Juan Batiz-Benet                                                                         ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "NSDate+NetworkClock.h"
+#import "NetworkClock.h"
 
 @implementation NSDate (NetworkClock)
 
@@ -23,6 +26,5 @@
     return sharedClock.networkTime;
   }
 }
-
 
 @end

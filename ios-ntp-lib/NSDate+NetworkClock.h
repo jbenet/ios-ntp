@@ -1,12 +1,11 @@
-
-// Author: Juan Batiz-Benet
-
-// Category on NSDate to provide convenience access to NetworkClock.
-// To use, simply call [NSDate networkDate];
+/*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
+  ║ Author: Juan Batiz-Benet                                                                         ║
+  ║                                                                                                  ║
+  ║ Category on NSDate to provide convenience access to NetworkClock.                                ║
+  ║                                                        To use, simply call [NSDate networkDate]; ║
+  ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <Foundation/Foundation.h>
-#import "NetworkClock.h"
-
 
 @interface NSDate (NetworkClock)
 

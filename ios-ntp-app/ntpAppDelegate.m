@@ -14,10 +14,4 @@
 
 }
 
-- (void)applicationWillTerminate:(UIApplication *) app {
-
-//  [[NetworkClock sharedNetworkClock] finishAssociations];     // be nice and let all the servers go ...
-
-}
-
 @end

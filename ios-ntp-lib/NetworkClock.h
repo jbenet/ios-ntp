@@ -17,6 +17,9 @@
 
 - (void) createAssociations;
 - (void) createAssociationsWithServers:(NSArray *)servers;
+
+- (void) enableAssociations;
+- (void) snoozeAssociations;
 - (void) finishAssociations;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDate *   networkTime;

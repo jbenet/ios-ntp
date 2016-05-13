@@ -50,19 +50,19 @@
     if (self = [super init]) {
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ Prepare a sort-descriptor to sort associations based on their dispersion, and then create an     │
-  │ array of empty associations to use ...                                                           │
+  │ empty array for associations to fill ..                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:@"dispersion" ascending:YES]];
         timeAssociations = [NSMutableArray arrayWithCapacity:100];
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │ .. and fill that array with the time hosts obtained from "ntp.hosts" ..                          │
+  │ .. and fill that array with the time hosts obtained from "ntp.hosts" (or built-ins if absent) .. │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         [[[NSOperationQueue alloc] init] addOperation:[[NSInvocationOperation alloc]
                                                        initWithTarget:self
                                                        selector:@selector(createAssociations)
                                                        object:nil]];
     }
-    
+
     return self;
 }
 
@@ -86,8 +86,8 @@
 //              NSLog(@"[%@]: %f (%d)", timeAssociation.server, timeAssociation.offset*1000.0, usefulCount);
             }
             else {
-                NSLog(@"Clock•Drop: [%@]", timeAssociation.server);
                 if (timeAssociations.count > 8) {
+                NSLog(@"Clock•Drop: [%@]", timeAssociation.server);
                     [timeAssociations removeObject:timeAssociation];
                     [timeAssociation finish];
                 }
@@ -113,7 +113,7 @@
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Use the default time servers or, if it exists, read the "ntp.hosts" file from the application    ┃
+  ┃ Use the following time servers or, if it exists, read the "ntp.hosts" file from the application  ┃
   ┃ resources and derive all the IP addresses referred to, remove any duplicates and create an       ┃
   ┃ 'association' (individual host client) for each one.                                             ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
@@ -201,23 +201,39 @@
         }
     }
 
-    NTP_Logging(@"%@", hostAddresses);                          // all the addresses resolved
-
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  ... now start one 'association' (network clock server) for each address.                        │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     for (NSString * server in hostAddresses) {
-        NetAssociation *    timeAssociation = [[NetAssociation alloc] initWithServerName:server];
-
-        [timeAssociations addObject:timeAssociation];
-        [timeAssociation enable];                               // starts are randomized internally
+        [timeAssociations addObject:[[NetAssociation alloc] initWithServerName:server]];
     }
+
+    [self enableAssociations];
+    }
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃  ..                                                                                              ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) enableAssociations {
+
+    for (NetAssociation * timeAssociation in timeAssociations) [timeAssociation enable];
+
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ Stop all the individual ntp clients associations ..                                              ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) snoozeAssociations {
+
+    for (NetAssociation * timeAssociation in timeAssociations) [timeAssociation snooze];
+
+}
+
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Totally destroy the ntp associations ..                                                          ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) finishAssociations {
+
     for (NetAssociation * timeAssociation in timeAssociations) [timeAssociation finish];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

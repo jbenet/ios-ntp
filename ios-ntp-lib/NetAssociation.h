@@ -37,7 +37,6 @@
   │                  |             15.3 microseconds (mask = 0xffff0000)                             │
   │                 3.9 milliseconds (mask = 0xff000000)                                             │
   │                                                                                                  │
-  │                                                                                                  │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
 
 #define JAN_1970    		((uint64_t)0x83aa7e80)          // UNIX epoch in NTP's epoch:
@@ -80,11 +79,24 @@ double          ntpDiffSeconds(union ntpTime * start, union ntpTime * stop);
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (instancetype) initWithServerName:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
 
-- (void) enable;
-- (void) finish;
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ empty the time values fifo and start the timer which queries the association's server ..         ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) enable;                                            // ..
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ snooze: stop the timer in a way that let's start it again ..                                     ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) snooze;                                            // stop the timer but don't delete it
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ finish: stop the timer and invalidate it .. it'll die and disappear ..                           ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
+- (void) finish;                                            // ..
 
 - (void) sendTimeQuery;                                     // send one datagram to server ..
 
+/*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ utility method converts domain name to numeric dotted address string ..                          ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 + (NSString *) ipAddrFromName: (NSString *) domainName;
 
 @end
