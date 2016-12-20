@@ -148,8 +148,7 @@ where ios-ntp is referenced.
 ##### Continuous Mode
 
 Simply create a `NetworkClock`.  As soon as you create it, the NTP
-process will begin polling the time servers in the "ntp.hosts" file (if
-the file isn't found, a tasteful set of default servers will be used).
+process will begin polling the time servers in the "ntp.hosts" file.
 You may wish to start it when the application starts, so that the time is
 well synchronized by the time you actually want to use it, just call it
 in your AppDelegate's `didFinishLaunching` method.:
