@@ -116,17 +116,18 @@
   ┃ Use the following time servers or, if it exists, read the "ntp.hosts" file from the application  ┃
   ┃ resources and derive all the IP addresses referred to, remove any duplicates and create an       ┃
   ┃ 'association' (individual host client) for each one.                                             ┃
+  ┃──────────────────────────────────────────────────────────────────────────────────────────────────┃
+  ┃ PLEASE NOTE: The use of pool ntp server host names is strongly discouraged, see this page:       ┃
+  ┃                                                             http://www.pool.ntp.org/vendors.html ┃
+  ┃                                                                                                  ┃
+  ┃ To help resolve this problem, the list of pool server host names that used to be here has been   ┃
+  ┃ removed.  Code using this library inappropriately caused problems for the ntp community and, as  ┃
+  ┃ a good net citizen, I'm sorry that this happened and am complying with requests to adhere to the ┃
+  ┃ norms of that community.  All references to pool server host names have been removed and a link  ┃
+  ┃ to the community page added.                                                                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) createAssociations {
-    [self createAssociationsWithServers:@[@"0.pool.ntp.org",
-                                          @"0.uk.pool.ntp.org",
-                                          @"0.us.pool.ntp.org",
-                                          @"asia.pool.ntp.org",
-                                          @"europe.pool.ntp.org",
-                                          @"north-america.pool.ntp.org",
-                                          @"south-america.pool.ntp.org",
-                                          @"oceania.pool.ntp.org",
-                                          @"africa.pool.ntp.org"]];
+    [self createAssociationsWithServers:@[]];
 }
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -149,7 +150,7 @@
     }
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  for each NTP service domain name in the 'ntp.hosts' file : "0.pool.ntp.org" etc ...             │
+  │  for each NTP service domain name in the 'ntp.hosts' file : "time.vendor.org" etc ...            │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     NSMutableSet *      hostAddresses = [NSMutableSet setWithCapacity:100];
 
@@ -161,7 +162,7 @@
         }
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... resolve the IP address of the named host : "0.pool.ntp.org" --> [123.45.67.89], ...         │
+  │  ... resolve the IP address of the named host : "time.vendor.org" --> [123.45.67.89], ...        │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
         CFHostRef ntpHostName = CFHostCreateWithName (nil, (__bridge CFStringRef)ntpDomainName);
         if (nil == ntpHostName) {

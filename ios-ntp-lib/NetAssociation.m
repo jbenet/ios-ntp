@@ -463,7 +463,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
 
 + (NSString *) ipAddrFromName: (NSString *) domainName {
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │  ... resolve the IP address of the named host : "0.pool.ntp.org" --> [123.45.67.89], ...         │
+  │  ... resolve the IP address of the named host : "time.vendor.org" --> [123.45.67.89], ...        │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     CFHostRef ntpHostName = CFHostCreateWithName (nil, (__bridge CFStringRef)domainName);
     if (nil == ntpHostName) {

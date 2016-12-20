@@ -6,6 +6,11 @@ This is a continues to be a work in progress.
 Created by Gavin Eadie on Oct 17, 2010
 
 ### News
+**December 20, 2016:** (version 1.1.4) improvements have been made in a few areas:
+
+* the use of pool ntp server host names is strongly discouraged so they have been removed from this code and documentation.
+Read the NTP Pool Project page at http://www.pool.ntp.org/vendors.html for context.
+
 **February 1, 2016:** (version 1.1.3) improvements have been made in a few areas:
 
 * arithmetic operating on an NTP 64-bit time has been improved slightly.
@@ -26,9 +31,9 @@ _Getting a Quick Timecheck_
 
 		@implementation ntpViewController
 		- (void)viewDidLoad {
-			[super viewDidLoad];		
-		
-			netAssociation = [[NetAssociation alloc] 
+			[super viewDidLoad];
+
+			netAssociation = [[NetAssociation alloc]
 			initWithServerName:[NetAssociation ipAddrFromName:@"time.apple.com"]];
 			netAssociation.delegate = self;
 			[netAssociation sendTimeQuery];
@@ -39,52 +44,22 @@ _Getting a Quick Timecheck_
 		}
 ____
 
-**January 17, 2016:** (version 1.1.2) minor cleanup for Xcode 7.x 
+**January 17, 2016:** (version 1.1.2) minor cleanup for Xcode 7.x
 
-**July 22, 2015:** (version 1.1.1) `ios-ntp` has contained a resource file 
+**July 22, 2015:** (version 1.1.1) `ios-ntp` has contained a resource file
 (called `ntp.hosts`) which contained a list of time server hosts to be used
 for querying the time.  That file has been removed in this release.
 
-The logic is that, since `ios-ntp` can now be added to a project via CocoaPods, 
+The logic is that, since `ios-ntp` can now be added to a project via CocoaPods,
 any local changes made to that file will be overwritten the next time the `ios-ntp`
 pod is updated and, since `ios-ntp` already contains a built-in list of time servers,
 removing this file from the pod should not impact the behavior of the `ios-ntp` code.
-
-The `ntp.hosts` file was always meant to over-ride the default host list -- that 
-intent is now better served.  The `ntp.hosts` file used to contain:
-
-		#
-		# tasteful worldwide time server name collection
-		#
-
-		0.pool.ntp.org
-		#1.pool.ntp.org
-		#2.pool.ntp.org
-		#3.pool.ntp.org
-		0.uk.pool.ntp.org
-		#1.uk.pool.ntp.org
-		#2.uk.pool.ntp.org
-		#3.uk.pool.ntp.org
-		0.US.pool.ntp.org
-		#1.US.pool.ntp.org
-		#2.US.pool.ntp.org
-		#3.US.pool.ntp.org
-		asia.pool.ntp.org
-		europe.pool.ntp.org
-		north-america.pool.ntp.org
-		oceania.pool.ntp.org
-		south-america.pool.ntp.org
-		africa.pool.ntp.org
-		#time.apple.com
-
-.. which is exactly the same as the internal default list (though that has no
-commented host addresses).
 
 If you want to use your own list of time servers, you need to create a file containing
 time host names, one per line, name it `ntp.hosts` and place it in the main bundle of your
 application (the sample app `ios-ntp-app` does this to use the server at `time.apple.com`).
 
-**June 10, 2015:** (version 1.1) I recently discovered a re-entrancy bug when John 
+**June 10, 2015:** (version 1.1) I recently discovered a re-entrancy bug when John
 Grismore brought my attention to inaccuracies in reported network time
 offsets. When
 a NetAssociation notified the NetClock that it had a new time
@@ -93,10 +68,10 @@ does causing the averaging to break.
 
 In fact, this mechanism isn't optimal anyway!  The notifications
 that cause offset averaging arrive at NetClock constantly whether
-the result is used or not.  We're keeping the NetClock network time 
+the result is used or not.  We're keeping the NetClock network time
 offset property up
 to date whether we need it or not.  Better would be to perform the
-averaging only when the offset NetClock property is called for, and 
+averaging only when the offset NetClock property is called for, and
 that is how
 ios-ntp now works.
 
@@ -114,8 +89,8 @@ iOS often have a different need; they are more likely to want an fast
 estimate of the time on demand.  To provide the ability to the developer,
 access has been provided to use a NetAssociations directly
 
-An NetAssociation can now be asked for one measure of the time 
-from one time server so an iOS app can create an NetAssociation, use 
+An NetAssociation can now be asked for one measure of the time
+from one time server so an iOS app can create an NetAssociation, use
 it to get the time, and be done.
 
 This code operates on 32-bit and 64-bit iOS devices.
