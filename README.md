@@ -9,7 +9,8 @@ Created by Gavin Eadie on Oct 17, 2010
 **December 20, 2016:** (version 1.1.4) improvements have been made in a few areas:
 
 * the use of pool ntp server host names is strongly discouraged so they have been removed from this code and documentation.
-Read the NTP Pool Project page at http://www.pool.ntp.org/vendors.html for context.
+Read the NTP Pool Project page at http://www.pool.ntp.org/vendors.html for context.  NOTE: The library will query NO servers 
+in its new default state .. now a `ntp.hosts` file MUST be provided.
 
 **February 1, 2016:** (version 1.1.3) improvements have been made in a few areas:
 
