@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'ios-ntp'
-  s.version      = '1.1.5'
+  s.version      = '1.1.6'
   s.summary      = 'SNTP implementation for iOS.'
   s.homepage     = 'https://github.com/jbenet/ios-ntp'
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
