@@ -6,10 +6,15 @@ This is a continues to be a work in progress.
 Created by Gavin Eadie on Oct 17, 2010
 
 ### News
+**January 24, 2018:** (version 1.1.6) improvements have been made in a few areas:
+
+* a podspec target for tvOS has been added.
+* the files from `CocoaAsyncSocket` have been replaced with the most recent versions.
+
 **December 20, 2016:** (version 1.1.4) improvements have been made in a few areas:
 
 * the use of pool ntp server host names is strongly discouraged so they have been removed from this code and documentation.
-Read the NTP Pool Project page at http://www.pool.ntp.org/vendors.html for context.  NOTE: The library will query NO servers 
+Read the NTP Pool Project page at http://www.pool.ntp.org/vendors.html for context.  NOTE: The library will query NO servers
 in its new default state .. now a `ntp.hosts` file MUST be provided.
 
 **February 1, 2016:** (version 1.1.3) improvements have been made in a few areas:
@@ -61,20 +66,16 @@ time host names, one per line, name it `ntp.hosts` and place it in the main bund
 application (the sample app `ios-ntp-app` does this to use the server at `time.apple.com`).
 
 **June 10, 2015:** (version 1.1) I recently discovered a re-entrancy bug when John
-Grismore brought my attention to inaccuracies in reported network time
-offsets. When
-a NetAssociation notified the NetClock that it had a new time
-offset, that event might interrupt the offset averaging that NetClock
-does causing the averaging to break.
+Grismore brought my attention to inaccuracies in reported network time offsets.
+When a NetAssociation notified the NetClock that it had a new time offset, that
+event might interrupt the offset averaging that NetClock does causing the
+averaging to break.
 
-In fact, this mechanism isn't optimal anyway!  The notifications
-that cause offset averaging arrive at NetClock constantly whether
-the result is used or not.  We're keeping the NetClock network time
-offset property up
-to date whether we need it or not.  Better would be to perform the
-averaging only when the offset NetClock property is called for, and
-that is how
-ios-ntp now works.
+In fact, this mechanism isn't optimal anyway!  The notifications that cause
+offset averaging arrive at NetClock constantly whether the result is used or
+not.  We're keeping the NetClock network time offset property up to date whether
+we need it or not.  Better would be to perform the averaging only when the
+offset NetClock property is called for, and that is how ios-ntp now works.
 
 The API is not changed, so your application should require no changes.
 
@@ -201,11 +202,7 @@ than would be expected, and I don't know the cause of this.
 ### License
 
 The [MIT](http://www.opensource.org/licenses/mit-license.php)
-License Copyright (c) 2010-2015, Ramsay Consulting
-
-### Building
-
-_More to come about building a framework._
+License Copyright (c) 2010-2018, Ramsay Consulting
 
 ### History
 
