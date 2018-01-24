@@ -8,8 +8,7 @@ Pod::Spec.new do |s|
   s.author       = { 'Gavin Eadie' => 'https://github.com/gavineadie' }
   s.ios.deployment_target = '7.0'
   s.tvos.deployment_target = '9.0'
-  s.source_files = 'ios-ntp-lib/*.{h,m}'
+  s.source_files = 'ios-ntp-lib/*.{h,m}', 'network-udp/*.{h,m}'
   s.framework = 'CFNetwork'
-  s.dependency 'CocoaAsyncSocket', '~>7.4.1'
   s.requires_arc = true
 end
