@@ -78,6 +78,7 @@ double          ntpDiffSeconds(union ntpTime * start, union ntpTime * stop);
   ┃ create a NetAssociation with the provided server name .. just sitting idle ..                    ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (instancetype) initWithServerName:(NSString *) serverName NS_DESIGNATED_INITIALIZER;
+- (instancetype) init NS_UNAVAILABLE;
 
 /*┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   ┃ empty the time values fifo and start the timer which queries the association's server ..         ┃
