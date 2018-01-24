@@ -52,7 +52,7 @@ union ntpTime {
 
 } ;
 
-union ntpTime   ntp_time_now();
+union ntpTime   ntp_time_now(void);
 union ntpTime   unix2ntp(const struct timeval * tv);
 double          ntpDiffSeconds(union ntpTime * start, union ntpTime * stop);
 
