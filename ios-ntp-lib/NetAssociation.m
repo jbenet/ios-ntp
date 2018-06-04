@@ -346,7 +346,7 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
         NTP_Logging(@"  [%@] : bad data .. %7.1f", _server, ntpDiffSeconds(&ntpServerBaseTime, &ntpServerSendTime));
     }
 
-    dispatch_async(dispatch_get_main_queue(), ^{ [_delegate reportFromDelegate]; });// tell delegate we're done
+    dispatch_async(dispatch_get_main_queue(), ^{ [self->_delegate reportFromDelegate]; });// tell delegate we're done
 }
 
 - (void) reportFromDelegate {
@@ -610,8 +610,8 @@ double ntpDiffSeconds(union ntpTime * start, union ntpTime * stop) {
 												  usingBlock:^
 	 (NSNotification * note) {
 		 NTP_Logging(@"Application -> SignificantTimeChange");
-		 for (short i = 0; i < 8; i++) fifoQueue[i] = NAN;      // set fifo to all empty
-		 fifoIndex = 0;
+		 for (short i = 0; i < 8; i++) self->fifoQueue[i] = NAN;      // set fifo to all empty
+		 self->fifoIndex = 0;
 	 }];
 }
 
