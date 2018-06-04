@@ -8,7 +8,7 @@
 
 #import "NetworkClock.h"
 #import "ntp-log.h"
-#import "GCDAsyncUdpSocket.h"
+#import <CocoaAsyncSocket/GCDAsyncUdpSocket.h>
 
 @interface NetworkClock () {
 

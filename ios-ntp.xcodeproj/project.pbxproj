@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8602E82D1A1D50A4001C265E /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
+		130140C420C5A05A003D167F /* libPods-ntp-app.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 130140C320C5A05A003D167F /* libPods-ntp-app.a */; };
+		130140C620C5A0F4003D167F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 130140C520C5A0F4003D167F /* Default-568h@2x.png */; };
 		8602E8321A1D5517001C265E /* ntpAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8602E82F1A1D5517001C265E /* ntpAppDelegate.m */; };
 		86273CCB1A1AACBB00487A18 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
 		863555311E09976D00FB8E18 /* ntp.hosts in Resources */ = {isa = PBXBuildFile; fileRef = 866ED2FE1B601121004E4394 /* ntp.hosts */; };
@@ -17,24 +18,23 @@
 		86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619081126C0CFD0046A2B8 /* CoreGraphics.framework */; };
 		86619086126C0D120046A2B8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86619085126C0D120046A2B8 /* CFNetwork.framework */; };
 		866F2B751A1D35DE008CCF83 /* ios-ntp.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA3213D9B6CF00C9385A /* ios-ntp.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		866F2B761A1D3624008CCF83 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		866F2B771A1D3624008CCF83 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
 		866F2B781A1D3624008CCF83 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		866F2B791A1D3624008CCF83 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
 		86734BD71A2181FD00F191CE /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86734BD51A2181FD00F191CE /* Storyboard.storyboard */; };
-		869A7CDA1A1AB0AC00067303 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */; };
 		869A7CDB1A1AB0AC00067303 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		869A7CDC1A1AB0AC00067303 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
 		86C2B3F71A1DAA1900481E2E /* NSDate+NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86C2B3F81A1DAA1900481E2E /* NetAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95D913D9AF8C004E4194 /* NetAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86C2B3F91A1DAA1900481E2E /* NetworkClock.h in Headers */ = {isa = PBXBuildFile; fileRef = D91E95DB13D9AF8C004E4194 /* NetworkClock.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		86C2B4041A1DAE6800481E2E /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */; };
 		86CE9ED71A2841FB00AFDE79 /* ntpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CE9ED61A2841FB00AFDE79 /* ntpViewController.m */; };
 		86F300C61A1481C00078CBF9 /* NetAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DA13D9AF8C004E4194 /* NetAssociation.m */; };
 		86F300C81A1481C00078CBF9 /* NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DC13D9AF8C004E4194 /* NetworkClock.m */; };
 		86F300CC1A1483900078CBF9 /* NSDate+NetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */; };
+		B1956546ACFB862615592FFB /* libPods-ios_fwk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB846917FAF7622B59FAABD2 /* libPods-ios_fwk.a */; };
 		D91E95E513D9AF8C004E4194 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D91E95DE13D9AF8C004E4194 /* main.m */; };
 		D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D91E95F913D9B063004E4194 /* InfoPlist.strings */; };
+		F423DF7E9F0DF56B238D8094 /* libPods-ios-lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0360ED9BF416E741F19019B /* libPods-ios-lib.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -60,8 +60,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
-		199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		130140C320C5A05A003D167F /* libPods-ntp-app.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-ntp-app.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		130140C520C5A0F4003D167F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		2A20B98B14992ACA76281CFE /* Pods-ntp-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ntp-app.release.xcconfig"; path = "Pods/Target Support Files/Pods-ntp-app/Pods-ntp-app.release.xcconfig"; sourceTree = "<group>"; };
+		5CB44C384846CD998E886885 /* Pods-ios-lib.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-lib.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-lib/Pods-ios-lib.release.xcconfig"; sourceTree = "<group>"; };
+		5D100731DC6F46183726C194 /* Pods-ios-lib.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-lib.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-lib/Pods-ios-lib.debug.xcconfig"; sourceTree = "<group>"; };
 		8602E82E1A1D5517001C265E /* ntpAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpAppDelegate.h; sourceTree = "<group>"; };
 		8602E82F1A1D5517001C265E /* ntpAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpAppDelegate.m; sourceTree = "<group>"; };
 		860E46A21A4F7B9E004C705B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -85,6 +88,9 @@
 		86CE9ED51A2841FB00AFDE79 /* ntpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntpViewController.h; sourceTree = "<group>"; };
 		86CE9ED61A2841FB00AFDE79 /* ntpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ntpViewController.m; sourceTree = "<group>"; };
 		86F300AE1A14815C0078CBF9 /* libios-lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-lib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB846917FAF7622B59FAABD2 /* libPods-ios_fwk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios_fwk.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0D1F2DE340986D36CFEE2A6 /* Pods-ios_fwk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios_fwk.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios_fwk/Pods-ios_fwk.debug.xcconfig"; sourceTree = "<group>"; };
+		CFAEC1D6E2538AD9D8154CC0 /* Pods-ios_fwk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios_fwk.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios_fwk/Pods-ios_fwk.release.xcconfig"; sourceTree = "<group>"; };
 		D91E95D913D9AF8C004E4194 /* NetAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAssociation.h; sourceTree = "<group>"; };
 		D91E95DA13D9AF8C004E4194 /* NetAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetAssociation.m; sourceTree = "<group>"; };
 		D91E95DB13D9AF8C004E4194 /* NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkClock.h; sourceTree = "<group>"; };
@@ -98,6 +104,9 @@
 		D9B2BA3F13D9B95100C9385A /* ios-ntp.tar.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; name = "ios-ntp.tar.gz"; path = "release/ios-ntp.tar.gz"; sourceTree = "<group>"; };
 		D9B2BA4013D9C06100C9385A /* NSDate+NetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NetworkClock.h"; sourceTree = "<group>"; };
 		D9B2BA4113D9C06100C9385A /* NSDate+NetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NetworkClock.m"; sourceTree = "<group>"; };
+		E3FEB0142BC02BC0F2527899 /* Pods-ntp-app.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ntp-app.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ntp-app/Pods-ntp-app.debug.xcconfig"; sourceTree = "<group>"; };
+		F0360ED9BF416E741F19019B /* libPods-ios-lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios-lib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDF76B00C9276AF106AD0779 /* libPods-ntp-app.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ntp-app.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1956546ACFB862615592FFB /* libPods-ios_fwk.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				130140C420C5A05A003D167F /* libPods-ntp-app.a in Frameworks */,
 				8661906F126C0CD70046A2B8 /* UIKit.framework in Frameworks */,
 				8661907B126C0CEC0046A2B8 /* Foundation.framework in Frameworks */,
 				86619082126C0CFD0046A2B8 /* CoreGraphics.framework in Frameworks */,
@@ -130,12 +141,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F423DF7E9F0DF56B238D8094 /* libPods-ios-lib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0746B65C32DF09349E67B6BC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5D100731DC6F46183726C194 /* Pods-ios-lib.debug.xcconfig */,
+				5CB44C384846CD998E886885 /* Pods-ios-lib.release.xcconfig */,
+				B0D1F2DE340986D36CFEE2A6 /* Pods-ios_fwk.debug.xcconfig */,
+				CFAEC1D6E2538AD9D8154CC0 /* Pods-ios_fwk.release.xcconfig */,
+				E3FEB0142BC02BC0F2527899 /* Pods-ntp-app.debug.xcconfig */,
+				2A20B98B14992ACA76281CFE /* Pods-ntp-app.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		860E46A01A4F7B9E004C705B /* ios-ntp.framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,8 +197,8 @@
 		86C39EFE126A1FA000A9DCD1 = {
 			isa = PBXGroup;
 			children = (
+				130140C520C5A0F4003D167F /* Default-568h@2x.png */,
 				86C79ED61A1D657F00FC7CC2 /* ios-ntp-doc */,
-				D91E95D613D9AF8C004E4194 /* network-udp */,
 				D91E95D813D9AF8C004E4194 /* ios-ntp-lib */,
 				D91E95E813D9B018004E4194 /* ios-ntp-rez */,
 				D91E95DD13D9AF8C004E4194 /* ios-ntp-app */,
@@ -181,6 +206,8 @@
 				86C39F08126A1FA100A9DCD1 /* frameworks */,
 				86C39F0E126A1FA100A9DCD1 /* products */,
 				860E46A01A4F7B9E004C705B /* ios-ntp.framework */,
+				0746B65C32DF09349E67B6BC /* Pods */,
+				CD5A1ECCCEC1E1850EAC6709 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -220,13 +247,15 @@
 			name = "ios-ntp-doc";
 			sourceTree = "<group>";
 		};
-		D91E95D613D9AF8C004E4194 /* network-udp */ = {
+		CD5A1ECCCEC1E1850EAC6709 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				199B5741151CBE5100155281 /* GCDAsyncUdpSocket.h */,
-				199B5742151CBE5100155281 /* GCDAsyncUdpSocket.m */,
+				130140C320C5A05A003D167F /* libPods-ntp-app.a */,
+				F0360ED9BF416E741F19019B /* libPods-ios-lib.a */,
+				AB846917FAF7622B59FAABD2 /* libPods-ios_fwk.a */,
+				FDF76B00C9276AF106AD0779 /* libPods-ntp-app.a */,
 			);
-			path = "network-udp";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D91E95D813D9AF8C004E4194 /* ios-ntp-lib */ = {
@@ -287,7 +316,6 @@
 				86C2B3F71A1DAA1900481E2E /* NSDate+NetworkClock.h in Headers */,
 				86C2B3F81A1DAA1900481E2E /* NetAssociation.h in Headers */,
 				86C2B3F91A1DAA1900481E2E /* NetworkClock.h in Headers */,
-				86C2B4041A1DAE6800481E2E /* GCDAsyncUdpSocket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +343,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 866F2B6E1A1D35A0008CCF83 /* Build configuration list for PBXNativeTarget "ios_fwk" */;
 			buildPhases = (
+				B7C1D34A1C3F6FCD0DB61F7E /* [CP] Check Pods Manifest.lock */,
 				866F2B501A1D35A0008CCF83 /* Sources */,
 				866F2B511A1D35A0008CCF83 /* Frameworks */,
 				866F2B521A1D35A0008CCF83 /* Headers */,
@@ -333,6 +362,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 86C39F2B126A1FA100A9DCD1 /* Build configuration list for PBXNativeTarget "ntp-app" */;
 			buildPhases = (
+				F478A852F4B6F7E4D441665D /* [CP] Check Pods Manifest.lock */,
 				86C39F09126A1FA100A9DCD1 /* Sources */,
 				86C39F0A126A1FA100A9DCD1 /* Frameworks */,
 				86C39F0B126A1FA100A9DCD1 /* Resources */,
@@ -351,6 +381,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 86F300BF1A14815C0078CBF9 /* Build configuration list for PBXNativeTarget "ios-lib" */;
 			buildPhases = (
+				01AF146D465DE9DAF1DCC3AD /* [CP] Check Pods Manifest.lock */,
 				86F300AA1A14815C0078CBF9 /* Sources */,
 				86F300AB1A14815C0078CBF9 /* Frameworks */,
 				86F300AC1A14815C0078CBF9 /* CopyFiles */,
@@ -370,7 +401,7 @@
 		86C39F00126A1FA000A9DCD1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Ramsay Consulting";
 				TargetAttributes = {
 					865E539A1B20B3EF0048F8B1 = {
@@ -390,7 +421,7 @@
 				};
 			};
 			buildConfigurationList = 86C39F03126A1FA000A9DCD1 /* Build configuration list for PBXProject "ios-ntp" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -430,12 +461,70 @@
 			buildActionMask = 2147483647;
 			files = (
 				863555311E09976D00FB8E18 /* ntp.hosts in Resources */,
+				130140C620C5A0F4003D167F /* Default-568h@2x.png in Resources */,
 				86734BD71A2181FD00F191CE /* Storyboard.storyboard in Resources */,
 				D91E95FF13D9B063004E4194 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		01AF146D465DE9DAF1DCC3AD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ios-lib-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B7C1D34A1C3F6FCD0DB61F7E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ios_fwk-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F478A852F4B6F7E4D441665D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ntp-app-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		865E53971B20B3EF0048F8B1 /* Sources */ = {
@@ -453,7 +542,6 @@
 				866F2B771A1D3624008CCF83 /* NSDate+NetworkClock.m in Sources */,
 				866F2B781A1D3624008CCF83 /* NetAssociation.m in Sources */,
 				866F2B791A1D3624008CCF83 /* NetworkClock.m in Sources */,
-				866F2B761A1D3624008CCF83 /* GCDAsyncUdpSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,7 +555,6 @@
 				86273CCB1A1AACBB00487A18 /* NSDate+NetworkClock.m in Sources */,
 				869A7CDB1A1AB0AC00067303 /* NetAssociation.m in Sources */,
 				869A7CDC1A1AB0AC00067303 /* NetworkClock.m in Sources */,
-				869A7CDA1A1AB0AC00067303 /* GCDAsyncUdpSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,7 +565,6 @@
 				86F300CC1A1483900078CBF9 /* NSDate+NetworkClock.m in Sources */,
 				86F300C61A1481C00078CBF9 /* NetAssociation.m in Sources */,
 				86F300C81A1481C00078CBF9 /* NetworkClock.m in Sources */,
-				8602E82D1A1D50A4001C265E /* GCDAsyncUdpSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,7 +628,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "ntp-test/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ramsaycons.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -583,7 +673,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "ntp-test/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ramsaycons.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -594,6 +688,7 @@
 		};
 		866F2B6F1A1D35A0008CCF83 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0D1F2DE340986D36CFEE2A6 /* Pods-ios_fwk.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -630,7 +725,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/ios-ntp-rez/ios-ntp-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.framework.ios-ntp";
@@ -643,6 +742,7 @@
 		};
 		866F2B701A1D35A0008CCF83 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFAEC1D6E2538AD9D8154CC0 /* Pods-ios_fwk.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -674,7 +774,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/ios-ntp-rez/ios-ntp-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.framework.ios-ntp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -693,11 +797,13 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -734,11 +840,13 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -766,6 +874,7 @@
 		};
 		86C39F2C126A1FA100A9DCD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E3FEB0142BC02BC0F2527899 /* Pods-ntp-app.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -777,7 +886,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = IOS_NTP_LOGGING;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "ios-ntp-rez/ntp-app-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ramsaycons.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -788,6 +900,7 @@
 		};
 		86C39F2D126A1FA100A9DCD1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2A20B98B14992ACA76281CFE /* Pods-ntp-app.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -797,7 +910,10 @@
 				DEVELOPMENT_TEAM = CXE9ZR7J3U;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "ios-ntp-rez/ntp-app-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ramsaycons.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -809,6 +925,7 @@
 		};
 		86F300C01A14815C0078CBF9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5D100731DC6F46183726C194 /* Pods-ios-lib.debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -839,6 +956,7 @@
 		};
 		86F300C11A14815C0078CBF9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5CB44C384846CD998E886885 /* Pods-ios-lib.release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

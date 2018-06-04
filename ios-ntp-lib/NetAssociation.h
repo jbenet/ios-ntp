@@ -17,7 +17,7 @@
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <UIKit/UIKit.h>
-#import "GCDAsyncUdpSocket.h"
+#import <CocoaAsyncSocket/GCDAsyncUdpSocket.h>
 
 /*┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
   │  NTP Timestamp Structure                                                                         │
