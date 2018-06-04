@@ -6,6 +6,9 @@ This is a continues to be a work in progress.
 Created by Gavin Eadie on Oct 17, 2010
 
 ### News
+**June 4, 2018:** (version 1.1.9) There was a conflict when using cocoasyncsocket and ios-ntp; 
+added pod dependency and removed files asyncsocket files form network-lib
+
 **January 24, 2018:** (version 1.1.6) improvements have been made in a few areas:
 
 * a podspec target for tvOS has been added.
