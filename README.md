@@ -7,7 +7,8 @@ Created by Gavin Eadie on Oct 17, 2010
 
 ### News
 **June 4, 2018:** (version 1.1.9) There was a conflict when using cocoasyncsocket and ios-ntp; 
-added pod dependency and removed files asyncsocket files form network-lib
+added pod dependency and removed asyncsocket files from network-lib.  The necessary files can be
+found at https://github.com/robbiehanson/CocoaAsyncSocket
 
 **January 24, 2018:** (version 1.1.6) improvements have been made in a few areas:
 
