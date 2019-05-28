@@ -1,7 +1,7 @@
 # ios-ntp
 
 A network time protocol client (and an application testbed for iOS).
-This is a continues to be a work in progress.
+This project is no longer being worked on, but issues will be responded to.
 
 Created by Gavin Eadie on Oct 17, 2010
 
@@ -24,14 +24,19 @@ in its new default state .. now a `ntp.hosts` file MUST be provided.
 **February 1, 2016:** (version 1.1.3) improvements have been made in a few areas:
 
 * arithmetic operating on an NTP 64-bit time has been improved slightly.
-* the delegate callback from `NetAssocation` now runs on the main thread, which allows it to modify any UI component (illegal from a background thread).
-* a "receive packet filter" has been added, but not yet invoked.  This will used to drop UPD packets that don't pass validation.
+* the delegate callback from `NetAssocation` now runs on the main thread, which allows it to modify 
+any UI component (illegal from a background thread).
+* a "receive packet filter" has been added, but not yet invoked.  This will used to drop UPD 
+packets that don't pass validation.
 * `[NetAssociation finish]` now invalidates its timer so that association plays no further part in time derivation.
 * upgrade sources to most recent Objective-C conventions.
 
 _Getting a Quick Timecheck_
 
-`ios-ntp` is often (mostly?) used to make sure someone hasn't fiddled with the system clock.  The complications involved in using multiple servers and averaging time offsets is overkill for this purpose.  The following skeleton code is all that is needed to check the time.  If you want some more assurance of accuracy, repeat the operation a few time; if you want to continue to watch the clock, you might invoke this every five minutes:
+`ios-ntp` is often (mostly?) used to make sure someone hasn't fiddled with the system clock.  The complications 
+involved in using multiple servers and averaging time offsets is overkill for this purpose.  The following skeleton 
+code is all that is needed to check the time.  If you want some more assurance of accuracy, repeat the operation 
+a few time; if you want to continue to watch the clock, you might invoke this at infrequent intervals:
 
 		#import "ios-ntp.h"
 
@@ -111,6 +116,10 @@ synchronized to the correct time. In the case of a device which is
 obtaining its time from the telephone system, there is a setting to
 enable synchronizing to the phone company time, but that time has been
 known to be over a minute different from the correct time.
+
+**Note**: Recent versions of iOS have NTP time derivation built in
+so that the system clock now varies from 'real time' by less than one
+second (it's usually accurate to about 10mS).
 
 In addition, users may change their device time and severely affect
 applications that rely on correct times to enforce functionality, or may
@@ -195,18 +204,13 @@ itself with time information.
 iOS is an event driven system with an emphasis
 on rapid response to gestures at the cost of other activity. This
 encourages the extensive use of design patterns like notification and
-delegation so, I think, the calculation small time differences in this
-environments suffers as a result.
-
-Empirical observations of one time server shows some an occasional time
-offset that is significantly greater than its usual values; the
-calculated standard deviations of any one server's offsets is higher
-than would be expected, and I don't know the cause of this.
+delegation so, I think, the calculation of small time differences in this
+environment suffers as a result.
 
 ### License
 
 The [MIT](http://www.opensource.org/licenses/mit-license.php)
-License Copyright (c) 2010-2018, Ramsay Consulting
+License Copyright (c) 2010-2019, Ramsay Consulting
 
 ### History
 
@@ -214,9 +218,6 @@ License Copyright (c) 2010-2018, Ramsay Consulting
 into the modern world. The changes do include one bug fix, but are
 mostly related to making the code comply with the recent Xcode changes
 and requirements.
-
-Some of jbenet's "Usage" notes below aren't completely accurate as a
-result of these changes, and I will update the text soon.
 
 Finally, note that this code was first written when there were only
 32-bit iOS devices. As I write this there are still 32-bit devices which
