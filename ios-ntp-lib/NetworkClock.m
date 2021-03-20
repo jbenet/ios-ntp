@@ -1,14 +1,14 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ NetworkClock.m                                                                                   ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ║ Created by Gavin Eadie on Oct17/10 ... Copyright 2010-21 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <arpa/inet.h>
 
 #import "NetworkClock.h"
 #import "ntp-log.h"
-#import <CocoaAsyncSocket/GCDAsyncUdpSocket.h>
+#import "GCDAsyncUdpSocket.h"
 
 @interface NetworkClock () {
 

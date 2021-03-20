@@ -1,7 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ ntpViewController.m                                                                              ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Nov28/14 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ║ Created by Gavin Eadie on Nov28/14 ... Copyright 2010-21 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import "ntpViewController.h"
@@ -17,8 +17,15 @@
 
 @implementation ntpViewController
 
+NSDateFormatter * dateFormatter;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+    dateFormatter.locale = [NSLocale currentLocale];
 
     netClock = [NetworkClock sharedNetworkClock];
 
@@ -43,8 +50,10 @@
   ┃ The method executed by the timer -- gets the latest times and displays them.                     ┃
   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛*/
 - (void) timerFireMethod:(NSTimer *) theTimer {
-    _sysClockLabel.text = [NSString stringWithFormat:@"System Clock: %@", [NSDate date]];
-    _netClockLabel.text = [NSString stringWithFormat:@"Network Clock: %@", netClock.networkTime];
+    _sysClockLabel.text = [NSString stringWithFormat:@"System Clock: %@",
+                           [dateFormatter stringFromDate:[NSDate date]]];
+    _netClockLabel.text = [NSString stringWithFormat:@"Network Clock: %@",
+                           [dateFormatter stringFromDate:netClock.networkTime]];
     _offsetLabel.text = [NSString stringWithFormat:@"Clock Offet: %5.3f mSec", netClock.networkOffset * 1000.0];
 }
 

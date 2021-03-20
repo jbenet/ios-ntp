@@ -1,7 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ ntp_test.m                                                                                       ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Jun04/15 ... Copyright 2010-16 Ramsay Consulting. All rights reserved. ║
+  ║ Created by Gavin Eadie on Jun04/15 ... Copyright 2010-21 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <XCTest/XCTest.h>

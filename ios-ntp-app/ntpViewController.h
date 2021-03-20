@@ -1,7 +1,7 @@
 /*╔══════════════════════════════════════════════════════════════════════════════════════════════════╗
   ║ ntpViewController.h                                                                              ║
   ║                                                                                                  ║
-  ║ Created by Gavin Eadie on Nov28/14 ... Copyright 2010-14 Ramsay Consulting. All rights reserved. ║
+  ║ Created by Gavin Eadie on Nov28/14 ... Copyright 2010-21 Ramsay Consulting. All rights reserved. ║
   ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝*/
 
 #import <UIKit/UIKit.h>

@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="NzZ-Z5-pqQ">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="NzZ-Z5-pqQ">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Ntp View Controller-->
@@ -14,93 +16,84 @@
                         <viewControllerLayoutGuide type="bottom" id="gCY-0v-cbx"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="48l-ue-3j5">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="simple network time application" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vcH-kA-Zic">
-                                <rect key="frame" x="175" y="68" width="251" height="20"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="simple network time application" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vcH-kA-Zic">
+                                <rect key="frame" x="77.5" y="92" width="259.5" height="20"/>
                                 <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="VeO-QQ-lr2"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.3333333432674408" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="VeO-QQ-lr2"/>
                                     </mask>
                                 </variation>
-                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="50" y="68" width="300" height="20"/>
+                                <variation key="heightClass=regular-widthClass=compact">
                                     <mask key="constraints">
                                         <include reference="VeO-QQ-lr2"/>
                                     </mask>
                                 </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="2015-02-14 18:23:30 +0000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VS6-zt-ElX">
-                                <rect key="frame" x="184" y="184" width="344" height="16"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2015-02-21 18:23:30 +0000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VS6-zt-ElX">
+                                <rect key="frame" x="77.5" y="160" width="259.5" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.3333333432674408" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="50" y="136" width="300" height="16"/>
-                                </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="2015-02-14 18:23:30 +0000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uMv-ws-g9n">
-                                <rect key="frame" x="415" y="160" width="128.5" height="16"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2015-02-21 18:23:30 +0000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uMv-ws-g9n">
+                                <rect key="frame" x="77.5" y="184" width="259.5" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.3333333432674408" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="50" y="160" width="300" height="16"/>
-                                </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="0.000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="efY-GZ-fHc">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="0.000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="efY-GZ-fHc">
                                 <rect key="frame" x="415" y="136" width="128.5" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.3333333432674408" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="50" y="184" width="300" height="16"/>
-                                </variation>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vWb-Hj-IiX">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vWb-Hj-IiX">
+                                <rect key="frame" x="77.5" y="273" width="259.5" height="30"/>
                                 <state key="normal" title="Instant Time Check">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="timeCheck:" destination="NzZ-Z5-pqQ" eventType="touchUpInside" id="xW4-CD-RCU"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVY-T0-fY7">
-                                <rect key="frame" x="415" y="136" width="128.5" height="16"/>
+                                <rect key="frame" x="77.5" y="310" width="259.5" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.3333333432674408" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="uMv-ws-g9n" firstAttribute="centerX" secondItem="48l-ue-3j5" secondAttribute="centerX" id="3bb-fx-Ahc"/>
                             <constraint firstItem="efY-GZ-fHc" firstAttribute="trailing" secondItem="vWb-Hj-IiX" secondAttribute="trailing" id="5Pn-E3-NfQ"/>
-                            <constraint firstItem="vcH-kA-Zic" firstAttribute="leading" secondItem="VS6-zt-ElX" secondAttribute="leading" id="5lJ-BS-1Xo"/>
                             <constraint firstItem="uMv-ws-g9n" firstAttribute="top" secondItem="VS6-zt-ElX" secondAttribute="bottom" constant="8" symbolic="YES" id="BW5-er-ttH"/>
                             <constraint firstItem="vWb-Hj-IiX" firstAttribute="leading" secondItem="efY-GZ-fHc" secondAttribute="leading" id="Eab-gU-2zT"/>
+                            <constraint firstItem="VS6-zt-ElX" firstAttribute="centerX" secondItem="48l-ue-3j5" secondAttribute="centerX" id="EbW-9C-vwf"/>
                             <constraint firstItem="vWb-Hj-IiX" firstAttribute="trailing" secondItem="UVY-T0-fY7" secondAttribute="trailing" id="Fi4-Uo-VSu"/>
                             <constraint firstItem="VS6-zt-ElX" firstAttribute="trailing" secondItem="vcH-kA-Zic" secondAttribute="trailing" id="I9c-HQ-Q60"/>
                             <constraint firstItem="vWb-Hj-IiX" firstAttribute="top" secondItem="efY-GZ-fHc" secondAttribute="bottom" constant="49" id="Oxg-iL-5nS"/>
@@ -111,6 +104,7 @@
                             <constraint firstItem="vWb-Hj-IiX" firstAttribute="leading" secondItem="UVY-T0-fY7" secondAttribute="leading" id="Wgk-Cb-DsC"/>
                             <constraint firstItem="uMv-ws-g9n" firstAttribute="trailing" secondItem="VS6-zt-ElX" secondAttribute="trailing" id="WnW-F7-cg6"/>
                             <constraint firstItem="uMv-ws-g9n" firstAttribute="trailing" secondItem="efY-GZ-fHc" secondAttribute="trailing" id="r9V-b7-Tyf"/>
+                            <constraint firstItem="vcH-kA-Zic" firstAttribute="centerX" secondItem="48l-ue-3j5" secondAttribute="centerX" id="rPM-Pf-Ovs"/>
                             <constraint firstItem="UVY-T0-fY7" firstAttribute="top" secondItem="vWb-Hj-IiX" secondAttribute="bottom" constant="7" id="tQQ-2u-PJN"/>
                             <constraint firstItem="VS6-zt-ElX" firstAttribute="top" secondItem="vcH-kA-Zic" secondAttribute="bottom" constant="48" id="vBs-Ak-a43"/>
                             <constraint firstItem="vcH-kA-Zic" firstAttribute="centerX" secondItem="48l-ue-3j5" secondAttribute="centerX" id="xa3-1E-VvY"/>
@@ -121,17 +115,16 @@
                                 <exclude reference="UVY-T0-fY7"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="Eab-gU-2zT"/>
-                                <exclude reference="Fi4-Uo-VSu"/>
-                                <exclude reference="Oxg-iL-5nS"/>
-                                <exclude reference="Wgk-Cb-DsC"/>
-                                <exclude reference="tQQ-2u-PJN"/>
-                                <exclude reference="5lJ-BS-1Xo"/>
                                 <exclude reference="TQn-DJ-OG3"/>
                                 <exclude reference="xa3-1E-VvY"/>
                                 <exclude reference="I9c-HQ-Q60"/>
                                 <exclude reference="S3s-qc-beJ"/>
                                 <exclude reference="vBs-Ak-a43"/>
+                                <exclude reference="Eab-gU-2zT"/>
+                                <exclude reference="Fi4-Uo-VSu"/>
+                                <exclude reference="Oxg-iL-5nS"/>
+                                <exclude reference="Wgk-Cb-DsC"/>
+                                <exclude reference="tQQ-2u-PJN"/>
                                 <exclude reference="5Pn-E3-NfQ"/>
                                 <exclude reference="Siw-bb-j7a"/>
                                 <exclude reference="BW5-er-ttH"/>
@@ -146,17 +139,16 @@
                                 <include reference="UVY-T0-fY7"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="Eab-gU-2zT"/>
-                                <include reference="Fi4-Uo-VSu"/>
-                                <include reference="Oxg-iL-5nS"/>
-                                <include reference="Wgk-Cb-DsC"/>
-                                <include reference="tQQ-2u-PJN"/>
-                                <include reference="5lJ-BS-1Xo"/>
                                 <include reference="TQn-DJ-OG3"/>
                                 <include reference="xa3-1E-VvY"/>
                                 <include reference="I9c-HQ-Q60"/>
                                 <include reference="S3s-qc-beJ"/>
                                 <include reference="vBs-Ak-a43"/>
+                                <include reference="Eab-gU-2zT"/>
+                                <include reference="Fi4-Uo-VSu"/>
+                                <include reference="Oxg-iL-5nS"/>
+                                <include reference="Wgk-Cb-DsC"/>
+                                <include reference="tQQ-2u-PJN"/>
                                 <include reference="5Pn-E3-NfQ"/>
                                 <include reference="Siw-bb-j7a"/>
                                 <include reference="BW5-er-ttH"/>
